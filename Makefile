@@ -2,7 +2,10 @@ NAME		= Cub3D
 CC			= cc
 CFLAGS		= -Wall -Wextra -Werror
 LFLAGS		= -lX11 -lmlx -lXext -lm -lz -Lmlx
-SRCS		= main.c
+SRCS		=	main.c\
+				parsing.c\
+				get_next_line.c\
+				ft_split.c
 OBJS		= $(SRCS:.c=.o)
 
 all : $(NAME)

@@ -1,11 +1,12 @@
-11111
-100S1
-101011111
+MONSTER : Screech, Rush, Eyes, Statue, Hide, Seek, Figure;
+MEUBLE : Placard, Bureau, Openable door;
+CONSUMABLE : Flashlight, Crowbar, Medicine, Monster Reborn;
+
+
+   11111
+  100W1
+ 101011111
 100000001
 1000100001
 10001000001
 1111111111
-
-MONSTER : Screech, Rush, Eyes, Statue, Hide, Seek, Figure;
-MEUBLE : Placard, Bureau, Openable door;
-CONSUMABLE : Flashlight, Crowbar, Medicine, Monster Reborn;

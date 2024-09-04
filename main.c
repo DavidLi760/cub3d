@@ -6,7 +6,7 @@
 /*   By: davli <davli@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/28 17:05:58 by davli             #+#    #+#             */
-/*   Updated: 2024/09/03 15:34:52 by davli            ###   ########.fr       */
+/*   Updated: 2024/09/04 15:22:35 by davli            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,9 +124,11 @@ int	main(int argc, char **argv)
 	var.width = 5;
 	var.dot_x = 50;
 	var.dot_y = 50;
+	var.e_pressed = 0;
 	if (argc < 2)
 		return (0);
-	(void)argv;
+	if (!check_arg(&var, argv))
+		return (0);
 	var.mlx = mlx_init();
 	if (!var.mlx)
 		return (0);
