@@ -5,7 +5,8 @@ LFLAGS		= -lX11 -lmlx -lXext -lm -lz -Lmlx
 SRCS		=	main.c\
 				parsing.c\
 				get_next_line.c\
-				ft_split.c
+				ft_split.c\
+				free.c
 OBJS		= $(SRCS:.c=.o)
 
 all : $(NAME)

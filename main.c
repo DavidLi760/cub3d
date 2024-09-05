@@ -12,6 +12,17 @@
 
 #include "cub3d.h"
 
+int	close_win(t_var *var)
+{
+	if (var->win)
+	{
+		mlx_destroy_window(var->mlx, var->win);
+		free_list(var);
+	}
+	exit(0);
+	return (0);
+}
+
 void	move(int keycode, t_var *var)
 {
 	if (keycode == W)
@@ -39,10 +50,7 @@ void	move(int keycode, t_var *var)
 int	escape(int keycode, t_var *var)
 {
 	if (keycode == 65307)
-	{	
-		mlx_destroy_window(var->mlx, var->win);
-		exit(0);
-	}
+		close_win(var);
 	else if (keycode >= 0 && keycode <= 65508)
 		move(keycode, var);
 	return (0);
@@ -73,40 +81,32 @@ int	release(int keycode, t_var *var)
 	return (0);
 }
 
-int	close_win(t_var *var)
-{
-	if (var->win)
-		mlx_destroy_window(var->mlx, var->win);
-	exit(0);
-	return (0);
-}
-
 int	update(t_var *var)
 {
 	var->delay++;
-	if (var->delay > 500)
+	if (var->delay > 1000)
 	{
 		if (var->w_pressed == 1)
 		{
-			var->dot_y -= 0.2;
+			var->dot_y -= 1;
 			if (!var->e_pressed)
 				mlx_put_image_to_window(var->mlx, var->win, var->img, var->dot_x, var->dot_y);
 		}
 		if (var->s_pressed == 1)
 		{
-			var->dot_y += 0.2;
+			var->dot_y += 1;
 			if (!var->e_pressed)
 				mlx_put_image_to_window(var->mlx, var->win, var->img, var->dot_x, var->dot_y);
 		}
 		if (var->a_pressed == 1)
 		{
-			var->dot_x -= 0.2;
+			var->dot_x -= 1;
 			if (!var->e_pressed)
 				mlx_put_image_to_window(var->mlx, var->win, var->img, var->dot_x, var->dot_y);
 		}
 		if (var->d_pressed == 1)
 		{
-			var->dot_x += 0.2;
+			var->dot_x += 1;
 			if (!var->e_pressed)
 				mlx_put_image_to_window(var->mlx, var->win, var->img, var->dot_x, var->dot_y);
 		}
@@ -124,7 +124,10 @@ int	main(int argc, char **argv)
 	var.width = 5;
 	var.dot_x = 50;
 	var.dot_y = 50;
-	var.e_pressed = 0;
+	var.w_pressed = 0;
+	var.s_pressed = 0;
+	var.a_pressed = 0;
+	var.d_pressed = 0;
 	if (argc < 2)
 		return (0);
 	if (!check_arg(&var, argv))

@@ -62,5 +62,6 @@ int check_arg(t_var *var, char **argv);
 size_t	ft_strlen(char *s);
 char	*get_next_line(int fd);
 char	**ft_split(char *str, char *set);
+void	free_list(t_var *var);
 
 #endif

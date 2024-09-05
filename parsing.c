@@ -6,7 +6,7 @@
 /*   By: davli <davli@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/04 14:23:02 by davli             #+#    #+#             */
-/*   Updated: 2024/09/04 17:46:28 by davli            ###   ########.fr       */
+/*   Updated: 2024/09/05 15:19:09 by davli            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ int	get_map(t_var *var)
 
 	i = 0;
 	var->split = ft_split(var->file, "\n");
-    if (!var->split)
+	if (!var->split)
         return (printf("Error : Empty file\n"), 0);
 	if (!count_line(var, 1))
 		return (printf("Error : No map found\n"), 0);
