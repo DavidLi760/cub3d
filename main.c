@@ -118,6 +118,7 @@ int	update(t_var *var)
 int	main(int argc, char **argv)
 {
 	t_var	var;
+	int		i;
 
 	var.delay = 0;
 	var.height = 5;
@@ -129,7 +130,7 @@ int	main(int argc, char **argv)
 	var.s_pressed = 0;
 	var.a_pressed = 0;
 	var.d_pressed = 0;
-	if (argc < 2)
+	if (argc != 2)
 		return (0);
 	if (!check_arg(&var, argv))
 		return (0);
@@ -140,6 +141,12 @@ int	main(int argc, char **argv)
 	var.img = mlx_xpm_file_to_image(var.mlx, "Red_dot.xpm", &var.height, &var.width);
 	if (!var.img)
 		return (0);
+	i = 0;
+	while (var.element[i])
+		printf("%s\n", var.element[i++]);
+	i = 0;
+	while (var.map[i])
+		printf("%s\n", var.map[i++]);
 	mlx_hook(var.win, 2, 1L << 0, escape, &var);
 	mlx_hook(var.win, 3, 1L << 1, release, &var);
 	mlx_hook(var.win, 17, 0, close_win, &var);

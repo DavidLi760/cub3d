@@ -4,6 +4,7 @@ CFLAGS		= -Wall -Wextra -Werror
 LFLAGS		= -lX11 -lmlx -lXext -lm -lz -Lmlx
 SRCS		=	main.c\
 				parsing.c\
+				parsing2.c\
 				get_next_line.c\
 				ft_split.c\
 				free.c

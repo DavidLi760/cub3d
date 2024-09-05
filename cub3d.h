@@ -63,9 +63,11 @@ int check_arg(t_var *var, char **argv);
 size_t	ft_strlen(char *s);
 char	*get_next_line(int fd);
 char	**ft_split(char *str, char *set);
+int		get_split(t_var *var, int i, int j);
 void	free_list(t_var *var);
-void	free_malloc(t_var *var, int no);
-void	free_special(t_var *var, int i);
+void	free2(t_var *var, int no);
+void	free3(t_var *var, int i);
+void	free4(t_var *var, int no);
 int		count_line(t_var *var, int no);
 
 #endif

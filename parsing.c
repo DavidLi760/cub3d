@@ -29,106 +29,53 @@ int	check_extension(t_var *var, char *str)
 	return (free(var->file), 0);
 }
 
-int	count_line(t_var *var, int no)
+int	check_corner(t_var *var, int i, int j, int max)
 {
-	int	i;
-	int	j;
-
-	i = 0;
-	j = 0;
-	while (var->split[i] && !(var->split[i][0] >= '0'
-		&& var->split[i][0] <= '9') && var->split[i][0] != ' ')
+	while (var->map[i])
 		i++;
-	while (var->split[i + j])
-		j++;
-	if (no == 0)
-		return (i);
-	return (j);
-}
-
-char	*get_element(int i, t_var *var)
-{
-	int		j;
-	char	*element;
-
-	j = 0;
-	while (var->split[i][j])
-		j++;
-	element = malloc(sizeof(char) * j + 1);
-	if (!element)
-		return (free_special(var, i), NULL);
+	max = i - 1;
+	while (var->map[0][++j])
+		if (var->map[0][j] == '0')
+			return (printf("Error : Wall not closed\n"), 0);
 	j = -1;
-	while (var->split[i][++j])
-		element[j] = var->split[i][j];
-	return (element);
-}
-
-int	find_max(int i, t_var *var)
-{
-	int	j;
-	int	max;
-
-	max = 0;
-	while (var->split[i])
-	{
-		j = 0;
-		while (var->split[i][j])
-			j++;
-		if (max < j)
-			max = j;
-		i++;
-	}
-	return (max);
-}
-
-char	*get_map(int i, t_var *var, int max)
-{
-	int		j;
-	char	*map;
-
-	map = malloc(sizeof(char) * max + 1);
-	if (!map)
-		return (free_special(var, i), NULL);
-	j = -1;
-	while (var->split[i][++j])
-		map[j] = var->split[i][j];
-	while (j < max)
-	{
-		map[j] = ' ';
-		j++;
-	}
-	map[j] = 0;
-	return (map);
-}
-
-int	get_split(t_var *var, int i, int j)
-{
-	var->split = ft_split(var->file, "\n");
-	if (!var->split)
-		return (printf("Error : Empty file\n"), 0);
-	if (!count_line(var, 1))
-		return (printf("Error : No map found\n"), 0);
-	if (!count_line(var, 0))
-		return (printf("Error : No texture found\n"), 0);
-	var->element = malloc(sizeof(char *) * (count_line(var, 0) + 1));
-	if (!var->element)
-		return (free_malloc(var, 0), 0);
-	var->map = malloc(sizeof(char *) * (count_line(var, 1) + 1));
-	if (!var->map)
-		return (free_malloc(var, 1), 0);
-	while (++i < count_line(var, 0))
-		var->element[i] = get_element(i, var);
-	var->element[i] = 0;
-	var->max = find_max(i, var);
-	while (i < count_line(var, 0) + count_line(var, 1))
-		var->map[j++] = get_map(i++, var, var->max);
-	var->map[j] = 0;
+	while (var->map[max][++j])
+		if (var->map[max][j] == '0')
+			return (printf("Error : Wall not closed\n"), 0);
+	i = -1;
+	while (++i <= max)
+		if (var->map[i][0] == '0')
+			return (printf("Error : Wall not closed\n"), 0);
+	i = -1;
+	while (++i <= max)
+		if (var->map[i][j - 1] == '0')
+			return (printf("Error : Wall not closed\n"), 0);
 	return (1);
 }
 
-int	is_wall_closed(t_var *var)
+int	is_wall_closed(t_var *var, int i, int j)
 {
-	(void)var;
+	if (!check_corner(var, 0, -1, 0))
+		return (free4(var, 0), 0);
+	while (var->map[i])
+	{
+		j = 0;
+		while (var->map[i][j])
+		{
+			if (var->map[i][j] == '0' || var->map[i][j] == 'W'
+				|| var->map[i][j] == 'E' || var->map[i][j] == 'S'
+				|| var->map[i][j] == 'N')
+			{
+				if (var->map[i - 1][j] == ' ' || var->map[i + 1][j] == ' '
+					|| var->map[i][j - 1] == ' ' || var->map[i][j + 1] == ' ')
+				{
+					printf("Error : Wall not closed\n");
+					return (free4(var, 0), 0);
+				}
+			}
+			j++;
+		}
+		i++;
+	}
 	return (1);
 }
 
@@ -146,7 +93,7 @@ int	check_arg(t_var *var, char **argv)
 		return (0);
 	if (!get_split(var, -1, 0))
 		return (free(var->file), 0);
-	if (!is_wall_closed(var))
+	if (!is_wall_closed(var, 0, 0))
 		return (0);
 	return (1);
 }

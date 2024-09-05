@@ -12,7 +12,7 @@
 
 #include "cub3d.h"
 
-void	free_malloc(t_var *var, int no)
+void	free2(t_var *var, int no)
 {
 	int	i;
 
@@ -31,7 +31,7 @@ void	free_malloc(t_var *var, int no)
 	}
 }
 
-void    free_special(t_var *var, int i)
+void    free3(t_var *var, int i)
 {
     int j;
     int k;
@@ -43,7 +43,23 @@ void    free_special(t_var *var, int i)
     if (i > count_line(var, 0))
         while (j + k < i)
             free(var->map[k++]);
-    free_malloc(var, 2);
+    free2(var, 2);
+}
+
+void	free4(t_var *var, int no)
+{
+	int	i;
+
+	i = 0;
+	while (var->element[i])
+		free(var->element[i++]);
+	i = 0;
+	while (var->map[i])
+		free(var->map[i++]);
+	free(var->file);
+	free2(var, 2);
+	if (no == 0)
+		return ;
 }
 
 void	free_list(t_var *var)
