@@ -6,7 +6,7 @@
 /*   By: davli <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/28 15:52:20 by davli             #+#    #+#             */
-/*   Updated: 2024/07/01 18:08:23 by davli            ###   ########.fr       */
+/*   Updated: 2024/09/05 17:07:36 by davli            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "cub3d.h"
@@ -17,6 +17,7 @@ char	*ft_free(char **str)
 	*str = NULL;
 	return (NULL);
 }
+
 char	*ft_strjoin(char *s1, char *s2)
 {
 	char	*str;

@@ -42,6 +42,7 @@ typedef struct s_var
 	char	**split;
 	char	**element;
 	char	**map;
+	int		max;
 	int		fd;
 	int		width;
 	int		height;
@@ -63,5 +64,8 @@ size_t	ft_strlen(char *s);
 char	*get_next_line(int fd);
 char	**ft_split(char *str, char *set);
 void	free_list(t_var *var);
+void	free_malloc(t_var *var, int no);
+void	free_special(t_var *var, int i);
+int		count_line(t_var *var, int no);
 
 #endif

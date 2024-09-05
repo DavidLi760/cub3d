@@ -84,7 +84,7 @@ int	release(int keycode, t_var *var)
 int	update(t_var *var)
 {
 	var->delay++;
-	if (var->delay > 1000)
+	if (var->delay > 3000)
 	{
 		if (var->w_pressed == 1)
 		{
@@ -124,6 +124,7 @@ int	main(int argc, char **argv)
 	var.width = 5;
 	var.dot_x = 50;
 	var.dot_y = 50;
+	var.e_pressed = 0;
 	var.w_pressed = 0;
 	var.s_pressed = 0;
 	var.a_pressed = 0;
