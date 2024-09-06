@@ -81,6 +81,17 @@ int	release(int keycode, t_var *var)
 	return (0);
 }
 
+void	minimap(t_var *var, int i, int j)
+{
+	while (i <= var->position.y + 4)
+	{
+		while (var->map[i][j])
+		{
+
+		}
+	}
+}
+
 int	update(t_var *var)
 {
 	var->delay++;
@@ -90,26 +101,28 @@ int	update(t_var *var)
 		{
 			var->dot_y -= 1;
 			if (!var->e_pressed)
-				mlx_put_image_to_window(var->mlx, var->win, var->img, var->dot_x, var->dot_y);
+				mlx_put_image_to_window(var->mlx, var->win, var->img1, var->dot_x, var->dot_y);
 		}
 		if (var->s_pressed == 1)
 		{
 			var->dot_y += 1;
 			if (!var->e_pressed)
-				mlx_put_image_to_window(var->mlx, var->win, var->img, var->dot_x, var->dot_y);
+				mlx_put_image_to_window(var->mlx, var->win, var->img1, var->dot_x, var->dot_y);
 		}
 		if (var->a_pressed == 1)
 		{
 			var->dot_x -= 1;
 			if (!var->e_pressed)
-				mlx_put_image_to_window(var->mlx, var->win, var->img, var->dot_x, var->dot_y);
+				mlx_put_image_to_window(var->mlx, var->win, var->img1, var->dot_x, var->dot_y);
 		}
 		if (var->d_pressed == 1)
 		{
 			var->dot_x += 1;
 			if (!var->e_pressed)
-				mlx_put_image_to_window(var->mlx, var->win, var->img, var->dot_x, var->dot_y);
+				mlx_put_image_to_window(var->mlx, var->win, var->img1, var->dot_x, var->dot_y);
 		}
+		// minimap(var, var->position.y - 4, var->position.x - 4);
+		mlx_put_image_to_window(var->mlx, var->win, var->img, 100, 100);
 		var->delay = 0;
 	}
 	return (0);
@@ -123,8 +136,8 @@ int	main(int argc, char **argv)
 	var.delay = 0;
 	var.height = 5;
 	var.width = 5;
-	var.dot_x = 50;
-	var.dot_y = 50;
+	var.dot_x = 100;
+	var.dot_y = 100;
 	var.e_pressed = 0;
 	var.w_pressed = 0;
 	var.s_pressed = 0;
@@ -150,6 +163,7 @@ int	main(int argc, char **argv)
 	i = 0;
 	while (var.map[i])
 		printf("%s\n", var.map[i++]);
+	printf("x : %d, y : %d\n", var.position.x, var.position.y);
 	mlx_hook(var.win, 2, 1L << 0, escape, &var);
 	mlx_hook(var.win, 3, 1L << 1, release, &var);
 	mlx_hook(var.win, 17, 0, close_win, &var);

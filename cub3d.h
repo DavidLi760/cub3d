@@ -31,6 +31,12 @@
 # define RIGHT 65363
 # define DOWN 65364
 
+typedef struct s_pos
+{
+	int	x;
+	int	y;
+}	t_pos;
+
 typedef struct s_var
 {
 	void	*mlx;
@@ -43,6 +49,8 @@ typedef struct s_var
 	char	**split;
 	char	**element;
 	char	**map;
+	int		player;
+	t_pos	position;
 	int		max;
 	int		fd;
 	int		width;
