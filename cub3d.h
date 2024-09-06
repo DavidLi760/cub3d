@@ -36,6 +36,7 @@ typedef struct s_var
 	void	*mlx;
 	void	*win;
 	void	*img;
+	void	*img1;
 	double	dot_x;
 	double	dot_y;
 	char	*file;

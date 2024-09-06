@@ -141,6 +141,9 @@ int	main(int argc, char **argv)
 	var.img = mlx_xpm_file_to_image(var.mlx, "Red_dot.xpm", &var.height, &var.width);
 	if (!var.img)
 		return (0);
+	var.img1 = mlx_xpm_file_to_image(var.mlx, "carre_bleu.xpm", &var.height, &var.width);
+	if (!var.img1)
+		return (0);
 	i = 0;
 	while (var.element[i])
 		printf("%s\n", var.element[i++]);

@@ -79,6 +79,43 @@ int	is_wall_closed(t_var *var, int i, int j)
 	return (1);
 }
 
+int	is_right_char(t_var *var, int i, int j)
+{
+	while (var->map[i])
+	{
+		j = 0;
+		while (var->map[i][j])
+		{
+			if (var->map[i][j] != 'E' && var->map[i][j] != 'W'
+				&& var->map[i][j] != 'N' && var->map[i][j] != 'S'
+				&& var->map[i][j] != ' ' && var->map[i][j] != '0'
+				&& var->map[i][j] != '1')
+				return (printf("Error : Unknown character on the map"));
+		}
+	}
+	return (1);
+}
+
+int	is_player_valid(t_var *var, int i, int j)
+{
+	var->character = 0;
+	while (var->map[i])
+	{
+		j = 0;
+		while (var->map[i][j])
+		{
+			if (var->map[i][j] == 'E' || var->map[i][j] == 'W'
+				|| var->map[i][j] == 'N' || var->map[i][j] == 'S')
+				var->character++;
+			j++;
+		}
+		i++;
+	}
+	if (var->character != 1)
+		return (printf("Error : Less or more than 1 character\n"), 0);
+	return (1);
+}
+
 int	check_arg(t_var *var, char **argv)
 {
 	int	i;
@@ -94,6 +131,8 @@ int	check_arg(t_var *var, char **argv)
 	if (!get_split(var, -1, 0))
 		return (free(var->file), 0);
 	if (!is_wall_closed(var, 0, 0))
+		return (0);
+	if (!is_right_char(var, 0, 0) || !is_player_valid(var, 0, 0))
 		return (0);
 	return (1);
 }
