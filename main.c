@@ -81,14 +81,62 @@ int	release(int keycode, t_var *var)
 	return (0);
 }
 
+void	draw_obstacle(t_var *var, int i, int j)
+{
+	while (i <= var->position.y + 3)
+	{
+		var->diff_y = i * 15 - var->position2.y;
+		j = var->position.x - 3;
+		while (j <= var->position.x + 3)
+		{
+			var->diff_x = j * 15 - var->position2.x;
+			if (j < 0 || i < 0)
+				mlx_put_image_to_window(var->mlx, var->win, var->img3, var->diff_x + 45, var->diff_y + 45);
+			else
+			{
+				if (var->map[i])
+				{
+					if (var->map[i][j] == '1')
+						mlx_put_image_to_window(var->mlx, var->win, var->img1, var->diff_x + 45, var->diff_y + 45);
+					else
+						mlx_put_image_to_window(var->mlx, var->win, var->img3, var->diff_x + 45, var->diff_y + 45);
+				}			
+			}
+			j++;
+		}
+		i++;
+	}
+}
+
 void	minimap(t_var *var, int i, int j)
 {
-	while (i <= var->position.y + 4)
+	var->position.x = var->position2.x / 15;
+	var->position.y = var->position2.y / 15;
+	if (var->position.y + 1 < var->max)
+		draw_obstacle(var, var->position.y - 3, var->position.x - 3);
+	while (i < 7)
 	{
-		while (var->map[i][j])
+		j = 0;
+		if (i == 0 || i == 6)
 		{
-
+			while (j < 7)
+			{
+				mlx_put_image_to_window(var->mlx, var->win, var->img2, j * 15, i * 15);
+				j++;
+			}
 		}
+		else
+		{
+			while (j < 7)
+			{
+				if (j == 0)
+					mlx_put_image_to_window(var->mlx, var->win, var->img2, j * 15, i * 15);
+				if (j == 6)
+					mlx_put_image_to_window(var->mlx, var->win, var->img2, j * 15, i * 15);
+				j++;
+			}
+		}
+		i++;
 	}
 }
 
@@ -99,31 +147,43 @@ int	update(t_var *var)
 	{
 		if (var->w_pressed == 1)
 		{
-			var->dot_y -= 1;
+			if (var->dot_y < 15)
+				var->dot_y += 1;
 			if (!var->e_pressed)
-				mlx_put_image_to_window(var->mlx, var->win, var->img1, var->dot_x, var->dot_y);
+			{
+				var->position2.y -= 1;
+			}
 		}
 		if (var->s_pressed == 1)
 		{
-			var->dot_y += 1;
+			var->dot_y -= 1;
 			if (!var->e_pressed)
-				mlx_put_image_to_window(var->mlx, var->win, var->img1, var->dot_x, var->dot_y);
+			{
+				var->position2.y += 1;
+			}
 		}
 		if (var->a_pressed == 1)
 		{
-			var->dot_x -= 1;
+			if (var->dot_x < 90)
+				var->dot_x += 1;
 			if (!var->e_pressed)
-				mlx_put_image_to_window(var->mlx, var->win, var->img1, var->dot_x, var->dot_y);
+			{
+				var->position2.x -= 1;
+			}
 		}
 		if (var->d_pressed == 1)
 		{
-			var->dot_x += 1;
+			var->dot_x -= 1;
 			if (!var->e_pressed)
-				mlx_put_image_to_window(var->mlx, var->win, var->img1, var->dot_x, var->dot_y);
+			{
+				var->position2.x += 1;
+			}
 		}
-		// minimap(var, var->position.y - 4, var->position.x - 4);
-		mlx_put_image_to_window(var->mlx, var->win, var->img, 100, 100);
 		var->delay = 0;
+		minimap(var, 0, 0);
+		mlx_put_image_to_window(var->mlx, var->win, var->img, 50, 50);
+	printf("%d\n", var->position.x);
+	printf("%d\n", var->position.y);
 	}
 	return (0);
 }
@@ -136,8 +196,8 @@ int	main(int argc, char **argv)
 	var.delay = 0;
 	var.height = 5;
 	var.width = 5;
-	var.dot_x = 100;
-	var.dot_y = 100;
+	var.dot_x = 90;
+	var.dot_y = 15;
 	var.e_pressed = 0;
 	var.w_pressed = 0;
 	var.s_pressed = 0;
@@ -156,6 +216,12 @@ int	main(int argc, char **argv)
 		return (0);
 	var.img1 = mlx_xpm_file_to_image(var.mlx, "carre_bleu.xpm", &var.height, &var.width);
 	if (!var.img1)
+		return (0);
+	var.img2 = mlx_xpm_file_to_image(var.mlx, "carre_blanc.xpm", &var.height, &var.width);
+	if (!var.img2)
+		return (0);
+	var.img3 = mlx_xpm_file_to_image(var.mlx, "carre_vide.xpm", &var.height, &var.width);
+	if (!var.img3)
 		return (0);
 	i = 0;
 	while (var.element[i])

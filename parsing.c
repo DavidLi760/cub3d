@@ -112,11 +112,14 @@ int	is_player_valid(t_var *var, int i, int j)
 				var->player++;
 				var->position.x = j;
 				var->position.y = i;
+				var->position2.x = j * 15;
+				var->position2.y = i * 15;
 			}
 			j++;
 		}
 		i++;
 	}
+	var->max = i;
 	if (var->player != 1)
 		return (printf("Error : Less or more than 1 player\n"), 0);
 	return (1);
@@ -124,9 +127,6 @@ int	is_player_valid(t_var *var, int i, int j)
 
 int	check_arg(t_var *var, char **argv)
 {
-	int	i;
-
-	i = 0;
 	var->fd = open(argv[1], O_RDONLY);
 	var->file = get_next_line(var->fd);
 	close(var->fd);

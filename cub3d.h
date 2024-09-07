@@ -43,6 +43,10 @@ typedef struct s_var
 	void	*win;
 	void	*img;
 	void	*img1;
+	void	*img2;
+	void	*img3;
+	int		diff_x;
+	int		diff_y;
 	double	dot_x;
 	double	dot_y;
 	char	*file;
@@ -51,6 +55,7 @@ typedef struct s_var
 	char	**map;
 	int		player;
 	t_pos	position;
+	t_pos	position2;
 	int		max;
 	int		fd;
 	int		width;
