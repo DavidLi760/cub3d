@@ -110,42 +110,38 @@ void	draw_obstacle(t_var *var, int i, int j)
 
 void	minimap(t_var *var, int i, int j)
 {
+	(void)i;
+	(void)j;
 	var->position.x = var->position2.x / 15;
 	var->position.y = var->position2.y / 15;
-	if (var->position.y + 1 < var->max)
-		draw_obstacle(var, var->position.y - 3, var->position.x - 3);
-	while (i < 7)
+	draw_obstacle(var, var->position.y - 3, var->position.x - 3);
+	while (++i < 7)
 	{
-		j = 0;
+		j = -1;
 		if (i == 0 || i == 6)
 		{
-			while (j < 7)
-			{
+			while (++j < 7)
 				mlx_put_image_to_window(var->mlx, var->win, var->img2, j * 15, i * 15);
-				j++;
-			}
 		}
 		else
 		{
-			while (j < 7)
+			while (++j < 7)
 			{
 				if (j == 0)
 					mlx_put_image_to_window(var->mlx, var->win, var->img2, j * 15, i * 15);
 				if (j == 6)
 					mlx_put_image_to_window(var->mlx, var->win, var->img2, j * 15, i * 15);
-				j++;
 			}
 		}
-		i++;
 	}
 }
 
 int	update(t_var *var)
 {
 	var->delay++;
-	if (var->delay > 3000)
+	if (var->delay > DELAY)
 	{
-		if (var->w_pressed == 1)
+		if (var->w_pressed == 1 && var->position2.y > 0 && var->map[(var->position2.y - 1) / 15][var->position2.x / 15] != '1')
 		{
 			if (var->dot_y < 15)
 				var->dot_y += 1;
@@ -154,7 +150,7 @@ int	update(t_var *var)
 				var->position2.y -= 1;
 			}
 		}
-		if (var->s_pressed == 1)
+		if (var->s_pressed == 1 && var->position2.y + 16 < var->max * 15 && var->map[(var->position2.y + 14) / 15][var->position2.x / 15] != '1')
 		{
 			var->dot_y -= 1;
 			if (!var->e_pressed)
@@ -162,7 +158,7 @@ int	update(t_var *var)
 				var->position2.y += 1;
 			}
 		}
-		if (var->a_pressed == 1)
+		if (var->a_pressed == 1 && var->position2.x > 0 && var->map[var->position2.y / 15][(var->position2.x - 1) / 15] != '1')
 		{
 			if (var->dot_x < 90)
 				var->dot_x += 1;
@@ -171,7 +167,7 @@ int	update(t_var *var)
 				var->position2.x -= 1;
 			}
 		}
-		if (var->d_pressed == 1)
+		if (var->d_pressed == 1 && var->map[var->position2.y / 15][(var->position2.x + 14) / 15] != '1')
 		{
 			var->dot_x -= 1;
 			if (!var->e_pressed)
@@ -180,12 +176,40 @@ int	update(t_var *var)
 			}
 		}
 		var->delay = 0;
-		minimap(var, 0, 0);
+		minimap(var, -1, 0);
 		mlx_put_image_to_window(var->mlx, var->win, var->img, 50, 50);
-	printf("%d\n", var->position.x);
-	printf("%d\n", var->position.y);
 	}
 	return (0);
+}
+
+// int	wall_collision(t_var *var, int i, int j)
+// {
+// 	while (i < 1010)
+// 	{
+// 		j = 0;
+// 		while (j < 1920)
+// 	}
+// }
+
+int	init_var(t_var *var, int i, int j)
+{
+	var->forbidden = malloc(sizeof(bool *) * 1010);
+	if (!var->forbidden)
+		return (free4(var, 0), 0);
+	while (++i < 1010)
+	{
+		var->forbidden[i] = malloc(sizeof(bool) * 1980);
+		if (!var->forbidden[i])
+			return (free4(var, i), 0);
+		while (j < 1980)
+		{
+			var->forbidden[i][j] = 0;
+			j++;
+		}	
+	}
+	// if (init_forbidden(var, 0, 0))
+	// 	return (free4(var, i), 0);
+	return (1);
 }
 
 int	main(int argc, char **argv)
@@ -207,6 +231,10 @@ int	main(int argc, char **argv)
 		return (0);
 	if (!check_arg(&var, argv))
 		return (0);
+	if (!init_var(&var, -1, 0))
+		return (0);
+	// if (!wall_collision, 0, 0)
+	// 	return (0);
 	var.mlx = mlx_init();
 	if (!var.mlx)
 		return (0);
@@ -229,7 +257,7 @@ int	main(int argc, char **argv)
 	i = 0;
 	while (var.map[i])
 		printf("%s\n", var.map[i++]);
-	printf("x : %d, y : %d\n", var.position.x, var.position.y);
+	// printf("x : %d, y : %d\n", var.position.x, var.position.y);
 	mlx_hook(var.win, 2, 1L << 0, escape, &var);
 	mlx_hook(var.win, 3, 1L << 1, release, &var);
 	mlx_hook(var.win, 17, 0, close_win, &var);

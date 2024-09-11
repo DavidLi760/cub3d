@@ -16,9 +16,11 @@
 # include <unistd.h>
 # include <stdio.h>
 # include <stdlib.h>
+# include <stdbool.h>
 # include <fcntl.h>
 # include "mlx/mlx.h"
 
+# define DELAY 1500
 # define BUFFER_SIZE 500
 # define W 119
 # define A 97
@@ -49,6 +51,7 @@ typedef struct s_var
 	int		diff_y;
 	double	dot_x;
 	double	dot_y;
+	bool	**forbidden;
 	char	*file;
 	char	**split;
 	char	**element;

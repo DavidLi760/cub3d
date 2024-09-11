@@ -43,6 +43,7 @@ char	*get_element(int i, t_var *var)
 	j = -1;
 	while (var->split[i][++j])
 		element[j] = var->split[i][j];
+	element[j] = 0;
 	return (element);
 }
 
