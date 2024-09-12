@@ -21,7 +21,7 @@
 # include <math.h>
 # include "mlx/mlx.h"
 
-# define DELAY 500
+# define DELAY 250
 # define BUFFER_SIZE 500
 # define W 119
 # define A 97

@@ -6,7 +6,7 @@
 /*   By: davli <davli@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/28 17:05:58 by davli             #+#    #+#             */
-/*   Updated: 2024/09/04 15:22:35 by davli            ###   ########.fr       */
+/*   Updated: 2024/09/12 19:33:58 by davli            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -197,6 +197,7 @@ int	update(t_var *var)
 		printf("y:%f\n", var->posy);
 		printf("x:%d\n", var->position2.x);
 		printf("y:%d\n", var->position2.y);
+		printf("%f\n", var->angle);
 		minimap(var, -1, 0);
 		mlx_put_image_to_window(var->mlx, var->win, var->img, 50, 50);
 		mlx_put_image_to_window(var->mlx, var->win, var->img, 50 + var->directx * 3, 50 + var->directy * 3);
@@ -249,6 +250,7 @@ int	main(int argc, char **argv)
 	var.d_pressed = 0;
 	var.directx = 0;
 	var.directy = 0;
+	var.angle = 0;
 	if (argc != 2)
 		return (0);
 	if (!check_arg(&var, argv))
