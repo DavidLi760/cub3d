@@ -6,7 +6,7 @@
 /*   By: davli <davli@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/28 17:06:18 by davli             #+#    #+#             */
-/*   Updated: 2024/09/04 17:09:52 by davli            ###   ########.fr       */
+/*   Updated: 2024/09/12 14:01:35 by davli            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,10 @@
 # include <stdlib.h>
 # include <stdbool.h>
 # include <fcntl.h>
+# include <math.h>
 # include "mlx/mlx.h"
 
-# define DELAY 1500
+# define DELAY 500
 # define BUFFER_SIZE 500
 # define W 119
 # define A 97
@@ -47,19 +48,25 @@ typedef struct s_var
 	void	*img1;
 	void	*img2;
 	void	*img3;
+	void	*imag;
+	char	*addr;
+	int		len;
+	int		bit;
+	int		endian;
 	int		diff_x;
 	int		diff_y;
-	double	dot_x;
-	double	dot_y;
 	bool	**forbidden;
 	char	*file;
 	char	**split;
 	char	**element;
 	char	**map;
 	int		player;
+	double	anglex;
+	double	angley;
 	t_pos	position;
 	t_pos	position2;
 	int		max;
+	int		maxj;
 	int		fd;
 	int		width;
 	int		height;
@@ -86,5 +93,8 @@ void	free2(t_var *var, int no);
 void	free3(t_var *var, int i);
 void	free4(t_var *var, int no);
 int		count_line(t_var *var, int no);
+void	my_pixel_put(t_var *var, int x, int y, int color);
+void	draw_block(t_var *var, int i, int j, int color);
+void	draw_wall(t_var *var, int i, int j, int color);
 
 #endif

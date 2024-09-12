@@ -1,0 +1,55 @@
+for (int x = 0; x < screenWidth; x++) {
+    double cameraX = 2 * x / (double)screenWidth - 1; // Valeur entre -1 et 1
+    double rayAngle = player.angle + atan(cameraX);   // Ajuster l'angle du rayon
+
+    // Calculer les directions X et Y avec le pitch
+    double rayDirX = cos(rayAngle) * cos(player.pitch);
+    double rayDirY = sin(rayAngle) * cos(player.pitch);
+    double rayDirZ = sin(player.pitch); // Pour la direction verticale
+
+    // Lancer le rayon à travers la grille, détecter les murs...
+}
+
+Exemples de calcul de rayDirX et rayDirY
+
+    Si le joueur regarde en haut à droite avec un angle de 45° (π/4 radians) :
+        rayDirX sera la composante sur l'axe X du vecteur de direction : cos⁡(angle)cos(angle).
+        rayDirY sera la composante sur l'axe Y du vecteur de direction : sin⁡(angle)sin(angle).
+
+    Donc pour un angle de π/4 radians (45°) :
+
+    c
+
+rayDirX = cos(player.angle); // cos(π/4) ≈ 0.707
+rayDirY = sin(player.angle); // sin(π/4) ≈ 0.707
+
+Ici, rayDirX et rayDirY seront à peu près égaux à 0.707, ce qui signifie que le joueur regarde à égale distance vers la droite et vers le haut.
+
+Si l'angle est plus tourné vers la droite qu'en haut (par exemple 30° ou π/6 radians) :
+
+    rayDirX : La composante sur l'axe X sera plus grande, car l'angle est plus proche de 0 radians (la direction droite).
+    rayDirY : La composante sur l'axe Y sera plus petite.
+
+Avec player.angle = π/6 radians (30°) :
+
+c
+
+rayDirX = cos(player.angle); // cos(π/6) ≈ 0.866
+rayDirY = sin(player.angle); // sin(π/6) ≈ 0.5
+
+Ici, rayDirX ≈ 0.866 (dominant sur l'axe X) et rayDirY ≈ 0.5 (moindre sur l'axe Y), ce qui signifie que le joueur regarde plus vers la droite que vers le haut.
+
+Si l'angle est davantage tourné vers le haut (par exemple 60° ou π/3 radians) :
+
+    rayDirX : La composante sur l'axe X sera plus petite.
+    rayDirY : La composante sur l'axe Y sera plus grande, car l'angle est plus proche de π/2 radians (la direction haut).
+
+Avec player.angle = π/3 radians (60°) :
+
+c
+
+rayDirX = cos(player.angle); // cos(π/3) ≈ 0.5
+rayDirY = sin(player.angle); // sin(π/3) ≈ 0.866
+
+Ici, rayDirX ≈ 0.5 et rayDirY ≈ 0.866, ce qui signifie que le joueur regarde plus vers le haut que vers la droite.
+

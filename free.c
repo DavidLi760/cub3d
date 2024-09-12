@@ -72,6 +72,7 @@ void	free_list(t_var *var)
 	mlx_destroy_image(var->mlx, var->img1);
 	mlx_destroy_image(var->mlx, var->img2);
 	mlx_destroy_image(var->mlx, var->img3);
+	mlx_destroy_image(var->mlx, var->imag);
 	mlx_destroy_display(var->mlx);
 	free(var->mlx);
 }
