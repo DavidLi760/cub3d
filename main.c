@@ -137,35 +137,69 @@ void	minimap(t_var *var, int i, int j)
 	mlx_put_image_to_window(var->mlx, var->win, var->imag, -50, -50);
 }
 
-
 int	update(t_var *var)
 {
 	var->delay++;
 	if (var->delay > DELAY)
 	{
-		if (var->w_pressed == 1 && var->position2.y > 0 && var->map[(var->position2.y - 1) / 15][var->position2.x / 15] != '1')
+		if (var->w_pressed == 1 && var->position2.x > 0 && var->position2.y > 0 && var->map[(var->position2.y - 1) / 15][var->position2.x / 15] != '1')
 		{
-			if (!var->e_pressed)
-				var->position2.y -= 1;
+			var->posx += var->directx * 1;
+			var->posy += var->directy * 1;
 		}
 		if (var->s_pressed == 1 && var->position2.y + 16 < var->max * 15 && var->map[(var->position2.y + 14) / 15][var->position2.x / 15] != '1')
 		{
-			if (!var->e_pressed)
-				var->position2.y += 1;
+			var->posx -= var->directx * 1;
+			var->posy -= var->directy * 1;
 		}
 		if (var->a_pressed == 1 && var->position2.x > 0 && var->map[var->position2.y / 15][(var->position2.x - 1) / 15] != '1')
 		{
-			if (!var->e_pressed)
-				var->position2.x -= 1;
+			var->posx += var->directy * 1;
+			var->posy -= var->directx * 1;
 		}
 		if (var->d_pressed == 1 && var->map[var->position2.y / 15][(var->position2.x + 14) / 15] != '1')
 		{
-			if (!var->e_pressed)
-				var->position2.x += 1;
+			var->posx -= var->directy * 1;
+			var->posy += var->directx * 1;
+		}
+		if (var->up_pressed == 1)
+		{
+			var->angle += 0;
+		}
+		if (var->left_pressed == 1)
+		{
+			var->angle += -0.1;
+		}
+		if (var->down_pressed == 1)
+		{
+			var->angle += 0;
+		}
+		if (var->right_pressed == 1)
+		{
+			var->angle += 0.1;
 		}
 		var->delay = 0;
+		if (var->angle > 2 * 3.1416)
+			var->angle = 0;
+		else if (var->angle < 0)
+			var->angle = 2 * 3.1416;
+		var->directx = cos(var->angle);
+		var->directy = sin(var->angle);
+		if (var->posx >= var->position2.x + 1)
+			var->position2.x += 1;
+		if (var->posx <= var->position2.x - 1)
+			var->position2.x -= 1;
+		if (var->posy >= var->position2.y + 1)
+			var->position2.y += 1;
+		if (var->posy <= var->position2.y - 1)
+			var->position2.y -= 1;
+		printf("x:%f\n", var->posx);
+		printf("y:%f\n", var->posy);
+		printf("x:%d\n", var->position2.x);
+		printf("y:%d\n", var->position2.y);
 		minimap(var, -1, 0);
 		mlx_put_image_to_window(var->mlx, var->win, var->img, 50, 50);
+		mlx_put_image_to_window(var->mlx, var->win, var->img, 50 + var->directx * 3, 50 + var->directy * 3);
 	}
 	return (0);
 }
@@ -213,12 +247,16 @@ int	main(int argc, char **argv)
 	var.s_pressed = 0;
 	var.a_pressed = 0;
 	var.d_pressed = 0;
+	var.directx = 0;
+	var.directy = 0;
 	if (argc != 2)
 		return (0);
 	if (!check_arg(&var, argv))
 		return (0);
 	if (!init_var(&var, -1, 0))
 		return (0);
+	var.posx = var.position2.x;
+	var.posy = var.position2.y;
 	// if (!wall_collision, 0, 0)
 	// 	return (0);
 	var.mlx = mlx_init();

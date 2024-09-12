@@ -61,8 +61,11 @@ typedef struct s_var
 	char	**element;
 	char	**map;
 	int		player;
-	double	anglex;
-	double	angley;
+	double	directx;
+	double	directy;
+	double	angle;
+	double	posx;
+	double	posy;
 	t_pos	position;
 	t_pos	position2;
 	int		max;
