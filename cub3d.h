@@ -33,6 +33,7 @@
 # define UP 65362
 # define RIGHT 65363
 # define DOWN 65364
+# define PI 3.14159265358
 
 typedef struct s_pos
 {
@@ -67,6 +68,7 @@ typedef struct s_var
 	double	angle;
 	double	posx;
 	double	posy;
+	double	ray_angle;
 	t_pos	position;
 	t_pos	position2;
 	int		max;
