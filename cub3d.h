@@ -21,7 +21,7 @@
 # include <math.h>
 # include "mlx/mlx.h"
 
-# define DELAY 250
+# define DELAY 3000
 # define BUFFER_SIZE 500
 # define W 119
 # define A 97
@@ -47,6 +47,7 @@ typedef struct s_var
 	void	*img;
 	void	*img1;
 	void	*img2;
+	void	*img2a;
 	void	*img3;
 	void	*imag;
 	char	*addr;
@@ -55,7 +56,7 @@ typedef struct s_var
 	int		endian;
 	int		diff_x;
 	int		diff_y;
-	bool	**forbidden;
+	char	**forbidden;
 	char	*file;
 	char	**split;
 	char	**element;
@@ -99,5 +100,6 @@ int		count_line(t_var *var, int no);
 void	my_pixel_put(t_var *var, int x, int y, int color);
 void	draw_block(t_var *var, int i, int j, int color);
 void	draw_wall(t_var *var, int i, int j, int color);
+void	init_forbidden(t_var *var, int i, int j);
 
 #endif

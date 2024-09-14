@@ -1,7 +1,7 @@
 /* XPM */
 static char *_854d363b9574cc28dc099a516d4b53dWnwRzuiz1oIMxcHg[] = {
 /* columns rows colors chars-per-pixel */
-"1 1 10 1 ",
+"4 4 10 1 ",
 "  c None",
 ". c red",
 "X c #FF1D1C",
@@ -13,5 +13,8 @@ static char *_854d363b9574cc28dc099a516d4b53dWnwRzuiz1oIMxcHg[] = {
 "$ c #FD4941",
 "% c #FC4A40",
 /* pixels */
-"."
+" .. ",
+"....",
+"....",
+" .. "
 };

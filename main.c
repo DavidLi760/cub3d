@@ -6,7 +6,7 @@
 /*   By: davli <davli@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/28 17:05:58 by davli             #+#    #+#             */
-/*   Updated: 2024/09/12 19:33:58 by davli            ###   ########.fr       */
+/*   Updated: 2024/09/14 16:26:57 by davli            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,6 +112,8 @@ void	draw_obstacle(t_var *var, int i, int j)
 
 void	minimap(t_var *var, int i, int j)
 {
+	(void)i;
+	(void)j;
 	var->position.x = var->position2.x / 15;
 	var->position.y = var->position2.y / 15;
 	draw_obstacle(var, var->position.y - 3, var->position.x - 3);
@@ -137,27 +139,123 @@ void	minimap(t_var *var, int i, int j)
 	mlx_put_image_to_window(var->mlx, var->win, var->imag, -50, -50);
 }
 
+// int	can_move(t_var *var, double i, double j)
+// {
+// 	int k;
+// 	int l;
+
+// 	k = (int)i;
+// 	l = (int)j;
+// 	while (k < 16)
+
+// 	return (1);
+// }
+
+int	is_w_wall(t_var *var, int i, int j)
+{
+	int	k;
+	int	l;
+
+	k = i - 1 + 4;
+	l = j - 1 + 4;
+	while (k <= i + 6)
+	{
+		l = j - 1 + 4;
+		while (l <= j + 6)
+		{
+			if (var->map[k / 15][l / 15] == '1')
+				return (1);
+			l++;
+		}
+		k++;
+	}
+	return (0);
+}
+
+int	is_s_wall(t_var *var, int i, int j)
+{
+	int	k;
+	int	l;
+
+	k = i - 1 + 4;
+	l = j - 1 + 4;
+	while (k <= i + 6)
+	{
+		l = j - 1 + 4;
+		while (l <= j + 6)
+		{
+			if (var->map[k / 15][l / 15] == '1')
+				return (1);
+			l++;
+		}
+		k++;
+	}
+	return (0);
+}
+
+int	is_a_wall(t_var *var, int i, int j)
+{
+	int	k;
+	int	l;
+
+	k = i - 1 + 4;
+	l = j - 1 + 4;
+	while (k <= i + 6)
+	{
+		l = j - 1 + 4;
+		while (l <= j + 6)
+		{
+			if (var->map[k / 15][l / 15] == '1')
+				return (1);
+			l++;
+		}
+		k++;
+	}
+	return (0);
+}
+
+int	is_d_wall(t_var *var, int i, int j)
+{
+	int	k;
+	int	l;
+
+	k = i - 1 + 4;
+	l = j - 1 + 4;
+	while (k <= i + 6)
+	{
+		l = j - 1 + 4;
+		while (l <= j + 6)
+		{
+			if (var->map[k / 15][l / 15] == '1')
+				return (1);
+			l++;
+		}
+		k++;
+	}
+	return (0);
+}
+
 int	update(t_var *var)
 {
 	var->delay++;
 	if (var->delay > DELAY)
 	{
-		if (var->w_pressed == 1 && var->position2.x > 0 && var->position2.y > 0 && var->map[(var->position2.y - 1) / 15][var->position2.x / 15] != '1')
+		if (var->w_pressed == 1 && !is_w_wall(var, var->posy + var->directy, var->posx + var->directx))
 		{
 			var->posx += var->directx * 1;
 			var->posy += var->directy * 1;
 		}
-		if (var->s_pressed == 1 && var->position2.y + 16 < var->max * 15 && var->map[(var->position2.y + 14) / 15][var->position2.x / 15] != '1')
+		if (var->s_pressed == 1 && !is_s_wall(var, var->posy - var->directy, var->posx - var->directx))
 		{
 			var->posx -= var->directx * 1;
 			var->posy -= var->directy * 1;
 		}
-		if (var->a_pressed == 1 && var->position2.x > 0 && var->map[var->position2.y / 15][(var->position2.x - 1) / 15] != '1')
+		if (var->a_pressed == 1 && !is_a_wall(var, var->posy - var->directx, var->posx + var->directy))
 		{
 			var->posx += var->directy * 1;
 			var->posy -= var->directx * 1;
 		}
-		if (var->d_pressed == 1 && var->map[var->position2.y / 15][(var->position2.x + 14) / 15] != '1')
+		if (var->d_pressed == 1 && !is_d_wall(var, var->posy + var->directx, var->posx - var->directy))
 		{
 			var->posx -= var->directy * 1;
 			var->posy += var->directx * 1;
@@ -168,7 +266,7 @@ int	update(t_var *var)
 		}
 		if (var->left_pressed == 1)
 		{
-			var->angle += -0.1;
+			var->angle += -0.15;
 		}
 		if (var->down_pressed == 1)
 		{
@@ -176,13 +274,14 @@ int	update(t_var *var)
 		}
 		if (var->right_pressed == 1)
 		{
-			var->angle += 0.1;
+			var->angle += 0.15;
 		}
 		var->delay = 0;
 		if (var->angle > 2 * 3.1416)
 			var->angle = 0;
 		else if (var->angle < 0)
 			var->angle = 2 * 3.1416;
+		printf("%f\n", var->angle);
 		var->directx = cos(var->angle);
 		var->directy = sin(var->angle);
 		if (var->posx >= var->position2.x + 1)
@@ -193,11 +292,6 @@ int	update(t_var *var)
 			var->position2.y += 1;
 		if (var->posy <= var->position2.y - 1)
 			var->position2.y -= 1;
-		printf("x:%f\n", var->posx);
-		printf("y:%f\n", var->posy);
-		printf("x:%d\n", var->position2.x);
-		printf("y:%d\n", var->position2.y);
-		printf("%f\n", var->angle);
 		minimap(var, -1, 0);
 		mlx_put_image_to_window(var->mlx, var->win, var->img, 50, 50);
 		mlx_put_image_to_window(var->mlx, var->win, var->img, 50 + var->directx * 3, 50 + var->directy * 3);
@@ -205,33 +299,24 @@ int	update(t_var *var)
 	return (0);
 }
 
-// int	wall_collision(t_var *var, int i, int j)
-// {
-// 	while (i < 1010)
-// 	{
-// 		j = 0;
-// 		while (j < 1920)
-// 	}
-// }
-
 int	init_var(t_var *var, int i, int j)
 {
-	var->forbidden = malloc(sizeof(bool *) * 1010);
+	var->forbidden = malloc(sizeof(char *) * 1010);
 	if (!var->forbidden)
 		return (free4(var, 0), 0);
 	while (++i < 1010)
 	{
-		var->forbidden[i] = malloc(sizeof(bool) * 1980);
+		var->forbidden[i] = malloc(sizeof(char) * 1980);
 		if (!var->forbidden[i])
 			return (free4(var, i), 0);
 		while (j < 1980)
 		{
 			var->forbidden[i][j] = 0;
 			j++;
-		}	
+		}
 	}
-	// if (init_forbidden(var, 0, 0))
-	// 	return (free4(var, i), 0);
+	var->position.x = var->position2.x / 15;
+	var->position.y = var->position2.y / 15;
 	return (1);
 }
 
@@ -259,8 +344,6 @@ int	main(int argc, char **argv)
 		return (0);
 	var.posx = var.position2.x;
 	var.posy = var.position2.y;
-	// if (!wall_collision, 0, 0)
-	// 	return (0);
 	var.mlx = mlx_init();
 	if (!var.mlx)
 		return (0);
@@ -274,6 +357,7 @@ int	main(int argc, char **argv)
 	var.img2 = mlx_xpm_file_to_image(var.mlx, "carre_blanc.xpm", &var.height, &var.width);
 	if (!var.img2)
 		return (0);
+	var.img2a = mlx_xpm_file_to_image(var.mlx, "pixel_noir.xpm", &var.height, &var.width);
 	var.img3 = mlx_xpm_file_to_image(var.mlx, "carre_vide.xpm", &var.height, &var.width);
 	if (!var.img3)
 		return (0);

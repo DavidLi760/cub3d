@@ -49,6 +49,10 @@ void    draw_wall(t_var *var, int j, int i, int color)
                 my_pixel_put(var, j + l, i + k, 0x00000000);
             else
                 my_pixel_put(var, j + l, i + k, color);
+            if (color == 0x000000FF)
+                var->forbidden[i + k][j + l] = '1';
+            else if (color == 0x00000000)
+                var->forbidden[i + k][j + l] = '0';
         }
     }
 }
