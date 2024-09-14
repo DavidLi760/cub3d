@@ -151,70 +151,7 @@ void	minimap(t_var *var, int i, int j)
 // 	return (1);
 // }
 
-int	is_w_wall(t_var *var, int i, int j)
-{
-	int	k;
-	int	l;
-
-	k = i - 1 + 4;
-	l = j - 1 + 4;
-	while (k <= i + 6)
-	{
-		l = j - 1 + 4;
-		while (l <= j + 6)
-		{
-			if (var->map[k / 15][l / 15] == '1')
-				return (1);
-			l++;
-		}
-		k++;
-	}
-	return (0);
-}
-
-int	is_s_wall(t_var *var, int i, int j)
-{
-	int	k;
-	int	l;
-
-	k = i - 1 + 4;
-	l = j - 1 + 4;
-	while (k <= i + 6)
-	{
-		l = j - 1 + 4;
-		while (l <= j + 6)
-		{
-			if (var->map[k / 15][l / 15] == '1')
-				return (1);
-			l++;
-		}
-		k++;
-	}
-	return (0);
-}
-
 int	is_a_wall(t_var *var, int i, int j)
-{
-	int	k;
-	int	l;
-
-	k = i - 1 + 4;
-	l = j - 1 + 4;
-	while (k <= i + 6)
-	{
-		l = j - 1 + 4;
-		while (l <= j + 6)
-		{
-			if (var->map[k / 15][l / 15] == '1')
-				return (1);
-			l++;
-		}
-		k++;
-	}
-	return (0);
-}
-
-int	is_d_wall(t_var *var, int i, int j)
 {
 	int	k;
 	int	l;
@@ -240,25 +177,53 @@ int	update(t_var *var)
 	var->delay++;
 	if (var->delay > DELAY)
 	{
-		if (var->w_pressed == 1 && !is_w_wall(var, var->posy + var->directy, var->posx + var->directx))
+		if (var->w_pressed == 1)
 		{
-			var->posx += var->directx * 1;
-			var->posy += var->directy * 1;
+			if (var->w_pressed == 1 && is_a_wall(var, var->posy + var->directy, var->posx) && !is_a_wall(var, var->posy, var->posx + var->directx))
+				var->posx += var->directx * 1;
+			else if (var->w_pressed == 1 && is_a_wall(var, var->posy, var->posx + var->directx) && !is_a_wall(var, var->posy + var->directy, var->posx))
+				var->posy += var->directy * 1;
+			else if (!is_a_wall(var, var->posy + var->directy, var->posx + var->directx))
+			{
+				var->posx += var->directx * 1;
+				var->posy += var->directy * 1;
+			}
 		}
-		if (var->s_pressed == 1 && !is_s_wall(var, var->posy - var->directy, var->posx - var->directx))
+		if (var->s_pressed == 1)
 		{
-			var->posx -= var->directx * 1;
-			var->posy -= var->directy * 1;
+			if (is_a_wall(var, var->posy - var->directy, var->posx) && !is_a_wall(var, var->posy, var->posx - var->directx))
+				var->posx -= var->directx * 1;
+			else if (is_a_wall(var, var->posy, var->posx - var->directx) && !is_a_wall(var, var->posy - var->directy, var->posx))
+				var->posy -= var->directy * 1;
+			else if (!is_a_wall(var, var->posy - var->directy, var->posx - var->directx))
+			{
+				var->posx -= var->directx * 1;
+				var->posy -= var->directy * 1;
+			}
 		}
-		if (var->a_pressed == 1 && !is_a_wall(var, var->posy - var->directx, var->posx + var->directy))
+		if (var->a_pressed == 1)
 		{
-			var->posx += var->directy * 1;
-			var->posy -= var->directx * 1;
+			if (is_a_wall(var, var->posy - var->directx, var->posx) && !is_a_wall(var, var->posy, var->posx + var->directy))
+				var->posx += var->directy * 1;
+			else if (is_a_wall(var, var->posy, var->posx + var->directy) && !is_a_wall(var, var->posy - var->directx, var->posx))
+				var->posy -= var->directx * 1;
+			else if (!is_a_wall(var, var->posy - var->directx, var->posx + var->directy))
+			{
+				var->posx += var->directy * 1;
+				var->posy -= var->directx * 1;
+			}
 		}
-		if (var->d_pressed == 1 && !is_d_wall(var, var->posy + var->directx, var->posx - var->directy))
+		if (var->d_pressed == 1)
 		{
-			var->posx -= var->directy * 1;
-			var->posy += var->directx * 1;
+			if (is_a_wall(var, var->posy + var->directx, var->posx) && !is_a_wall(var, var->posy, var->posx - var->directy))
+				var->posx -= var->directy * 1;
+			else if (is_a_wall(var, var->posy, var->posx - var->directy) && !is_a_wall(var, var->posy + var->directx, var->posx))
+				var->posy += var->directx * 1;
+			else if (!is_a_wall(var, var->posy + var->directx, var->posx - var->directy))
+			{
+				var->posx -= var->directy * 1;
+				var->posy += var->directx * 1;
+			}
 		}
 		if (var->up_pressed == 1)
 		{
