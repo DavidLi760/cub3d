@@ -139,18 +139,6 @@ void	minimap(t_var *var, int i, int j)
 	mlx_put_image_to_window(var->mlx, var->win, var->imag, -50, -50);
 }
 
-// int	can_move(t_var *var, double i, double j)
-// {
-// 	int k;
-// 	int l;
-
-// 	k = (int)i;
-// 	l = (int)j;
-// 	while (k < 16)
-
-// 	return (1);
-// }
-
 int	is_a_wall(t_var *var, int i, int j)
 {
 	int	k;
@@ -172,7 +160,7 @@ int	is_a_wall(t_var *var, int i, int j)
 	return (0);
 }
 
-void	trace_ray(t_var *var, double angle, int *i)
+void	trace_ray(t_var *var, double angle, double *i)
 {
 	*i = 0;
 	while (!is_a_wall(var, var->posy + sin(angle) * *i, var->posx + cos(angle) * *i) && *i < 45)
@@ -187,17 +175,16 @@ void	trace_ray(t_var *var, double angle, int *i)
 void	ray_casting(t_var *var, int i)
 {
 	double	start_angle;
-	int		wall_h;
+	double	distance;
 	long long start;
 
 	start = get_time();
-
-	wall_h = 0;
+	distance = 0;
 	start_angle = var->angle - PI / 3 / 2;
 	while (i < 1920)
 	{
 		var->ray_angle = start_angle + i * (PI / 3 / 1920);
-		trace_ray(var, var->ray_angle, &wall_h);
+		trace_ray(var, var->ray_angle, &distance);
 		i++;
 	}
 	while (get_time() < start + MS)
@@ -287,12 +274,14 @@ int	update(t_var *var)
 		var->position2.y += 1;
 	if (var->posy <= var->position2.y - 1)
 		var->position2.y -= 1;
-	mlx_put_image_to_window(var->mlx, var->win, var->imag2, 0, 0);
 	minimap(var, -1, 0);
 	ray_casting(var, 0);
+	// mlx_put_image_to_window(var->mlx, var->win, var->imag2, 0, 0);
 	mlx_destroy_image(var->mlx, var->imag2);
 	mlx_put_image_to_window(var->mlx, var->win, var->img, 50, 50);
 	mlx_put_image_to_window(var->mlx, var->win, var->img, 50 + var->directx * 3, 50 + var->directy * 3);
+	printf("%f, ", var->posx);
+	printf("%f\n", var->posy);
 	return (0);
 }
 

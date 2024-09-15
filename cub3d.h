@@ -23,6 +23,7 @@
 # include "mlx/mlx.h"
 
 # define MS 20
+# define HEIGHT 1010
 # define BUFFER_SIZE 500
 # define W 119
 # define A 97
