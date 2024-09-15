@@ -172,29 +172,62 @@ int	is_a_wall(t_var *var, int i, int j)
 	return (0);
 }
 
-void	trace_ray(t_var *var, double angle)
+void	trace_ray(t_var *var, double angle, int *i)
 {
+
+	*i = 0;
+	while (!is_a_wall(var, var->posy + sin(angle) * *i, var->posx + cos(angle) * *i))
+	{
+		if (100 + cos(angle) * *i < 150 && 100 + cos(angle) * *i > 0)
+			if (100 + sin(angle) * *i < 150 && 100 + sin(angle) * *i > 0)
+				my_pixel_put(var, 100 + cos(angle) * *i, 100 + sin(angle) * *i, 0x00FFFFFF);
+		(*i)++;
+	}
+}
+
+void	draw_walls(t_var *var, int x, int wall_h)
+{
+	int	start;
+	int	end;
+	int y;
 	int	i;
 
 	i = 0;
-	while (!is_a_wall(var, var->posy + cos(angle) * i, var->posx + sin(angle) * i))
+	start = (1010 - wall_h) / 2;
+	end = (1010 + wall_h) / 2;
+	y = start;
+	while (i < y)
 	{
-		if (100 + cos(angle) * i < 150 && 100 + cos(angle) * i > 0)
-			if (100 + sin(angle) * i < 150 && 100 + sin(angle) * i > 0)
-				my_pixel_put(var, 100 + cos(angle) * i, 100 + sin(angle) * i, 0x00FFFFFF);
+		my_pixel_put2(var, x, y, 0x00000000);
 		i++;
+	}
+	while (y < end && y > 0 && y < 1010)
+	{
+		my_pixel_put2(var, x, y, 0x00FF00);
+		y++;
+	}
+	while (end < 1010)
+	{
+		my_pixel_put2(var, x, y, 0x00000000);
+		end++;
 	}
 }
 
 void	ray_casting(t_var *var, int i)
 {
 	double	start_angle;
+	int		wall_h;
+	double	dist;
 
+	wall_h = 0;
 	start_angle = var->angle - PI / 3 / 2;
 	while (i < 960)
 	{
 		var->ray_angle = start_angle + i * (PI / 3 / 960);
-		trace_ray(var, var->ray_angle);
+		trace_ray(var, var->ray_angle, &wall_h);
+		dist = wall_h * cos(var->ray_angle - var->angle);
+		wall_h = (int)(1010 / dist);
+		draw_walls(var, i, wall_h);
 		i++;
 	}
 }
@@ -283,6 +316,7 @@ int	update(t_var *var)
 			var->position2.y += 1;
 		if (var->posy <= var->position2.y - 1)
 			var->position2.y -= 1;
+		mlx_put_image_to_window(var->mlx, var->win, var->imag2, 0, 0);
 		minimap(var, -1, 0);
 		ray_casting(var, 0);
 		mlx_put_image_to_window(var->mlx, var->win, var->img, 50, 50);
@@ -355,6 +389,8 @@ int	main(int argc, char **argv)
 		return (0);
 	var.imag = mlx_new_image(var.mlx, 150, 150);
 	var.addr = mlx_get_data_addr(var.imag, &var.bit, &var.len, &var.endian);
+	var.imag2 = mlx_new_image(var.mlx, 1920, 1010);
+	var.addr2 = mlx_get_data_addr(var.imag2, &var.bit2, &var.len2, &var.endian2);
 	i = 0;
 	while (var.element[i])
 		printf("%s\n", var.element[i++]);

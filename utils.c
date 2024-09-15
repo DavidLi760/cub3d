@@ -19,6 +19,15 @@ void	my_pixel_put(t_var *var, int x, int y, int color)
 	dst = var->addr + (y * var->len + x * (var->bit / 8));
 	*(unsigned int *)dst = color;
 }
+
+void	my_pixel_put2(t_var *var, int x, int y, int color)
+{
+	char	*dst;
+
+	dst = var->addr2 + (y * var->len + x * (var->bit / 8));
+	*(unsigned int *)dst = color;
+}
+
 void	draw_block(t_var *var, int i, int j, int color)
 {
     int k;
