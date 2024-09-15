@@ -19,9 +19,10 @@
 # include <stdbool.h>
 # include <fcntl.h>
 # include <math.h>
+# include <sys/time.h>
 # include "mlx/mlx.h"
 
-# define DELAY 3000
+# define MS 20
 # define BUFFER_SIZE 500
 # define W 119
 # define A 97
@@ -94,7 +95,8 @@ typedef struct s_var
 	int		down_pressed;
 }	t_var;
 
-int check_arg(t_var *var, char **argv);
+long long	get_time(void);
+int 	check_arg(t_var *var, char **argv);
 size_t	ft_strlen(char *s);
 char	*get_next_line(int fd);
 char	**ft_split(char *str, char *set);

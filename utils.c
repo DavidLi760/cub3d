@@ -12,6 +12,15 @@
 
 #include "cub3d.h"
 
+long long	get_time(void)
+{
+	struct timeval	t;
+
+	if (gettimeofday(&t, NULL) == -1)
+		return (0);
+	return ((t.tv_sec * 1000) + (t.tv_usec / 1000));
+}
+
 void	my_pixel_put(t_var *var, int x, int y, int color)
 {
 	char	*dst;
