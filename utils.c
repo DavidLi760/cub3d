@@ -33,7 +33,7 @@ void	my_pixel_put2(t_var *var, int x, int y, int color)
 {
 	char	*dst;
 
-	dst = var->addr2 + (y * var->len + x * (var->bit / 8));
+	dst = var->addr2 + (y * var->len2 + x * (var->bit2 / 8));
 	*(unsigned int *)dst = color;
 }
 

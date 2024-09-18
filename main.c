@@ -136,7 +136,6 @@ void	minimap(t_var *var, int i, int j)
 			}
 		}
 	}
-	mlx_put_image_to_window(var->mlx, var->win, var->imag, -50, -50);
 }
 
 int	is_a_wall(t_var *var, int i, int j)
@@ -160,31 +159,101 @@ int	is_a_wall(t_var *var, int i, int j)
 	return (0);
 }
 
+void draw_wall_column(t_var *var, int x, int height)
+{
+	int start_y = (HEIGHT - height) / 2;  // Centrer le mur verticalement
+	int end_y = start_y + height;
+
+	if (height == 0)
+		start_y = -1;
+	while (height == 0 && ++start_y < 1010)
+		my_pixel_put2(var, x, start_y, 0x00000000);
+	while (++start_y < end_y)
+	{
+		my_pixel_put2(var, x, start_y, 0x00FFFFFF);  // Blanc pour le mur
+	}
+}
+
+double	is_a_grid(t_var *var, double angle, double x, double y)
+{
+	double tempx;
+	double tempy;
+
+	while (x < 105 && y < 105 &&
+		!is_a_wall(var, var->posy + sin(angle) * y, var->posx + cos(angle) * x))
+	{
+		if (var->posy + sin(angle) * y - 10.90 > 15)
+			tempy = var->posy + sin(angle) * y - 10.90;
+		tempy = fmod(tempy, 15);
+		if (var->posx + cos(angle) * x - 10.00 > 15)
+			tempx = var->posx + cos(angle) * x - 10.00;
+		tempx = fmod(tempx, 15);
+		printf("%f, ", var->posx);
+		printf("%f\n", var->posy);
+		if (sin(angle) >= 0.1)
+			tempy = (15 - tempy) / sin(angle);
+		else if (sin(angle) <= 0.1)
+			tempy = tempy / sin(angle);
+		if (cos(angle) >= 0.1)
+			tempx = (15 - tempx) / cos(angle);
+		else if (cos(angle) <= 0.1)
+			tempx = tempx / cos(angle);
+		if (fabs(tempx) > fabs(tempy))
+		{
+			y += tempy;
+			x += tempy;
+		}
+		else
+		{
+			y += tempx;
+			x += tempx;
+		}
+		printf("%f, ", (var->posy + sin(angle) * y));
+		printf("%f\n", tempy);
+	}
+	return (x);
+}
+
 void	trace_ray(t_var *var, double angle, double *i)
 {
 	*i = 0;
-	while (!is_a_wall(var, var->posy + sin(angle) * *i, var->posx + cos(angle) * *i) && *i < 45)
+	while (!is_a_wall(var, var->posy + sin(angle) * *i, var->posx + cos(angle) * *i) && *i < 105)
 	{
 		if (100 + cos(angle) * *i < 150 && 100 + cos(angle) * *i > 0)
 			if (100 + sin(angle) * *i < 150 && 100 + sin(angle) * *i > 0)
 				my_pixel_put(var, 100 + cos(angle) * *i, 100 + sin(angle) * *i, 0x00FFFFFF);
-		(*i)++;
+		// (*i) += is_a_grid(var, angle, 0, 0);
+		*i += 0.1;
 	}
+	printf("%f, ", (var->posy + sin(angle) * *i));
+	printf("%f\n", var->posx + cos(angle) * *i);
+	printf("%f, ", var->posy);
+	printf("%f\n", var->posx);
+	if (*i >= 105 && !is_a_wall(var, var->posy + sin(angle) * *i, var->posx + cos(angle) * *i))
+		*i = -1;
 }
 
 void	ray_casting(t_var *var, int i)
 {
-	double	start_angle;
-	double	distance;
-	long long start;
+	double		start_angle;
+	double		distance;
+	long long	start;
+	int			wall_height;
 
 	start = get_time();
 	distance = 0;
-	start_angle = var->angle - PI / 3 / 2;
-	while (i < 1920)
+	start_angle = var->angle  - PI / 3 / 2;
+	while (i < 1)
 	{
-		var->ray_angle = start_angle + i * (PI / 3 / 1920);
+		var->ray_angle = start_angle + i * (PI / 3 / 1);
 		trace_ray(var, var->ray_angle, &distance);
+		if (distance == -1)
+			wall_height = 0;
+		if (1010 / (distance * cos(var->ray_angle - var->angle) / 15) < 1010)
+			wall_height = 1010 / (distance * cos(var->ray_angle - var->angle) / 15);
+		else
+			wall_height = 1010;
+		draw_wall_column(var, i, wall_height);
 		i++;
 	}
 	while (get_time() < start + MS)
@@ -193,7 +262,7 @@ void	ray_casting(t_var *var, int i)
 
 int	update(t_var *var)
 {
-	var->imag2 = mlx_new_image(var->mlx, 1920, 1010);
+	var->imag2 = mlx_new_image(var->mlx, 1920, 1920);
 	var->addr2 = mlx_get_data_addr(var->imag2, &var->bit2, &var->len2, &var->endian2);
 	if (var->w_pressed == 1)
 	{
@@ -276,12 +345,11 @@ int	update(t_var *var)
 		var->position2.y -= 1;
 	minimap(var, -1, 0);
 	ray_casting(var, 0);
-	// mlx_put_image_to_window(var->mlx, var->win, var->imag2, 0, 0);
+	mlx_put_image_to_window(var->mlx, var->win, var->imag2, 0, 0);
+	mlx_put_image_to_window(var->mlx, var->win, var->imag, -50, -50);
 	mlx_destroy_image(var->mlx, var->imag2);
 	mlx_put_image_to_window(var->mlx, var->win, var->img, 50, 50);
 	mlx_put_image_to_window(var->mlx, var->win, var->img, 50 + var->directx * 3, 50 + var->directy * 3);
-	printf("%f, ", var->posx);
-	printf("%f\n", var->posy);
 	return (0);
 }
 
