@@ -140,5 +140,7 @@ int	check_arg(t_var *var, char **argv)
 		return (0);
 	if (!is_right_char(var, 0, 0) || !is_player_valid(var, 0, 0))
 		return (free4(var, 0), 0);
+	if (!is_right_element(var, 0))
+		return (free4(var, 0), 0);
 	return (1);
 }

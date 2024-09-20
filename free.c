@@ -63,6 +63,14 @@ void	free4(t_var *var, int no)
 		free(var->forbidden[i++]);
 	if (no > 0)
 		free(var->forbidden);
+	if (var->north)
+		free(var->north);
+	if (var->south)
+		free(var->south);
+	if (var->west)
+		free(var->west);
+	if (var->east)
+		free(var->east);
 }
 
 void	free_list(t_var *var)
@@ -71,8 +79,13 @@ void	free_list(t_var *var)
 	mlx_destroy_image(var->mlx, var->img);
 	mlx_destroy_image(var->mlx, var->img1);
 	mlx_destroy_image(var->mlx, var->img2);
+	mlx_destroy_image(var->mlx, var->img2a);
 	mlx_destroy_image(var->mlx, var->img3);
 	mlx_destroy_image(var->mlx, var->imag);
+	mlx_destroy_image(var->mlx, var->imgno);
+	mlx_destroy_image(var->mlx, var->imgso);
+	mlx_destroy_image(var->mlx, var->imgwe);
+	mlx_destroy_image(var->mlx, var->imgea);
 	mlx_destroy_display(var->mlx);
 	free(var->mlx);
 }

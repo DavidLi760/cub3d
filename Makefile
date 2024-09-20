@@ -6,8 +6,10 @@ MLX			= mlx/libmlx.a
 SRCS		=	main.c\
 				parsing.c\
 				parsing2.c\
+				parsing3.c\
 				get_next_line.c\
 				ft_split.c\
+				ft_atoi.c\
 				utils.c\
 				free.c
 OBJS		= $(SRCS:.c=.o)

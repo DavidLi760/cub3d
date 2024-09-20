@@ -18,6 +18,7 @@
 # include <stdlib.h>
 # include <stdbool.h>
 # include <fcntl.h>
+# include <string.h>
 # include <math.h>
 # include <sys/time.h>
 # include "mlx/mlx.h"
@@ -54,6 +55,10 @@ typedef struct s_var
 	void	*img3;
 	void	*imag;
 	void	*imag2;
+	void	*imgno;
+	void	*imgso;
+	void	*imgwe;
+	void	*imgea;
 	char	*addr;
 	char	*addr2;
 	int		len;
@@ -76,6 +81,7 @@ typedef struct s_var
 	double	angle;
 	double	posx;
 	double	posy;
+	double	wall_x;
 	double	ray_angle;
 	t_pos	position;
 	t_pos	position2;
@@ -85,6 +91,12 @@ typedef struct s_var
 	int		width;
 	int		height;
 	int		delay;
+	char	*north;
+	char	*south;
+	char	*west;
+	char	*east;
+	int		floor;
+	int		ceiling;
 	int		w_pressed;
 	int		a_pressed;
 	int		s_pressed;
@@ -98,20 +110,23 @@ typedef struct s_var
 }	t_var;
 
 long long	get_time(void);
-int 	check_arg(t_var *var, char **argv);
-size_t	ft_strlen(char *s);
-char	*get_next_line(int fd);
-char	**ft_split(char *str, char *set);
-int		get_split(t_var *var, int i, int j);
-void	free_list(t_var *var);
-void	free2(t_var *var, int no);
-void	free3(t_var *var, int i);
-void	free4(t_var *var, int no);
-int		count_line(t_var *var, int no);
-void	my_pixel_put(t_var *var, int x, int y, int color);
-void	my_pixel_put2(t_var *var, int x, int y, int color);
-void	draw_block(t_var *var, int i, int j, int color);
-void	draw_wall(t_var *var, int i, int j, int color);
-void	init_forbidden(t_var *var, int i, int j);
+int			check_arg(t_var *var, char **argv);
+size_t		ft_strlen(char *s);
+char		*get_next_line(int fd);
+char		**ft_split(char *str, char *set);
+int			get_split(t_var *var, int i, int j);
+void		free_list(t_var *var);
+void		free2(t_var *var, int no);
+void		free3(t_var *var, int i);
+void		free4(t_var *var, int no);
+int			count_line(t_var *var, int no);
+void		my_pixel_put(t_var *var, int x, int y, int color);
+void		my_pixel_put2(t_var *var, int x, int y, int color);
+void		draw_block(t_var *var, int i, int j, int color);
+void		draw_wall(t_var *var, int i, int j, int color);
+void		init_forbidden(t_var *var, int i, int j);
+int			str_cmp(char *s1, char *s2);
+int			is_right_element(t_var *var, int i);
+int			ft_atoi(const char *str);
 
 #endif

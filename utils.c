@@ -21,6 +21,20 @@ long long	get_time(void)
 	return ((t.tv_sec * 1000) + (t.tv_usec / 1000));
 }
 
+int str_cmp(char *s1, char *s2)
+{
+    int i;
+
+    i = 0;
+    if (s1[i] != s2[i])
+        return (0);
+    while (s1[i] == s2[i] && s2[i])
+        i++;
+    if (s1[i] != s2[i] && s2[i])
+        return (0);
+    return (1);
+}
+
 void	my_pixel_put(t_var *var, int x, int y, int color)
 {
 	char	*dst;

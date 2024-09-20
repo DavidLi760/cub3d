@@ -49,15 +49,23 @@ void	move(int keycode, t_var *var)
 
 int	mouse_move(int x, int y, t_var *var)
 {
-	int	d_x = x - (1920 / 2);
-	int	d_y = y - (505 / 2);
+	int		d_x = x - (1920 / 2);
+	int		d_y = y - (505);
+	double	pitch;
 
+	pitch = 0;
 	var->angle += d_x * 0.002;
-	var->pitch += d_y * 0.005;
+	pitch += d_y * 0.2;
+	if (pitch > 1)
+		var->pitch += 1;
+	else if (pitch < -1)
+		var->pitch += -1;
+	if (pitch > 1 || pitch < -1)
+		pitch = 0;
 	if (var->pitch < -30)
-		var->pitch = -29;
+		var->pitch = -30;
 	if (var->pitch > 30)
-		var->pitch = 29;
+		var->pitch = 30;
 	mlx_mouse_move(var->mlx, var->win, 960, 505);
 	return (0);
 }
@@ -187,30 +195,30 @@ void draw_wall_column(t_var *var, int x, int height)
 		start_y = -1;
 	while (i < 1010)
 	{
-		my_pixel_put2(var, x, i, 0x00696969);
-		my_pixel_put2(var, x + 1, i++, 0x00696969);
+		my_pixel_put2(var, x, i, var->ceiling);
+		my_pixel_put2(var, x + 1, i++, var->ceiling);
 	}
 	while (start_y < 0)
 		start_y++;
 	while (height == 0 && start_y < 505 - var->pitch * 50 && start_y < 1010)
 	{
-		my_pixel_put2(var, x, start_y, 0x00696969);
-		my_pixel_put2(var, x + 1, start_y++, 0x00696969);
+		my_pixel_put2(var, x, start_y, var->ceiling);
+		my_pixel_put2(var, x + 1, start_y++, var->ceiling);
 	}
 	while (height == 0 && start_y < 1010)
 	{
-		my_pixel_put2(var, x, start_y, 0x00D3D3D3);
-		my_pixel_put2(var, x + 1, start_y++, 0x00D3D3D3);
+		my_pixel_put2(var, x, start_y, var->floor);
+		my_pixel_put2(var, x + 1, start_y++, var->floor);
 	}
-	while (start_y < end_y && start_y < 1010)
+	while (start_y < end_y && start_y < 1010) // DESSIN DES MURS
 	{
-		my_pixel_put2(var, x, start_y, 0x00FFFFFF);  // Blanc pour le mur
+		my_pixel_put2(var, x, start_y, 0x00FFFFFF);
 		my_pixel_put2(var, x + 1, start_y++, 0x00FFFFFF);
 	}
 	while (start_y < 1010)
 	{
-		my_pixel_put2(var, x, start_y, 0x00D3D3D3);
-		my_pixel_put2(var, x + 1, start_y++, 0x00D3D3D3);
+		my_pixel_put2(var, x, start_y, var->floor);
+		my_pixel_put2(var, x + 1, start_y++, var->floor);
 	}
 }
 
@@ -257,15 +265,16 @@ double	is_a_grid(t_var *var, double angle, double x, double y)
 void	trace_ray(t_var *var, double angle, double *i)
 {
 	*i = 0;
-	while (!is_a_wall(var, var->posy + sin(angle) * *i, var->posx + cos(angle) * *i) && *i < 45)
+	while (!is_a_wall(var, var->posy + sin(angle) * *i, var->posx + cos(angle) * *i) && *i < 105)
 	{
 		// (*i) += is_a_grid(var, angle, 0, 0);
-		*i += 0.025;
+		*i += 0.05;
 	}
-	if (100 + cos(angle) * *i < 150 && 100 + cos(angle) * *i > 0)
-		if (100 + sin(angle) * *i < 150 && 100 + sin(angle) * *i > 0)
-			my_pixel_put(var, 100 + cos(angle) * *i, 100 + sin(angle) * *i, 0x00FFFFFF);
-	if (*i >= 45 && !is_a_wall(var, var->posy + sin(angle) * *i, var->posx + cos(angle) * *i))
+	var->wall_x = var->posx + cos(angle) * *i;
+	// if (100 + cos(angle) * *i < 150 && 100 + cos(angle) * *i > 0)
+	// 	if (100 + sin(angle) * *i < 150 && 100 + sin(angle) * *i > 0)
+	// 		my_pixel_put(var, 100 + cos(angle) * *i, 100 + sin(angle) * *i, 0x00FFFFFF);
+	if (*i >= 105 && !is_a_wall(var, var->posy + sin(angle) * *i, var->posx + cos(angle) * *i))
 		*i = -1;
 }
 
@@ -306,49 +315,49 @@ int	update(t_var *var)
 	if (var->w_pressed == 1)
 	{
 		if (var->w_pressed == 1 && is_a_wall(var, var->posy + var->directy, var->posx) && !is_a_wall(var, var->posy, var->posx + var->directx))
-			var->posx += var->directx * 0.5;
+			var->posx += var->directx * (var->shift_pressed * 0.5 + 0.25);
 		else if (var->w_pressed == 1 && is_a_wall(var, var->posy, var->posx + var->directx) && !is_a_wall(var, var->posy + var->directy, var->posx))
-			var->posy += var->directy * 0.5;
+			var->posy += var->directy * (var->shift_pressed * 0.5 + 0.25);
 		else if (!is_a_wall(var, var->posy + var->directy, var->posx + var->directx))
 		{
-			var->posx += var->directx * 0.5;
-			var->posy += var->directy * 0.5;
+			var->posx += var->directx * (var->shift_pressed * 0.5 + 0.25);
+			var->posy += var->directy * (var->shift_pressed * 0.5 + 0.25);
 		}
 	}
 	if (var->s_pressed == 1)
 	{
 		if (is_a_wall(var, var->posy - var->directy, var->posx) && !is_a_wall(var, var->posy, var->posx - var->directx))
-			var->posx -= var->directx * 0.5;
+			var->posx -= var->directx * (var->shift_pressed * 0.5 + 0.25);
 		else if (is_a_wall(var, var->posy, var->posx - var->directx) && !is_a_wall(var, var->posy - var->directy, var->posx))
-			var->posy -= var->directy * 0.5;
+			var->posy -= var->directy * (var->shift_pressed * 0.5 + 0.25);
 		else if (!is_a_wall(var, var->posy - var->directy, var->posx - var->directx))
 		{
-			var->posx -= var->directx * 0.5;
-			var->posy -= var->directy * 0.5;
+			var->posx -= var->directx * (var->shift_pressed * 0.5 + 0.25);
+			var->posy -= var->directy * (var->shift_pressed * 0.5 + 0.25);
 		}
 	}
 	if (var->a_pressed == 1)
 	{
 		if (is_a_wall(var, var->posy - var->directx, var->posx) && !is_a_wall(var, var->posy, var->posx + var->directy))
-			var->posx += var->directy * 0.5;
+			var->posx += var->directy * (var->shift_pressed * 0.5 + 0.25);
 		else if (is_a_wall(var, var->posy, var->posx + var->directy) && !is_a_wall(var, var->posy - var->directx, var->posx))
-			var->posy -= var->directx * 0.5;
+			var->posy -= var->directx * (var->shift_pressed * 0.5 + 0.25);
 		else if (!is_a_wall(var, var->posy - var->directx, var->posx + var->directy))
 		{
-			var->posx += var->directy * 0.5;
-			var->posy -= var->directx * 0.5;
+			var->posx += var->directy * (var->shift_pressed * 0.5 + 0.25);
+			var->posy -= var->directx * (var->shift_pressed * 0.5 + 0.25);
 		}
 	}
 	if (var->d_pressed == 1)
 	{
 		if (is_a_wall(var, var->posy + var->directx, var->posx) && !is_a_wall(var, var->posy, var->posx - var->directy))
-			var->posx -= var->directy * 0.5;
+			var->posx -= var->directy * (var->shift_pressed * 0.5 + 0.25);
 		else if (is_a_wall(var, var->posy, var->posx - var->directy) && !is_a_wall(var, var->posy + var->directx, var->posx))
-			var->posy += var->directx * 0.5;
+			var->posy += var->directx * (var->shift_pressed * 0.5 + 0.25);
 		else if (!is_a_wall(var, var->posy + var->directx, var->posx - var->directy))
 		{
-			var->posx -= var->directy * 0.5;
-			var->posy += var->directx * 0.5;
+			var->posx -= var->directy * (var->shift_pressed * 0.5 + 0.25);
+			var->posy += var->directx * (var->shift_pressed * 0.5 + 0.25);
 		}
 	}
 	if (var->up_pressed == 1 && var->pitch >= -30)
@@ -425,11 +434,22 @@ int	main(int argc, char **argv)
 	var.delay = 0;
 	var.height = 5;
 	var.width = 5;
+	var.north = 0;
+	var.south = 0;
+	var.west = 0;
+	var.east = 0;
+	var.floor = -1;
+	var.ceiling = -1;
 	var.e_pressed = 0;
 	var.w_pressed = 0;
 	var.s_pressed = 0;
 	var.a_pressed = 0;
 	var.d_pressed = 0;
+	var.up_pressed = 0;
+	var.down_pressed = 0;
+	var.left_pressed = 0;
+	var.right_pressed = 0;
+	var.shift_pressed = 0;
 	var.directx = 0;
 	var.directy = 0;
 	var.pitch = 0;
@@ -446,7 +466,7 @@ int	main(int argc, char **argv)
 	if (!var.mlx)
 		return (0);
 	var.win = mlx_new_window(var.mlx, 1920, 1010, "cub3d");
-	var.img = mlx_xpm_file_to_image(var.mlx, "Red_dot.xpm", &var.height, &var.width);
+	var.img = mlx_xpm_file_to_image(var.mlx, "./Red_dot.xpm", &var.height, &var.width);
 	if (!var.img)
 		return (0);
 	var.img1 = mlx_xpm_file_to_image(var.mlx, "carre_bleu.xpm", &var.height, &var.width);
@@ -462,11 +482,17 @@ int	main(int argc, char **argv)
 	var.imag = mlx_new_image(var.mlx, 150, 150);
 	var.addr = mlx_get_data_addr(var.imag, &var.bit, &var.len, &var.endian);
 	i = 0;
+	var.imgno = mlx_xpm_file_to_image(var.mlx, var.north, &var.height, &var.width);
+	var.imgso = mlx_xpm_file_to_image(var.mlx, var.south, &var.height, &var.width);
+	var.imgwe = mlx_xpm_file_to_image(var.mlx, var.west, &var.height, &var.width);
+	var.imgea = mlx_xpm_file_to_image(var.mlx, var.east, &var.height, &var.width);
 	while (var.element[i])
 		printf("%s\n", var.element[i++]);
 	i = 0;
 	while (var.map[i])
 		printf("%s\n", var.map[i++]);
+	printf("0x%X,", var.floor);
+	printf("0x%X,", var.ceiling);
 	// printf("x : %d, y : %d\n", var.position.x, var.position.y);
 	mlx_hook(var.win, 2, 1L << 0, escape, &var);
 	mlx_hook(var.win, 6, 1L << 6, mouse_move, &var);

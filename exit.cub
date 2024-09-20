@@ -67,7 +67,7 @@ A1 ./resources/sounds/player_pain.wav
 A2 ./resources/sounds/player_death.wav
 A3 ./resources/sounds/door_secret.wav
 A4 ./resources/sounds/elevator.wav
-A5 ./resources/sounds/door_open.wav
+A5  ./resources/sounds/door_open.wav
 A6 ./resources/sounds/door_close.wav
 A7 ./resources/sounds/weapon_knife.wav
 A8 ./resources/sounds/weapon_pistol.wav
