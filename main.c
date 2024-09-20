@@ -49,24 +49,17 @@ void	move(int keycode, t_var *var)
 
 int	mouse_move(int x, int y, t_var *var)
 {
-	int		d_x = x - (1920 / 2);
-	int		d_y = y - (505);
-	double	pitch;
+	int		d_x = x - (1800);
+	int		d_y = y - (900);
 
-	pitch = 0;
-	var->angle += d_x * 0.002;
-	pitch += d_y * 0.2;
-	if (pitch > 1)
-		var->pitch += 1;
-	else if (pitch < -1)
-		var->pitch += -1;
-	if (pitch > 1 || pitch < -1)
-		pitch = 0;
-	if (var->pitch < -30)
-		var->pitch = -30;
-	if (var->pitch > 30)
-		var->pitch = 30;
-	mlx_mouse_move(var->mlx, var->win, 960, 505);
+	var->pitch2 = 0;
+	var->angle += d_x * 0.001;
+	var->pitch += d_y * 1;
+	if (var->pitch <= -1500)
+		var->pitch = -1500;
+	if (var->pitch >= 1500)
+		var->pitch = 1500;
+	mlx_mouse_move(var->mlx, var->win, 1800, 900);
 	return (0);
 }
 
@@ -182,14 +175,33 @@ int	is_a_wall(t_var *var, int i, int j)
 	return (0);
 }
 
-void draw_wall_column(t_var *var, int x, int height)
+void	draw_cross(t_var *var, int i, int j)
+{
+	while (i <= 506)
+	{
+		j = 950;
+		while (j <= 970)
+			my_pixel_put2(var, j++, i, 0);
+		i++;
+	}
+	j = 959;
+	while (j <= 961)
+	{
+		i = 495;
+		while (i < 515)
+			my_pixel_put2(var, j, i++, 0);
+		j++;
+	}
+}
+
+void	draw_wall_column(t_var *var, int x, int height)
 {
 	int	i;
 	int start_y;
 	int end_y;
 
 	i = 0;
-	start_y = (HEIGHT - height) / 2 - var->pitch * 50;
+	start_y = (HEIGHT - height) / 2 - var->pitch;
 	end_y = start_y + height;
 	if (height == 0)
 		start_y = -1;
@@ -200,7 +212,7 @@ void draw_wall_column(t_var *var, int x, int height)
 	}
 	while (start_y < 0)
 		start_y++;
-	while (height == 0 && start_y < 505 - var->pitch * 50 && start_y < 1010)
+	while (height == 0 && start_y < 505 - var->pitch && start_y < 1010)
 	{
 		my_pixel_put2(var, x, start_y, var->ceiling);
 		my_pixel_put2(var, x + 1, start_y++, var->ceiling);
@@ -220,6 +232,7 @@ void draw_wall_column(t_var *var, int x, int height)
 		my_pixel_put2(var, x, start_y, var->floor);
 		my_pixel_put2(var, x + 1, start_y++, var->floor);
 	}
+	draw_cross(var, 504, 1920);
 }
 
 double	is_a_grid(t_var *var, double angle, double x, double y)
@@ -360,17 +373,17 @@ int	update(t_var *var)
 			var->posy += var->directx * (var->shift_pressed * 0.5 + 0.25);
 		}
 	}
-	if (var->up_pressed == 1 && var->pitch >= -30)
+	if ((var->pitch2 <= -1 || var->up_pressed == 1) && var->pitch >= -1500)
 	{
-		var->pitch += -1;
+		var->pitch += -50;
 	}
 	if (var->left_pressed == 1)
 	{
 		var->angle += -0.15;
 	}
-	if (var->down_pressed == 1 && var->pitch <= 30)
+	if ((var->pitch2 >= 1 || var->down_pressed == 1) && var->pitch <= 1500)
 	{
-		var->pitch += 1;
+		var->pitch += 50;
 	}
 	if (var->right_pressed == 1)
 	{
@@ -381,10 +394,10 @@ int	update(t_var *var)
 		var->angle = 0;
 	else if (var->angle < 0)
 		var->angle = 2 * PI;
-	if (var->pitch >= 30)
-		var->pitch = 29;
-	if (var->pitch <= -30)
-		var->pitch = -29;
+	if (var->pitch >= 1500)
+		var->pitch = 1500;
+	if (var->pitch <= -1500)
+		var->pitch = -1500;
 	var->directx = cos(var->angle);
 	var->directy = sin(var->angle);
 	if (var->posx >= var->position2.x + 1)
@@ -491,6 +504,7 @@ int	main(int argc, char **argv)
 	i = 0;
 	while (var.map[i])
 		printf("%s\n", var.map[i++]);
+	mlx_mouse_move(var.mlx, var.win, 1800, 900);
 	printf("0x%X,", var.floor);
 	printf("0x%X,", var.ceiling);
 	// printf("x : %d, y : %d\n", var.position.x, var.position.y);

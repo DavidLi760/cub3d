@@ -21,6 +21,8 @@
 # include <string.h>
 # include <math.h>
 # include <sys/time.h>
+# include <X11/Xlib.h>
+# include <X11/cursorfont.h>
 # include "mlx/mlx.h"
 
 # define MS 30
@@ -78,6 +80,7 @@ typedef struct s_var
 	double	directx;
 	double	directy;
 	int		pitch;
+	double	pitch2;
 	double	angle;
 	double	posx;
 	double	posy;
