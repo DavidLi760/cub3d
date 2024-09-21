@@ -5,21 +5,19 @@ MONSTER : Screech, Rush, Eyes, Statue, Hide, Seek, Figure;
 MEUBLE : Placard, Bureau, Openable door;
 CONSUMABLE : Flashlight, Crowbar, Medicine, Monster Reborn;
 
-NO ./wall.xpm
-SO ./wall.xpm
+NO ./MUR.xpm
+SO ./MUR.xpm
 
-WE ./wall.xpm
-EA ./wall.xpm
+WE ./MUR.xpm
+EA ./MUR.xpm
 
 F 50, 155, 50
 C 100, 211, 255
 
- 1111 11111111
- 1010100000001
- 10101110000E1
- 100000000111
- 100000000001
- 100000000001
-  110010000001
- 1000010000001
- 11111 1111111
+    111
+    1S1
+11111011111
+10000000001
+10000000001
+10000000001
+11111111111

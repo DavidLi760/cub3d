@@ -55,7 +55,7 @@ int	check_corner(t_var *var, int i, int j, int max)
 int	is_wall_closed(t_var *var, int i, int j)
 {
 	if (!check_corner(var, 0, -1, 0))
-		return (free4(var, 0), 0);
+		return (free4(var, -1, 0), 0);
 	while (var->map[i])
 	{
 		j = 0;
@@ -69,7 +69,7 @@ int	is_wall_closed(t_var *var, int i, int j)
 					|| var->map[i][j - 1] == ' ' || var->map[i][j + 1] == ' ')
 				{
 					printf("Error : Wall not closed\n");
-					return (free4(var, 0), 0);
+					return (free4(var, -1, 0), 0);
 				}
 			}
 			j++;
@@ -99,6 +99,18 @@ int	is_right_char(t_var *var, int i, int j)
 	return (1);
 }
 
+void	register_angle(t_var *var, char c)
+{
+	if (c == 'E')
+		var->angle = 0;
+	if (c == 'W')
+		var->angle = PI;
+	if (c == 'N')
+		var->angle = 3 * PI / 2;
+	if (c == 'S')
+		var->angle = PI / 2;
+}
+
 int	is_player_valid(t_var *var, int i, int j)
 {
 	var->player = 0;
@@ -115,6 +127,7 @@ int	is_player_valid(t_var *var, int i, int j)
 				var->position.y = i;
 				var->position2.x = j * 15;
 				var->position2.y = i * 15;
+				register_angle(var, var->map[i][j]);
 			}
 			j++;
 		}
@@ -140,8 +153,8 @@ int	check_arg(t_var *var, char **argv)
 	if (!is_wall_closed(var, 0, 0))
 		return (0);
 	if (!is_right_char(var, 0, 0) || !is_player_valid(var, 0, 0))
-		return (free4(var, 0), 0);
+		return (free4(var, 0, 0), 0);
 	if (!is_right_element(var, 0))
-		return (free4(var, 0), 0);
+		return (free4(var, -1, 0), 0);
 	return (1);
 }

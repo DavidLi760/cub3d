@@ -73,13 +73,13 @@ int is_right_element(t_var *var, int i)
 {
     while (var->element[i])
     {
-        if (str_cmp(var->element[i], "NO "))
+        if (str_cmp(var->element[i], "NO ") && !var->north)
             var->north = copy_element(var, var->element[i], 0, 0);
-        else if (str_cmp(var->element[i], "SO "))
+        else if (str_cmp(var->element[i], "SO ") && !var->south)
             var->south = copy_element(var, var->element[i], 0, 0);
-        else if (str_cmp(var->element[i], "WE "))
+        else if (str_cmp(var->element[i], "WE ") && !var->west)
             var->west = copy_element(var, var->element[i], 0, 0);
-        else if (str_cmp(var->element[i], "EA "))
+        else if (str_cmp(var->element[i], "EA ") && !var->east)
             var->east = copy_element(var, var->element[i], 0, 0);
         if (str_cmp(var->element[i], "F "))
             var->floor = copy_color(var, var->element[i], 0);

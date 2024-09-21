@@ -197,13 +197,13 @@ void	draw_cross(t_var *var, int i, int j)
 void	get_text_y(t_var *var, int i, int max)
 {
 	if (var->no)
-		var->text_y = var->heightno * i / max;
+		var->text_y = var->heightno * i / max + 14;
 	if (var->so)
-		var->text_y = var->heightso * i / max;
+		var->text_y = var->heightso * i / max + 14;
 	if (var->we)
-		var->text_y = var->heightwe * i / max;
+		var->text_y = var->heightwe * i / max + 4;
 	if (var->ea)
-		var->text_y = var->heightea * i / max;
+		var->text_y = var->heightea * i / max + 7;
 }
 
 void	draw_wall_column(t_var *var, int x, int height)
@@ -240,7 +240,14 @@ void	draw_wall_column(t_var *var, int x, int height)
 	while (start_y < end_y && start_y < 1010) // DESSIN DES MURS
 	{
 		get_text_y(var, start_y - start, height);
-		color = my_pixel_from_texture(var, var->text_x, var->text_y, 'n');
+		if (var->no)
+			color = my_pixel_from_texture(var, var->text_x, var->text_y, 'n');
+		if (var->so)
+			color = my_pixel_from_texture(var, var->text_x, var->text_y, 's');
+		if (var->we)
+			color = my_pixel_from_texture(var, var->text_x, var->text_y, 'w');
+		if (var->ea)
+			color = my_pixel_from_texture(var, var->text_x, var->text_y, 'e');
 		my_pixel_put2(var, x, start_y, color);
 		my_pixel_put2(var, x + 1, start_y++, color);
 	}
@@ -315,14 +322,14 @@ void	get_text_x(t_var *var)
 	if (var->we == 1|| var->ea == 1)
 	{
 		if (var->we)
-			var->text_x = var->widthwe * var->wall_y / 15;
+			var->text_x = var->widthwe * (15 - var->wall_y) / 15;
 		else if (var->ea)
 			var->text_x = var->widthea * (15 - var->wall_y) / 15;	
 	}
-	if (var->no == 1|| var->so == 1)
+	else if (var->no == 1|| var->so == 1)
 	{
 		if (var->no)
-			var->text_x = var->widthno * var->wall_x / 15;
+			var->text_x = var->widthno * (15 - var->wall_x) / 15;
 		else if (var->so)
 			var->text_x = var->widthso * (15 - var->wall_x) / 15;
 	}
@@ -334,27 +341,30 @@ void	trace_ray(t_var *var, double angle, double *i)
 	while (var->forbidden[(int)(var->posy + sin(angle) * *i + 5)][(int)(var->posx + cos(angle) * *i + 5)] != '1')
 	{
 		// (*i) += is_a_grid(var, angle, 0, 0);
-		*i += 0.1;
+		if (var->forbidden[(int)(var->posy + sin(angle) * ((*i) + 1) + 5)][(int)(var->posx + cos(angle) * ((*i) + 1) + 5)] != '1')
+			*i += 1;
+		else
+		*i += 0.01;
 	}
-	if (var->forbidden[(int)(var->posy + sin(angle) * *i + 5 - 1)][(int)(var->posx + cos(angle) * *i) + 5] == '0')
+	if (var->forbidden[(int)(var->posy + sin(angle) * *i + 5 - 0.5)][(int)(var->posx + cos(angle) * *i + 5)] == '0')
 	{
 		var->no = 1;
-		// printf("no");
+		printf("no");
 	}
-	else if (var->forbidden[(int)(var->posy + sin(angle) * *i + 5)][(int)(var->posx + cos(angle) * *i) + 5 - 1] == '0')
+	else if (var->forbidden[(int)(var->posy + sin(angle) * *i + 5)][(int)(var->posx + cos(angle) * *i + 5 - 0.5)] == '0')
 	{
 		var->we = 1;
-		// printf("we");
+		printf("we");
 	}
-	else if (var->forbidden[(int)(var->posy + sin(angle) * *i + 5)][(int)(var->posx + cos(angle) * *i) + 5 + 1] == '0')
+	else if (var->forbidden[(int)(var->posy + sin(angle) * *i + 5)][(int)(var->posx + cos(angle) * *i + 5 + 0.5)] == '0')
 	{
 		var->ea = 1;
-		// printf("ea");
+		printf("ea");
 	}
-	else if (var->forbidden[(int)(var->posy + sin(angle) * *i + 5 + 1)][(int)(var->posx + cos(angle) * *i) + 5] == '0')
+	else if (var->forbidden[(int)(var->posy + sin(angle) * *i + 5 + 0.5)][(int)(var->posx + cos(angle) * *i + 5)] == '0')
 	{
 		var->so = 1;
-		// printf("so");
+		printf("so");
 	}
 	var->wall_x = var->posx + cos(angle) * *i + 5;
 	var->wall_y = var->posy + sin(angle) * *i + 5;
@@ -394,6 +404,10 @@ void	ray_casting(t_var *var, int i)
 		draw_wall_column(var, pixel, wall_height);
 		i++;
 		pixel += 2;
+		var->no = 0;
+		var->so = 0;
+		var->we = 0;
+		var->ea = 0;
 	}
 	while (get_time() < start + MS)
 		usleep(5);
@@ -538,13 +552,13 @@ int	init_var(t_var *var, int i, int j)
 {
 	var->forbidden = malloc(sizeof(char *) * (MAP_SIZE + 1));
 	if (!var->forbidden)
-		return (free4(var, 0), 0);
+		return (free4(var, 0, 0), 0);
 	while (++i < MAP_SIZE)
 	{
 		j = 0;
 		var->forbidden[i] = malloc(sizeof(char) * (MAP_SIZE + 1));
 		if (!var->forbidden[i])
-			return (free4(var, i), 0);
+			return (free4(var, i, 0), 0);
 		while (j <= MAP_SIZE)
 		{
 			var->forbidden[i][j] = '0';
@@ -587,6 +601,10 @@ int	main(int argc, char **argv)
 	var.angle = 0;
 	var.text_x = 0;
 	var.text_y = 0;
+	var.north = 0;
+	var.south = 0;
+	var.east = 0;
+	var.west = 0;
 	var.no = 0;
 	var.so = 0;
 	var.we = 0;

@@ -46,10 +46,8 @@ void	free3(t_var *var, int i)
 	free2(var, 2);
 }
 
-void	free4(t_var *var, int no)
+void	free4(t_var *var, int no, int i)
 {
-	int	i;
-
 	i = 0;
 	while (var->element[i])
 		free(var->element[i++]);
@@ -63,19 +61,22 @@ void	free4(t_var *var, int no)
 		free(var->forbidden[i++]);
 	if (no > 0)
 		free(var->forbidden);
-	if (var->north)
-		free(var->north);
-	if (var->south)
-		free(var->south);
-	if (var->west)
-		free(var->west);
-	if (var->east)
-		free(var->east);
+	if (no == -1 || no > 0)
+	{
+		if (var->north)
+			free(var->north);
+		if (var->south)
+			free(var->south);
+		if (var->west)
+			free(var->west);
+		if (var->east)
+			free(var->east);
+	}
 }
 
 void	free_list(t_var *var)
 {
-	free4(var, MAP_SIZE);
+	free4(var, MAP_SIZE, 0);
 	mlx_destroy_image(var->mlx, var->img);
 	mlx_destroy_image(var->mlx, var->img1);
 	mlx_destroy_image(var->mlx, var->img2);
