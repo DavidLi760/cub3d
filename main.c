@@ -275,6 +275,34 @@ double	is_a_grid(t_var *var, double angle, double x, double y)
 	return (x);
 }
 
+void	get_direction(t_var *var, double angle, int i)
+{
+	if (cos(angle) >= 0)
+		var->w_e = 1;
+	else if (cos(angle) < 0)
+		var->w_e = 0;
+	if (sin(angle) >= 0)
+		var->n_s = 1;
+	else if (sin(angle) < 0)
+		var->n_s = 0;
+	if (!is_a_wall(var, var->posy + sin(angle) * i - 0.1, var->posx + cos(angle) * i)
+		&& is_a_wall(var, var->posy + sin(angle) * i, var->posx + cos(angle) * i))
+		var->side = 1;
+	else if (!is_a_wall(var, var->posy + sin(angle) * i, var->posx + cos(angle) * i - 0.1)
+		&& is_a_wall(var, var->posy + sin(angle) * i, var->posx + cos(angle) * i))
+		var->side = 0;
+	if (var->side == 0 && var->w_e == 1)
+		var->we = 1;
+	else if (var->side == 0 && var->w_e == 0)
+		var->ea = 1;
+	else if (var->side == 1 && var->n_s == 1)
+		var->so = 1;
+	else if (var->side == 1 && var->n_s == 0)
+		var->no = 1;
+	else
+		var->no = 1;
+}
+
 void	trace_ray(t_var *var, double angle, double *i)
 {
 	*i = 0;
@@ -283,10 +311,19 @@ void	trace_ray(t_var *var, double angle, double *i)
 		// (*i) += is_a_grid(var, angle, 0, 0);
 		*i += 0.05;
 	}
+	get_direction(var, angle, *i);
+	printf("no:%d\n", var->no);
+	printf("so:%d\n", var->so);
+	printf("we:%d\n", var->we);
+	printf("ea:%d\n", var->ea);
+	var->no = 0;
+	var->so = 0;
+	var->we = 0;
+	var->ea = 0;
 	var->wall_x = var->posx + cos(angle) * *i;
-	// if (100 + cos(angle) * *i < 150 && 100 + cos(angle) * *i > 0)
-	// 	if (100 + sin(angle) * *i < 150 && 100 + sin(angle) * *i > 0)
-	// 		my_pixel_put(var, 100 + cos(angle) * *i, 100 + sin(angle) * *i, 0x00FFFFFF);
+	if (100 + cos(angle) * *i < 150 && 100 + cos(angle) * *i > 0)
+		if (100 + sin(angle) * *i < 150 && 100 + sin(angle) * *i > 0)
+			my_pixel_put(var, 100 + cos(angle) * *i, 100 + sin(angle) * *i, 0x00FFFFFF);
 	if (*i >= 105 && !is_a_wall(var, var->posy + sin(angle) * *i, var->posx + cos(angle) * *i))
 		*i = -1;
 }
@@ -467,6 +504,13 @@ int	main(int argc, char **argv)
 	var.directy = 0;
 	var.pitch = 0;
 	var.angle = 0;
+	var.no = 0;
+	var.so = 0;
+	var.we = 0;
+	var.ea = 0;
+	var.side = 0;
+	var.n_s = 0;
+	var.w_e = 0;
 	if (argc != 2)
 		return (0);
 	if (!check_arg(&var, argv))
@@ -499,6 +543,10 @@ int	main(int argc, char **argv)
 	var.imgso = mlx_xpm_file_to_image(var.mlx, var.south, &var.height, &var.width);
 	var.imgwe = mlx_xpm_file_to_image(var.mlx, var.west, &var.height, &var.width);
 	var.imgea = mlx_xpm_file_to_image(var.mlx, var.east, &var.height, &var.width);
+	var.addrno = mlx_get_data_addr(var.imgno, &var.bitno, &var.lenno, &var.endianno);
+	var.addrso = mlx_get_data_addr(var.imgso, &var.bitso, &var.lenso, &var.endianso);
+	var.addrwe = mlx_get_data_addr(var.imgwe, &var.bitwe, &var.lenwe, &var.endianwe);
+	var.addrea = mlx_get_data_addr(var.imgea, &var.bitea, &var.lenea, &var.endianea);
 	while (var.element[i])
 		printf("%s\n", var.element[i++]);
 	i = 0;
