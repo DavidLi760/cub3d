@@ -76,6 +76,7 @@ int	is_wall_closed(t_var *var, int i, int j)
 		}
 		i++;
 	}
+	var->max = i;
 	return (1);
 }
 

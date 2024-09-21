@@ -21,11 +21,10 @@
 # include <string.h>
 # include <math.h>
 # include <sys/time.h>
-# include <X11/Xlib.h>
-# include <X11/cursorfont.h>
 # include "mlx/mlx.h"
 
-# define MS 30
+# define MS 10
+# define MAP_SIZE 5000
 # define HEIGHT 1010
 # define BUFFER_SIZE 500
 # define W 119
@@ -101,7 +100,10 @@ typedef struct s_var
 	double	posx;
 	double	posy;
 	double	wall_x;
+	double	wall_y;
 	double	ray_angle;
+	int		text_x;
+	int		text_y;
 	t_pos	position;
 	t_pos	position2;
 	int		max;
@@ -109,6 +111,14 @@ typedef struct s_var
 	int		fd;
 	int		width;
 	int		height;
+	int		widthno;
+	int		heightno;
+	int		widthso;
+	int		heightso;
+	int		widthwe;
+	int		heightwe;
+	int		widthea;
+	int		heightea;
 	int		delay;
 	char	*north;
 	char	*south;
@@ -126,9 +136,6 @@ typedef struct s_var
 	int		up_pressed;
 	int		right_pressed;
 	int		down_pressed;
-	int		n_s;
-	int		w_e;
-	int		side;
 	int		no;
 	int		so;
 	int		we;
@@ -148,6 +155,7 @@ void		free4(t_var *var, int no);
 int			count_line(t_var *var, int no);
 void		my_pixel_put(t_var *var, int x, int y, int color);
 void		my_pixel_put2(t_var *var, int x, int y, int color);
+int			my_pixel_from_texture(t_var *var, int x, int y, char no);
 void		draw_block(t_var *var, int i, int j, int color);
 void		draw_wall(t_var *var, int i, int j, int color);
 void		init_forbidden(t_var *var, int i, int j);

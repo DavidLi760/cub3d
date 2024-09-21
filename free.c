@@ -59,7 +59,7 @@ void	free4(t_var *var, int no)
 	free(var->file);
 	free2(var, 2);
 	i = 0;
-	while (i < no && i < 1110)
+	while (i < no && i < MAP_SIZE)
 		free(var->forbidden[i++]);
 	if (no > 0)
 		free(var->forbidden);
@@ -75,7 +75,7 @@ void	free4(t_var *var, int no)
 
 void	free_list(t_var *var)
 {
-	free4(var, 1010);
+	free4(var, MAP_SIZE);
 	mlx_destroy_image(var->mlx, var->img);
 	mlx_destroy_image(var->mlx, var->img1);
 	mlx_destroy_image(var->mlx, var->img2);

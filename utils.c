@@ -51,6 +51,23 @@ void	my_pixel_put2(t_var *var, int x, int y, int color)
 	*(unsigned int *)dst = color;
 }
 
+int my_pixel_from_texture(t_var *var, int x, int y, char no)
+{
+    int     color;
+    char    *pixel;
+
+    if (no == 'n')
+        pixel = var->addrno + (y * var->lenno + x * (var->bitno / 8));
+    if (no == 's')
+        pixel = var->addrso + (y * var->lenso + x * (var->bitso / 8));
+    if (no == 'w')
+        pixel = var->addrwe + (y * var->lenwe + x * (var->bitwe / 8));
+    if (no == 'e')
+        pixel = var->addrea + (y * var->lenea + x * (var->bitea / 8));
+    color = *(unsigned int *)pixel;
+    return (color);
+}
+
 void	draw_block(t_var *var, int i, int j, int color)
 {
     int k;
@@ -81,10 +98,6 @@ void    draw_wall(t_var *var, int j, int i, int color)
                 my_pixel_put(var, j + l, i + k, 0x00000000);
             else
                 my_pixel_put(var, j + l, i + k, color);
-            if (color == 0x000000FF)
-                var->forbidden[i + k][j + l] = '1';
-            else if (color == 0x00000000)
-                var->forbidden[i + k][j + l] = '0';
         }
     }
 }

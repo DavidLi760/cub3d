@@ -194,14 +194,29 @@ void	draw_cross(t_var *var, int i, int j)
 	}
 }
 
+void	get_text_y(t_var *var, int i, int max)
+{
+	if (var->no)
+		var->text_y = var->heightno * i / max;
+	if (var->so)
+		var->text_y = var->heightso * i / max;
+	if (var->we)
+		var->text_y = var->heightwe * i / max;
+	if (var->ea)
+		var->text_y = var->heightea * i / max;
+}
+
 void	draw_wall_column(t_var *var, int x, int height)
 {
 	int	i;
 	int start_y;
+	int	start;
 	int end_y;
+	int	color;
 
 	i = 0;
 	start_y = (HEIGHT - height) / 2 - var->pitch;
+	start = start_y;
 	end_y = start_y + height;
 	if (height == 0)
 		start_y = -1;
@@ -224,8 +239,10 @@ void	draw_wall_column(t_var *var, int x, int height)
 	}
 	while (start_y < end_y && start_y < 1010) // DESSIN DES MURS
 	{
-		my_pixel_put2(var, x, start_y, 0x00FFFFFF);
-		my_pixel_put2(var, x + 1, start_y++, 0x00FFFFFF);
+		get_text_y(var, start_y - start, height);
+		color = my_pixel_from_texture(var, var->text_x, var->text_y, 'n');
+		my_pixel_put2(var, x, start_y, color);
+		my_pixel_put2(var, x + 1, start_y++, color);
 	}
 	while (start_y < 1010)
 	{
@@ -249,8 +266,8 @@ double	is_a_grid(t_var *var, double angle, double x, double y)
 		if (var->posx + cos(angle) * x - 10.00 > 15)
 			tempx = var->posx + cos(angle) * x - 10.00;
 		tempx = fmod(tempx, 15);
-		printf("%f, ", var->posx);
-		printf("%f\n", var->posy);
+		// printf("%f, ", var->posx);
+		// printf("%f\n", var->posy);
 		if (sin(angle) >= 0.1)
 			tempy = (15 - tempy) / sin(angle);
 		else if (sin(angle) <= 0.1)
@@ -269,62 +286,86 @@ double	is_a_grid(t_var *var, double angle, double x, double y)
 			y += tempx;
 			x += tempx;
 		}
-		printf("%f, ", (var->posy + sin(angle) * y));
-		printf("%f\n", tempy);
+		// printf("%f, ", (var->posy + sin(angle) * y));
+		// printf("%f\n", tempy);
 	}
 	return (x);
 }
 
-void	get_direction(t_var *var, double angle, int i)
+void	get_wall_xy(t_var *var)
 {
-	if (cos(angle) >= 0)
-		var->w_e = 1;
-	else if (cos(angle) < 0)
-		var->w_e = 0;
-	if (sin(angle) >= 0)
-		var->n_s = 1;
-	else if (sin(angle) < 0)
-		var->n_s = 0;
-	if (!is_a_wall(var, var->posy + sin(angle) * i - 0.1, var->posx + cos(angle) * i)
-		&& is_a_wall(var, var->posy + sin(angle) * i, var->posx + cos(angle) * i))
-		var->side = 1;
-	else if (!is_a_wall(var, var->posy + sin(angle) * i, var->posx + cos(angle) * i - 0.1)
-		&& is_a_wall(var, var->posy + sin(angle) * i, var->posx + cos(angle) * i))
-		var->side = 0;
-	if (var->side == 0 && var->w_e == 1)
-		var->we = 1;
-	else if (var->side == 0 && var->w_e == 0)
-		var->ea = 1;
-	else if (var->side == 1 && var->n_s == 1)
-		var->so = 1;
-	else if (var->side == 1 && var->n_s == 0)
-		var->no = 1;
-	else
-		var->no = 1;
+	if (var->we || var->ea)
+	{
+		if (var->we)
+			var->wall_x = fmod(var->wall_x, 15.00);
+		else
+			var->wall_x = fmod(var->wall_x, 15.00);
+	}
+	if (var->no || var->so)
+	{
+		if (var->no)
+			var->wall_y = fmod(var->wall_y, 15.00);
+		else
+			var->wall_y = fmod(var->wall_y, 15.00);
+	}
+}
+
+void	get_text_x(t_var *var)
+{
+	if (var->we == 1|| var->ea == 1)
+	{
+		if (var->we)
+			var->text_x = var->widthwe * var->wall_y / 15;
+		else if (var->ea)
+			var->text_x = var->widthea * (15 - var->wall_y) / 15;	
+	}
+	if (var->no == 1|| var->so == 1)
+	{
+		if (var->no)
+			var->text_x = var->widthno * var->wall_x / 15;
+		else if (var->so)
+			var->text_x = var->widthso * (15 - var->wall_x) / 15;
+	}
 }
 
 void	trace_ray(t_var *var, double angle, double *i)
 {
 	*i = 0;
-	while (!is_a_wall(var, var->posy + sin(angle) * *i, var->posx + cos(angle) * *i) && *i < 105)
+	while (var->forbidden[(int)(var->posy + sin(angle) * *i + 5)][(int)(var->posx + cos(angle) * *i + 5)] != '1')
 	{
 		// (*i) += is_a_grid(var, angle, 0, 0);
-		*i += 0.05;
+		*i += 0.1;
 	}
-	get_direction(var, angle, *i);
-	printf("no:%d\n", var->no);
-	printf("so:%d\n", var->so);
-	printf("we:%d\n", var->we);
-	printf("ea:%d\n", var->ea);
-	var->no = 0;
-	var->so = 0;
-	var->we = 0;
-	var->ea = 0;
-	var->wall_x = var->posx + cos(angle) * *i;
+	if (var->forbidden[(int)(var->posy + sin(angle) * *i + 5 - 1)][(int)(var->posx + cos(angle) * *i) + 5] == '0')
+	{
+		var->no = 1;
+		// printf("no");
+	}
+	else if (var->forbidden[(int)(var->posy + sin(angle) * *i + 5)][(int)(var->posx + cos(angle) * *i) + 5 - 1] == '0')
+	{
+		var->we = 1;
+		// printf("we");
+	}
+	else if (var->forbidden[(int)(var->posy + sin(angle) * *i + 5)][(int)(var->posx + cos(angle) * *i) + 5 + 1] == '0')
+	{
+		var->ea = 1;
+		// printf("ea");
+	}
+	else if (var->forbidden[(int)(var->posy + sin(angle) * *i + 5 + 1)][(int)(var->posx + cos(angle) * *i) + 5] == '0')
+	{
+		var->so = 1;
+		// printf("so");
+	}
+	var->wall_x = var->posx + cos(angle) * *i + 5;
+	var->wall_y = var->posy + sin(angle) * *i + 5;
+	printf("x:%f, ", var->wall_x);
+	printf("y:%f\n", var->wall_y);
+	get_wall_xy(var);
+	get_text_x(var);
 	if (100 + cos(angle) * *i < 150 && 100 + cos(angle) * *i > 0)
 		if (100 + sin(angle) * *i < 150 && 100 + sin(angle) * *i > 0)
 			my_pixel_put(var, 100 + cos(angle) * *i, 100 + sin(angle) * *i, 0x00FFFFFF);
-	if (*i >= 105 && !is_a_wall(var, var->posy + sin(angle) * *i, var->posx + cos(angle) * *i))
+	if (*i >= 105 && var->forbidden[(int)(var->posy + sin(angle) * *i + 5)][(int)(var->posx + cos(angle) * *i) + 5] != '1')
 		*i = -1;
 }
 
@@ -365,49 +406,49 @@ int	update(t_var *var)
 	if (var->w_pressed == 1)
 	{
 		if (var->w_pressed == 1 && is_a_wall(var, var->posy + var->directy, var->posx) && !is_a_wall(var, var->posy, var->posx + var->directx))
-			var->posx += var->directx * (var->shift_pressed * 0.5 + 0.25);
+			var->posx += var->directx * (var->shift_pressed * 0.25 + 0.25);
 		else if (var->w_pressed == 1 && is_a_wall(var, var->posy, var->posx + var->directx) && !is_a_wall(var, var->posy + var->directy, var->posx))
-			var->posy += var->directy * (var->shift_pressed * 0.5 + 0.25);
+			var->posy += var->directy * (var->shift_pressed * 0.25 + 0.25);
 		else if (!is_a_wall(var, var->posy + var->directy, var->posx + var->directx))
 		{
-			var->posx += var->directx * (var->shift_pressed * 0.5 + 0.25);
-			var->posy += var->directy * (var->shift_pressed * 0.5 + 0.25);
+			var->posx += var->directx * (var->shift_pressed * 0.25 + 0.25);
+			var->posy += var->directy * (var->shift_pressed * 0.25 + 0.25);
 		}
 	}
 	if (var->s_pressed == 1)
 	{
 		if (is_a_wall(var, var->posy - var->directy, var->posx) && !is_a_wall(var, var->posy, var->posx - var->directx))
-			var->posx -= var->directx * (var->shift_pressed * 0.5 + 0.25);
+			var->posx -= var->directx * (var->shift_pressed * 0.25 + 0.25);
 		else if (is_a_wall(var, var->posy, var->posx - var->directx) && !is_a_wall(var, var->posy - var->directy, var->posx))
-			var->posy -= var->directy * (var->shift_pressed * 0.5 + 0.25);
+			var->posy -= var->directy * (var->shift_pressed * 0.25 + 0.25);
 		else if (!is_a_wall(var, var->posy - var->directy, var->posx - var->directx))
 		{
-			var->posx -= var->directx * (var->shift_pressed * 0.5 + 0.25);
-			var->posy -= var->directy * (var->shift_pressed * 0.5 + 0.25);
+			var->posx -= var->directx * (var->shift_pressed * 0.25 + 0.25);
+			var->posy -= var->directy * (var->shift_pressed * 0.25 + 0.25);
 		}
 	}
 	if (var->a_pressed == 1)
 	{
 		if (is_a_wall(var, var->posy - var->directx, var->posx) && !is_a_wall(var, var->posy, var->posx + var->directy))
-			var->posx += var->directy * (var->shift_pressed * 0.5 + 0.25);
+			var->posx += var->directy * (var->shift_pressed * 0.25 + 0.25);
 		else if (is_a_wall(var, var->posy, var->posx + var->directy) && !is_a_wall(var, var->posy - var->directx, var->posx))
-			var->posy -= var->directx * (var->shift_pressed * 0.5 + 0.25);
+			var->posy -= var->directx * (var->shift_pressed * 0.25 + 0.25);
 		else if (!is_a_wall(var, var->posy - var->directx, var->posx + var->directy))
 		{
-			var->posx += var->directy * (var->shift_pressed * 0.5 + 0.25);
-			var->posy -= var->directx * (var->shift_pressed * 0.5 + 0.25);
+			var->posx += var->directy * (var->shift_pressed * 0.25 + 0.25);
+			var->posy -= var->directx * (var->shift_pressed * 0.25 + 0.25);
 		}
 	}
 	if (var->d_pressed == 1)
 	{
 		if (is_a_wall(var, var->posy + var->directx, var->posx) && !is_a_wall(var, var->posy, var->posx - var->directy))
-			var->posx -= var->directy * (var->shift_pressed * 0.5 + 0.25);
+			var->posx -= var->directy * (var->shift_pressed * 0.25 + 0.25);
 		else if (is_a_wall(var, var->posy, var->posx - var->directy) && !is_a_wall(var, var->posy + var->directx, var->posx))
-			var->posy += var->directx * (var->shift_pressed * 0.5 + 0.25);
+			var->posy += var->directx * (var->shift_pressed * 0.25 + 0.25);
 		else if (!is_a_wall(var, var->posy + var->directx, var->posx - var->directy))
 		{
-			var->posx -= var->directy * (var->shift_pressed * 0.5 + 0.25);
-			var->posy += var->directx * (var->shift_pressed * 0.5 + 0.25);
+			var->posx -= var->directy * (var->shift_pressed * 0.25 + 0.25);
+			var->posy += var->directx * (var->shift_pressed * 0.25 + 0.25);
 		}
 	}
 	if ((var->pitch2 <= -1 || var->up_pressed == 1) && var->pitch >= -1500)
@@ -447,6 +488,10 @@ int	update(t_var *var)
 		var->position2.y -= 1;
 	minimap(var, -1, 0);
 	ray_casting(var, 0);
+	var->no = 0;
+	var->so = 0;
+	var->we = 0;
+	var->ea = 0;
 	mlx_put_image_to_window(var->mlx, var->win, var->imag2, 0, 0);
 	mlx_put_image_to_window(var->mlx, var->win, var->imag, -50, -50);
 	mlx_destroy_image(var->mlx, var->imag2);
@@ -455,22 +500,59 @@ int	update(t_var *var)
 	return (0);
 }
 
+void	forbidden_helper(t_var *var, int i, int j, char c)
+{
+	int	k;
+	int	l;
+
+	k = 0;
+	while (k < 16)
+	{
+		l = 0;
+		while (l < 16)
+		{
+			var->forbidden[i + k][j + l] = c;
+			l++;
+		}
+		k++;
+	}
+}
+
+void	init_forbidden(t_var *var, int i, int j)
+{
+	while (var->map[i])
+	{
+		j = 0;
+		while (var->map[i][j])
+		{
+			if (var->map[i][j] == '1')
+				forbidden_helper(var, i * 15, j * 15, '1');
+			j++;
+		}
+		printf("\n");
+		i++;
+	}
+}
+
 int	init_var(t_var *var, int i, int j)
 {
-	var->forbidden = malloc(sizeof(char *) * 1010);
+	var->forbidden = malloc(sizeof(char *) * (MAP_SIZE + 1));
 	if (!var->forbidden)
 		return (free4(var, 0), 0);
-	while (++i < 1010)
+	while (++i < MAP_SIZE)
 	{
-		var->forbidden[i] = malloc(sizeof(char) * 1980);
+		j = 0;
+		var->forbidden[i] = malloc(sizeof(char) * (MAP_SIZE + 1));
 		if (!var->forbidden[i])
 			return (free4(var, i), 0);
-		while (j < 1980)
+		while (j <= MAP_SIZE)
 		{
-			var->forbidden[i][j] = 0;
+			var->forbidden[i][j] = '0';
 			j++;
 		}
 	}
+	var->forbidden[i] = 0;
+	init_forbidden(var, 0, 0);
 	var->position.x = var->position2.x / 15;
 	var->position.y = var->position2.y / 15;
 	return (1);
@@ -484,12 +566,10 @@ int	main(int argc, char **argv)
 	var.delay = 0;
 	var.height = 5;
 	var.width = 5;
-	var.north = 0;
-	var.south = 0;
-	var.west = 0;
-	var.east = 0;
 	var.floor = -1;
 	var.ceiling = -1;
+	var.wall_x = 0;
+	var.wall_y = 0;
 	var.e_pressed = 0;
 	var.w_pressed = 0;
 	var.s_pressed = 0;
@@ -503,14 +583,14 @@ int	main(int argc, char **argv)
 	var.directx = 0;
 	var.directy = 0;
 	var.pitch = 0;
+	var.pitch2 = 0;
 	var.angle = 0;
+	var.text_x = 0;
+	var.text_y = 0;
 	var.no = 0;
 	var.so = 0;
 	var.we = 0;
 	var.ea = 0;
-	var.side = 0;
-	var.n_s = 0;
-	var.w_e = 0;
 	if (argc != 2)
 		return (0);
 	if (!check_arg(&var, argv))
@@ -539,10 +619,10 @@ int	main(int argc, char **argv)
 	var.imag = mlx_new_image(var.mlx, 150, 150);
 	var.addr = mlx_get_data_addr(var.imag, &var.bit, &var.len, &var.endian);
 	i = 0;
-	var.imgno = mlx_xpm_file_to_image(var.mlx, var.north, &var.height, &var.width);
-	var.imgso = mlx_xpm_file_to_image(var.mlx, var.south, &var.height, &var.width);
-	var.imgwe = mlx_xpm_file_to_image(var.mlx, var.west, &var.height, &var.width);
-	var.imgea = mlx_xpm_file_to_image(var.mlx, var.east, &var.height, &var.width);
+	var.imgno = mlx_xpm_file_to_image(var.mlx, var.north, &var.heightno, &var.widthno);
+	var.imgso = mlx_xpm_file_to_image(var.mlx, var.south, &var.heightso, &var.widthso);
+	var.imgwe = mlx_xpm_file_to_image(var.mlx, var.west, &var.heightwe, &var.widthwe);
+	var.imgea = mlx_xpm_file_to_image(var.mlx, var.east, &var.heightea, &var.widthea);
 	var.addrno = mlx_get_data_addr(var.imgno, &var.bitno, &var.lenno, &var.endianno);
 	var.addrso = mlx_get_data_addr(var.imgso, &var.bitso, &var.lenso, &var.endianso);
 	var.addrwe = mlx_get_data_addr(var.imgwe, &var.bitwe, &var.lenwe, &var.endianwe);
@@ -555,7 +635,15 @@ int	main(int argc, char **argv)
 	mlx_mouse_move(var.mlx, var.win, 1800, 900);
 	printf("0x%X,", var.floor);
 	printf("0x%X,", var.ceiling);
-	// printf("x : %d, y : %d\n", var.position.x, var.position.y);
+	// int	j = 0;
+	// while (i < MAP_SIZE)
+	// {
+	// 	j = 0;
+	// 	while (j < MAP_SIZE)
+	// 		printf("%c", var.forbidden[i][j++]);
+	// 	i++;
+	// }
+	printf("x : %d, y : %d\n", var.position.x, var.position.y);
 	mlx_hook(var.win, 2, 1L << 0, escape, &var);
 	mlx_hook(var.win, 6, 1L << 6, mouse_move, &var);
 	mlx_hook(var.win, 3, 1L << 1, release, &var);
