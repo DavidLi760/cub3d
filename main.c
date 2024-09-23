@@ -193,6 +193,17 @@ void	draw_cross(t_var *var, int i, int j)
 	}
 }
 
+void	draw_health_bar(t_var *var, int i, int j)
+{
+	while (i <= 980)
+	{
+		j = 50;
+		while (j <= 250 - var->health)
+			my_pixel_put2(var, j++, i, 0x00FF00);
+		i++;
+	}
+}
+
 void	get_text_y(t_var *var, int i, int max)
 {
 	if (var->no)
@@ -205,19 +216,22 @@ void	get_text_y(t_var *var, int i, int max)
 		var->text_y = var->heightea * i / max + (var->plusy / 14.00);
 }
 
-// int	mix_color(t_var *var, int now)
-// {
-// 	int	color;
+int	mix_color(t_var *var, int now)
+{
+	int	color;
 
-// 	color = now;
-// 	int r1 = color >> 16 & 0x * var->dist;
-// 	int	g1 = color >> 8 & 0x * var->dist;
-// 	int	b1 = (color & 0x);
-// 	int	r2 = 0x000000 >> 16 & 0x * var->dist;
-// 	int	g2 = 0x000000 >> 8 & 0x * var->dist;
-// 	int	b2 = 0x000000 & 0x * var->dist;
-// 	return (color);
-// }
+	color = now;
+	int r1 = color >> 16 & 0xFF;
+	int	g1 = color >> 8 & 0xFF;
+	int	b1 = (color & 0xFF);
+	int	r2 = 0x000000 >> 16 & 0xFF;
+	int	g2 = 0x000000 >> 8 & 0xFF;
+	int	b2 = 0x000000 & 0xFF;
+	int	r = (int)((1 - (var->dist / (DIST * 1.5))) * r1 + var->dist / (DIST * 1.5) * r2);
+	int	g = (int)((1 - (var->dist / (DIST * 1.5))) * g1 + var->dist / (DIST * 1.5) * g2);
+	int	b = (int)((1 - (var->dist / (DIST * 1.5))) * b1 + var->dist / (DIST * 1.5) * b2);
+	return ((r << 16) | (g << 8) | b);
+}
 
 void	draw_wall_column(t_var *var, int x, int height)
 {
@@ -257,8 +271,8 @@ void	draw_wall_column(t_var *var, int x, int height)
 	// }
 	while (var->vide == 1 && start_y < end_y && start_y < 1010) // DESSIN DES MURS
 	{
-		my_pixel_put2(var, x, start_y, 0);
-		my_pixel_put2(var, x + 1, start_y++, 0);
+		my_pixel_put2(var, x, start_y, 0x0F0000);
+		my_pixel_put2(var, x + 1, start_y++, 0x0F0000);
 	}
 	while (!var->vide && start_y < end_y && start_y < 1010) // DESSIN DES MURS
 	{
@@ -271,12 +285,12 @@ void	draw_wall_column(t_var *var, int x, int height)
 			color = my_pixel_from_texture(var, var->text_x, var->text_y, 'w');
 		if (var->ea)
 			color = my_pixel_from_texture(var, var->text_x, var->text_y, 'e');
-		var->dist = var->posx - var->plusx;
+		var->dist = sqrt(pow(var->posx - var->plusx, 2) + pow(var->posy - var->plusy, 2));
 		if (var->dist < 0)
 			var->dist *= -1;
-		// var->mix = mix_color(var, color, var->dist);
-		my_pixel_put2(var, x, start_y, color + var->dist);
-		my_pixel_put2(var, x + 1, start_y++, color + var->dist);
+		color = mix_color(var, color);
+		my_pixel_put2(var, x, start_y, color);
+		my_pixel_put2(var, x + 1, start_y++, color);
 	}
 	while (start_y < 1010)
 	{
@@ -284,6 +298,7 @@ void	draw_wall_column(t_var *var, int x, int height)
 		my_pixel_put2(var, x + 1, start_y++, var->floor);
 	}
 	draw_cross(var, 504, 1920);
+	draw_health_bar(var, 970, 50);
 }
 
 double	is_a_grid(t_var *var, double angle, double x, double y)

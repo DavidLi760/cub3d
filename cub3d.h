@@ -24,7 +24,7 @@
 # include "mlx/mlx.h"
 
 # define MS 10
-# define DIST 500
+# define DIST 200
 # define MAP_SIZE 5000
 # define HEIGHT 1010
 # define BUFFER_SIZE 500
@@ -111,6 +111,7 @@ typedef struct s_var
 	double		text_y;
 	t_pos	position;
 	t_pos	position2;
+	int		health;
 	int		max;
 	int		maxj;
 	int		fd;
@@ -145,6 +146,7 @@ typedef struct s_var
 	int		so;
 	int		we;
 	int		ea;
+	int		mix;
 }	t_var;
 
 long long	get_time(void);
