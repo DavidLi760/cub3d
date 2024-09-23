@@ -46,10 +46,13 @@ int check_num(char **temp)
     i = 0;
     while (temp[i])
     {
-        j = -1;
-        while (temp[i][++j])
+        j = 0;
+        while (temp[i][j])
+        {
             if (temp[i][j] > '9' || temp[i][j] < '0')
                 return (0);
+            j++;
+        }
         i++;
     }
     return (1);
@@ -65,8 +68,8 @@ int copy_color(t_var *var, char *s1, int j)
     j = 0;
     while (temp[j])
         j++;
-    if (!check_num(temp))
-        return (-1);
+    // if (!check_num(temp))
+    //     return (-1);
     if (j < 4)
     {
         j = 0;

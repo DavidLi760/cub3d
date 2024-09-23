@@ -24,6 +24,7 @@
 # include "mlx/mlx.h"
 
 # define MS 10
+# define DIST 500
 # define MAP_SIZE 5000
 # define HEIGHT 1010
 # define BUFFER_SIZE 500
@@ -66,6 +67,7 @@ typedef struct s_var
 	char	*addrso;
 	char	*addrwe;
 	char	*addrea;
+	int		vide;
 	int		len;
 	int		len2;
 	int		lenno;
@@ -101,6 +103,9 @@ typedef struct s_var
 	double	posy;
 	double	wall_x;
 	double	wall_y;
+	double	plusx;
+	double	plusy;
+	double	dist;
 	double	ray_angle;
 	double		text_x;
 	double		text_y;

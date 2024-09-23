@@ -196,16 +196,28 @@ void	draw_cross(t_var *var, int i, int j)
 void	get_text_y(t_var *var, int i, int max)
 {
 	if (var->no)
-		var->text_y = var->heightno * i / max + 14;
+		var->text_y = var->heightno * i / max + (var->plusx / 14.00);
 	if (var->so)
-		var->text_y = var->heightso * i / max + 14;
+		var->text_y = var->heightso * i / max + (var->plusx / 14.00);
 	if (var->we)
-		var->text_y = var->heightwe * i / max + 14;
+		var->text_y = var->heightwe * i / max + (var->plusy / 14.00);
 	if (var->ea)
-		var->text_y = var->heightea * i / max + 14;
-	if (var->text_y < 1)
-		var->text_y = 100;
+		var->text_y = var->heightea * i / max + (var->plusy / 14.00);
 }
+
+// int	mix_color(t_var *var, int now)
+// {
+// 	int	color;
+
+// 	color = now;
+// 	int r1 = color >> 16 & 0x * var->dist;
+// 	int	g1 = color >> 8 & 0x * var->dist;
+// 	int	b1 = (color & 0x);
+// 	int	r2 = 0x000000 >> 16 & 0x * var->dist;
+// 	int	g2 = 0x000000 >> 8 & 0x * var->dist;
+// 	int	b2 = 0x000000 & 0x * var->dist;
+// 	return (color);
+// }
 
 void	draw_wall_column(t_var *var, int x, int height)
 {
@@ -219,8 +231,8 @@ void	draw_wall_column(t_var *var, int x, int height)
 	start_y = (HEIGHT - height) / 2 - var->pitch;
 	start = start_y;
 	end_y = start_y + height;
-	if (height == 0)
-		start_y = -1;
+	// if (var->vide == 1)
+	// 	start_y = -1;
 	while (i < 1010)
 	{
 		my_pixel_put2(var, x, i, var->ceiling);
@@ -228,17 +240,27 @@ void	draw_wall_column(t_var *var, int x, int height)
 	}
 	while (start_y < 0)
 		start_y++;
-	while (height == 0 && start_y < 505 - var->pitch && start_y < 1010)
+	// while (var->vide == 1 && start_y < 505 - var->pitch)
+	// {
+	// 	my_pixel_put2(var, x, start_y, var->ceiling);
+	// 	my_pixel_put2(var, x + 1, start_y++, var->ceiling);
+	// }
+	// while (var->vide == 1 && start_y < 505 - var->pitch)
+	// {
+	// 	my_pixel_put2(var, x, start_y, 0x00000000);
+	// 	my_pixel_put2(var, x + 1, start_y++, 0x00000000);
+	// }
+	// while (var->vide == 1 && start_y < 1010)
+	// {
+	// 	my_pixel_put2(var, x, start_y, var->floor);
+	// 	my_pixel_put2(var, x + 1, start_y++, var->floor);
+	// }
+	while (var->vide == 1 && start_y < end_y && start_y < 1010) // DESSIN DES MURS
 	{
-		my_pixel_put2(var, x, start_y, var->ceiling);
-		my_pixel_put2(var, x + 1, start_y++, var->ceiling);
+		my_pixel_put2(var, x, start_y, 0);
+		my_pixel_put2(var, x + 1, start_y++, 0);
 	}
-	while (height == 0 && start_y < 1010)
-	{
-		my_pixel_put2(var, x, start_y, var->floor);
-		my_pixel_put2(var, x + 1, start_y++, var->floor);
-	}
-	while (start_y < end_y && start_y < 1010) // DESSIN DES MURS
+	while (!var->vide && start_y < end_y && start_y < 1010) // DESSIN DES MURS
 	{
 		get_text_y(var, start_y - start, height);
 		if (var->no)
@@ -249,8 +271,12 @@ void	draw_wall_column(t_var *var, int x, int height)
 			color = my_pixel_from_texture(var, var->text_x, var->text_y, 'w');
 		if (var->ea)
 			color = my_pixel_from_texture(var, var->text_x, var->text_y, 'e');
-		my_pixel_put2(var, x, start_y, color);
-		my_pixel_put2(var, x + 1, start_y++, color);
+		var->dist = var->posx - var->plusx;
+		if (var->dist < 0)
+			var->dist *= -1;
+		// var->mix = mix_color(var, color, var->dist);
+		my_pixel_put2(var, x, start_y, color + var->dist);
+		my_pixel_put2(var, x + 1, start_y++, color + var->dist);
 	}
 	while (start_y < 1010)
 	{
@@ -323,23 +349,23 @@ void	get_text_x(t_var *var)
 	if (var->we == 1|| var->ea == 1)
 	{
 		if (var->we)
-			var->text_x = var->widthwe * (15 - var->wall_y) / 15;
+			var->text_x = var->widthwe * ((30 - var->wall_y) / 15);
 		else if (var->ea)
-			var->text_x = var->widthea * (15 - var->wall_y) / 15;	
+			var->text_x = var->widthea * ((15 - var->wall_y) / 15);	
 	}
 	else if (var->no == 1|| var->so == 1)
 	{
 		if (var->no)
-			var->text_x = var->widthno * (15 - var->wall_x) / 15;
+			var->text_x = var->widthno * ((30 - var->wall_x) / 15);
 		else if (var->so)
-			var->text_x = var->widthso * (15 - var->wall_x) / 15;
+			var->text_x = var->widthso * ((15 - var->wall_x) / 15);
 	}
 }
 
 void	trace_ray(t_var *var, double angle, double *i)
 {
 	*i = 0;
-	while (var->forbidden[(int)(var->posy + sin(angle) * *i + 5)][(int)(var->posx + cos(angle) * *i + 5)] != '1')
+	while (var->forbidden[(int)(var->posy + sin(angle) * *i + 5)][(int)(var->posx + cos(angle) * *i + 5)] != '1' && *i < DIST)
 	{
 		// (*i) += is_a_grid(var, angle, 0, 0);
 		if (var->forbidden[(int)(var->posy + sin(angle) * ((*i) + 1) + 5)][(int)(var->posx + cos(angle) * ((*i) + 1) + 5)] != '1')
@@ -369,6 +395,8 @@ void	trace_ray(t_var *var, double angle, double *i)
 	}
 	var->wall_x = var->posx + cos(angle) * *i + 5;
 	var->wall_y = var->posy + sin(angle) * *i + 5;
+	var->plusx = var->posx + cos(angle) * *i + 5;
+	var->plusy = var->posy + sin(angle) * *i + 5;
 	printf("x:%f, ", var->wall_x);
 	printf("y:%f\n", var->wall_y);
 	get_wall_xy(var);
@@ -376,8 +404,8 @@ void	trace_ray(t_var *var, double angle, double *i)
 	if (100 + cos(angle) * *i < 150 && 100 + cos(angle) * *i > 0)
 		if (100 + sin(angle) * *i < 150 && 100 + sin(angle) * *i > 0)
 			my_pixel_put(var, 100 + cos(angle) * *i, 100 + sin(angle) * *i, 0x00FFFFFF);
-	if (*i >= 105 && var->forbidden[(int)(var->posy + sin(angle) * *i + 5)][(int)(var->posx + cos(angle) * *i) + 5] != '1')
-		*i = -1;
+	if (*i >= DIST && var->forbidden[(int)(var->posy + sin(angle) * *i + 5)][(int)(var->posx + cos(angle) * *i) + 5] != '1')
+		var->vide = 1;
 }
 
 void	ray_casting(t_var *var, int i)
@@ -396,12 +424,7 @@ void	ray_casting(t_var *var, int i)
 	{
 		var->ray_angle = start_angle + i * (PI / 3 / 960);
 		trace_ray(var, var->ray_angle, &distance);
-		if (distance == -1)
-			wall_height = 0;
-		else// if (1010 / (distance * cos(var->ray_angle - var->angle) / 15) < 1010)
-			wall_height = 1010 / (distance * cos(var->ray_angle - var->angle) / 15);
-		// else
-		// 	wall_height = 1010;
+		wall_height = 1010 / (distance * cos(var->ray_angle - var->angle) / 15);
 		draw_wall_column(var, pixel, wall_height);
 		i++;
 		pixel += 2;
@@ -409,6 +432,7 @@ void	ray_casting(t_var *var, int i)
 		var->so = 0;
 		var->we = 0;
 		var->ea = 0;
+		var->vide = 0;
 	}
 	while (get_time() < start + MS)
 		usleep(5);
@@ -507,6 +531,7 @@ int	update(t_var *var)
 	var->so = 0;
 	var->we = 0;
 	var->ea = 0;
+	var->vide = 0;
 	mlx_mouse_move(var->mlx, var->win, 1800, 900);
 	mlx_put_image_to_window(var->mlx, var->win, var->imag2, 0, 0);
 	mlx_put_image_to_window(var->mlx, var->win, var->imag, -50, -50);
@@ -596,6 +621,7 @@ int	main(int argc, char **argv)
 	var.left_pressed = 0;
 	var.right_pressed = 0;
 	var.shift_pressed = 0;
+	var.vide = 0;
 	var.directx = 0;
 	var.directy = 0;
 	var.pitch = 0;

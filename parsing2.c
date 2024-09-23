@@ -62,7 +62,7 @@ int	find_max(int i, t_var *var)
 			max = j;
 		i++;
 	}
-	var->maxj = j;
+	var->maxj = max;
 	return (max);
 }
 
