@@ -285,10 +285,10 @@ void	draw_wall_column(t_var *var, int x, int height)
 			color = my_pixel_from_texture(var, var->text_x, var->text_y, 'w');
 		if (var->ea)
 			color = my_pixel_from_texture(var, var->text_x, var->text_y, 'e');
-		var->dist = sqrt(pow(var->posx - var->plusx, 2) + pow(var->posy - var->plusy, 2));
-		if (var->dist < 0)
-			var->dist *= -1;
-		color = mix_color(var, color);
+		// var->dist = sqrt(pow(var->posx - var->plusx, 2) + pow(var->posy - var->plusy, 2));
+		// if (var->dist < 0)
+		// 	var->dist *= -1;
+		// color = mix_color(var, color);
 		my_pixel_put2(var, x, start_y, color);
 		my_pixel_put2(var, x + 1, start_y++, color);
 	}
