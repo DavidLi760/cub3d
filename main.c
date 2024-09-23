@@ -59,7 +59,6 @@ int	mouse_move(int x, int y, t_var *var)
 		var->pitch = -1500;
 	if (var->pitch >= 1500)
 		var->pitch = 1500;
-	mlx_mouse_move(var->mlx, var->win, 1800, 900);
 	return (0);
 }
 
@@ -201,9 +200,11 @@ void	get_text_y(t_var *var, int i, int max)
 	if (var->so)
 		var->text_y = var->heightso * i / max + 14;
 	if (var->we)
-		var->text_y = var->heightwe * i / max + 4;
+		var->text_y = var->heightwe * i / max + 14;
 	if (var->ea)
-		var->text_y = var->heightea * i / max + 7;
+		var->text_y = var->heightea * i / max + 14;
+	if (var->text_y < 1)
+		var->text_y = 100;
 }
 
 void	draw_wall_column(t_var *var, int x, int height)
@@ -346,22 +347,22 @@ void	trace_ray(t_var *var, double angle, double *i)
 		else
 		*i += 0.01;
 	}
-	if (var->forbidden[(int)(var->posy + sin(angle) * *i + 5 - 0.5)][(int)(var->posx + cos(angle) * *i + 5)] == '0')
+	if (var->forbidden[(int)(var->posy + sin(angle) * *i + 5 - 0.01)][(int)(var->posx + cos(angle) * *i + 5)] == '0')
 	{
 		var->no = 1;
 		printf("no");
 	}
-	else if (var->forbidden[(int)(var->posy + sin(angle) * *i + 5)][(int)(var->posx + cos(angle) * *i + 5 - 0.5)] == '0')
+	else if (var->forbidden[(int)(var->posy + sin(angle) * *i + 5)][(int)(var->posx + cos(angle) * *i + 5 - 0.01)] == '0')
 	{
 		var->we = 1;
 		printf("we");
 	}
-	else if (var->forbidden[(int)(var->posy + sin(angle) * *i + 5)][(int)(var->posx + cos(angle) * *i + 5 + 0.5)] == '0')
+	else if (var->forbidden[(int)(var->posy + sin(angle) * *i + 5)][(int)(var->posx + cos(angle) * *i + 5 + 0.01)] == '0')
 	{
 		var->ea = 1;
 		printf("ea");
 	}
-	else if (var->forbidden[(int)(var->posy + sin(angle) * *i + 5 + 0.5)][(int)(var->posx + cos(angle) * *i + 5)] == '0')
+	else if (var->forbidden[(int)(var->posy + sin(angle) * *i + 5 + 0.01)][(int)(var->posx + cos(angle) * *i + 5)] == '0')
 	{
 		var->so = 1;
 		printf("so");
@@ -506,6 +507,7 @@ int	update(t_var *var)
 	var->so = 0;
 	var->we = 0;
 	var->ea = 0;
+	mlx_mouse_move(var->mlx, var->win, 1800, 900);
 	mlx_put_image_to_window(var->mlx, var->win, var->imag2, 0, 0);
 	mlx_put_image_to_window(var->mlx, var->win, var->imag, -50, -50);
 	mlx_destroy_image(var->mlx, var->imag2);

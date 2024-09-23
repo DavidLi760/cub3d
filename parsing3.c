@@ -38,6 +38,23 @@ char    *copy_element(t_var *var, char *s1, int i, int j)
     return (str);
 }
 
+int check_num(char **temp)
+{
+    int i;
+    int j;
+
+    i = 0;
+    while (temp[i])
+    {
+        j = -1;
+        while (temp[i][++j])
+            if (temp[i][j] > '9' || temp[i][j] < '0')
+                return (0);
+        i++;
+    }
+    return (1);
+}
+
 int copy_color(t_var *var, char *s1, int j)
 {
     char    **temp;
@@ -48,16 +65,18 @@ int copy_color(t_var *var, char *s1, int j)
     j = 0;
     while (temp[j])
         j++;
+    if (!check_num(temp))
+        return (-1);
     if (j < 4)
     {
         j = 0;
         while (temp[j])
             free(temp[j++]);
         free(temp);
-        return (0);
+        return (-1);
     }
     if (ft_atoi(temp[1]) > 255 || ft_atoi(temp[1]) < 0 || ft_atoi(temp[2]) > 255 || ft_atoi(temp[2]) < 0 || ft_atoi(temp[3]) > 255 || ft_atoi(temp[3]) < 0)
-        return (0);
+        return (-1);
     printf("%d,", atoi(temp[1]));
     printf("%d,", atoi(temp[2]));
     printf("%d\n", atoi(temp[3]));
@@ -81,9 +100,9 @@ int is_right_element(t_var *var, int i)
             var->west = copy_element(var, var->element[i], 0, 0);
         else if (str_cmp(var->element[i], "EA ") && !var->east)
             var->east = copy_element(var, var->element[i], 0, 0);
-        if (str_cmp(var->element[i], "F "))
+        if (str_cmp(var->element[i], "F ") && var->floor == -1)
             var->floor = copy_color(var, var->element[i], 0);
-        if (str_cmp(var->element[i], "C "))
+        if (str_cmp(var->element[i], "C ") && var->ceiling == -1)
             var->ceiling = copy_color(var, var->element[i], 0);;
         i++;
     }
