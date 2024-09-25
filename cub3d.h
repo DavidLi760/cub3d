@@ -146,6 +146,13 @@ typedef struct s_var
 	int		so;
 	int		we;
 	int		ea;
+	double	door;
+	double	door2;
+	double	door3;
+	double	doorx;
+	double	doory;
+	double	doortime;
+	double	doorsense;
 	int		mix;
 }	t_var;
 

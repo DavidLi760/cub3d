@@ -113,6 +113,8 @@ void	draw_obstacle(t_var *var, int i, int j)
 				{
 					if (var->map[i][j] == '1')
 						draw_wall(var, var->diff_x + 95, var->diff_y + 95, 0x000000FF);
+					else if (var->map[i][j] == '2')
+						draw_wall(var, var->diff_x + 95, var->diff_y + 95, 0x0000FF00);
 					else
 						draw_wall(var, var->diff_x + 95, var->diff_y + 95, 0x00000000);
 				}
@@ -165,7 +167,7 @@ int	is_a_wall(t_var *var, int i, int j)
 		l = j + 4;
 		while (l <= j + 5)
 		{
-			if (var->map[k / 15][l / 15] == '1')
+			if (var->map[k / 15][l / 15] == '1' || var->map[k / 15][l / 15] == '2')
 				return (1);
 			l++;
 		}
@@ -218,8 +220,10 @@ void	get_text_y(t_var *var, int i, int max)
 
 int	mix_color(t_var *var, int now)
 {
-	int	color;
+	int		color;
+	float	t;
 
+	t = fmin(var->dist / DIST, 1.0);
 	color = now;
 	int r1 = color >> 16 & 0xFF;
 	int	g1 = color >> 8 & 0xFF;
@@ -227,10 +231,12 @@ int	mix_color(t_var *var, int now)
 	int	r2 = 0x000000 >> 16 & 0xFF;
 	int	g2 = 0x000000 >> 8 & 0xFF;
 	int	b2 = 0x000000 & 0xFF;
-	int	r = (int)((1 - (var->dist / (DIST * 1.5))) * r1 + var->dist / (DIST * 1.5) * r2);
-	int	g = (int)((1 - (var->dist / (DIST * 1.5))) * g1 + var->dist / (DIST * 1.5) * g2);
-	int	b = (int)((1 - (var->dist / (DIST * 1.5))) * b1 + var->dist / (DIST * 1.5) * b2);
-	return ((r << 16) | (g << 8) | b);
+	int	r = (int)((1 - (t)) * r1 + t * r2);
+	int	g = (int)((1 - (t)) * g1 + t * g2);
+	int	b = (int)((1 - (t)) * b1 + t * b2);
+
+	color = (r << 16) | (g << 8) | b;
+	return (color);
 }
 
 void	draw_wall_column(t_var *var, int x, int height)
@@ -269,12 +275,12 @@ void	draw_wall_column(t_var *var, int x, int height)
 	// 	my_pixel_put2(var, x, start_y, var->floor);
 	// 	my_pixel_put2(var, x + 1, start_y++, var->floor);
 	// }
-	while (var->vide == 1 && start_y < end_y && start_y < 1010) // DESSIN DES MURS
+	while (var->vide == 1 && start_y < end_y && start_y < 1010)
 	{
 		my_pixel_put2(var, x, start_y, 0x0F0000);
 		my_pixel_put2(var, x + 1, start_y++, 0x0F0000);
 	}
-	while (!var->vide && start_y < end_y && start_y < 1010) // DESSIN DES MURS
+	while (!var->vide && start_y < end_y && start_y < 1010)
 	{
 		get_text_y(var, start_y - start, height);
 		if (var->no)
@@ -285,10 +291,11 @@ void	draw_wall_column(t_var *var, int x, int height)
 			color = my_pixel_from_texture(var, var->text_x, var->text_y, 'w');
 		if (var->ea)
 			color = my_pixel_from_texture(var, var->text_x, var->text_y, 'e');
-		// var->dist = sqrt(pow(var->posx - var->plusx, 2) + pow(var->posy - var->plusy, 2));
-		// if (var->dist < 0)
-		// 	var->dist *= -1;
-		// color = mix_color(var, color);
+		if (var->dist < 0)
+			var->dist *= -1;
+		if (var->door == 1)
+			color = 0x00FFFFFF;
+		color = mix_color(var, color);
 		my_pixel_put2(var, x, start_y, color);
 		my_pixel_put2(var, x + 1, start_y++, color);
 	}
@@ -301,62 +308,12 @@ void	draw_wall_column(t_var *var, int x, int height)
 	draw_health_bar(var, 970, 50);
 }
 
-double	is_a_grid(t_var *var, double angle, double x, double y)
-{
-	double tempx;
-	double tempy;
-
-	while (x < 105 && y < 105 &&
-		!is_a_wall(var, var->posy + sin(angle) * y, var->posx + cos(angle) * x))
-	{
-		if (var->posy + sin(angle) * y - 10.90 > 15)
-			tempy = var->posy + sin(angle) * y - 10.90;
-		tempy = fmod(tempy, 15);
-		if (var->posx + cos(angle) * x - 10.00 > 15)
-			tempx = var->posx + cos(angle) * x - 10.00;
-		tempx = fmod(tempx, 15);
-		// printf("%f, ", var->posx);
-		// printf("%f\n", var->posy);
-		if (sin(angle) >= 0.1)
-			tempy = (15 - tempy) / sin(angle);
-		else if (sin(angle) <= 0.1)
-			tempy = tempy / sin(angle);
-		if (cos(angle) >= 0.1)
-			tempx = (15 - tempx) / cos(angle);
-		else if (cos(angle) <= 0.1)
-			tempx = tempx / cos(angle);
-		if (fabs(tempx) > fabs(tempy))
-		{
-			y += tempy;
-			x += tempy;
-		}
-		else
-		{
-			y += tempx;
-			x += tempx;
-		}
-		// printf("%f, ", (var->posy + sin(angle) * y));
-		// printf("%f\n", tempy);
-	}
-	return (x);
-}
-
 void	get_wall_xy(t_var *var)
 {
-	if (var->we || var->ea)
-	{
-		if (var->we)
-			var->wall_x = fmod(var->wall_x, 15.00);
-		else
-			var->wall_x = fmod(var->wall_x, 15.00);
-	}
-	if (var->no || var->so)
-	{
-		if (var->no)
-			var->wall_y = fmod(var->wall_y, 15.00);
-		else
-			var->wall_y = fmod(var->wall_y, 15.00);
-	}
+	if (var->we)
+		var->wall_x = fmod(var->wall_x, 15.00);
+	if (var->no)
+		var->wall_y = fmod(var->wall_y, 15.00);
 }
 
 void	get_text_x(t_var *var)
@@ -364,26 +321,29 @@ void	get_text_x(t_var *var)
 	if (var->we == 1|| var->ea == 1)
 	{
 		if (var->we)
-			var->text_x = var->widthwe * ((30 - var->wall_y) / 15);
+			var->text_x = var->widthwe * ((30 - var->wall_y) / 15.00);
 		else if (var->ea)
-			var->text_x = var->widthea * ((15 - var->wall_y) / 15);	
+			var->text_x = var->widthea * ((15 - var->wall_y) / 15.00);	
 	}
 	else if (var->no == 1|| var->so == 1)
 	{
 		if (var->no)
-			var->text_x = var->widthno * ((30 - var->wall_x) / 15);
+			var->text_x = var->widthno * ((30 - var->wall_x) / 15.00);
 		else if (var->so)
-			var->text_x = var->widthso * ((15 - var->wall_x) / 15);
+			var->text_x = var->widthso * ((15 - var->wall_x) / 15.00);
 	}
+	printf("wallx:%f\n", var->wall_x);
+	printf("wally%f\n", var->wall_y);
+	printf("width:%d\n", var->widthno);
+	printf("text:%f\n", var->text_x);
 }
 
 void	trace_ray(t_var *var, double angle, double *i)
 {
 	*i = 0;
-	while (var->forbidden[(int)(var->posy + sin(angle) * *i + 5)][(int)(var->posx + cos(angle) * *i + 5)] != '1' && *i < DIST)
+	while (var->forbidden[(int)(var->posy + sin(angle) * *i + 5)][(int)(var->posx + cos(angle) * *i + 5)] == '0' && *i < DIST)
 	{
-		// (*i) += is_a_grid(var, angle, 0, 0);
-		if (var->forbidden[(int)(var->posy + sin(angle) * ((*i) + 1) + 5)][(int)(var->posx + cos(angle) * ((*i) + 1) + 5)] != '1')
+		if (var->forbidden[(int)(var->posy + sin(angle) * ((*i) + 1) + 5)][(int)(var->posx + cos(angle) * ((*i) + 1) + 5)] == '0')
 			*i += 1;
 		else
 		*i += 0.01;
@@ -391,35 +351,62 @@ void	trace_ray(t_var *var, double angle, double *i)
 	if (var->forbidden[(int)(var->posy + sin(angle) * *i + 5 - 0.01)][(int)(var->posx + cos(angle) * *i + 5)] == '0')
 	{
 		var->no = 1;
-		printf("no");
 	}
 	else if (var->forbidden[(int)(var->posy + sin(angle) * *i + 5)][(int)(var->posx + cos(angle) * *i + 5 - 0.01)] == '0')
 	{
 		var->we = 1;
-		printf("we");
 	}
 	else if (var->forbidden[(int)(var->posy + sin(angle) * *i + 5)][(int)(var->posx + cos(angle) * *i + 5 + 0.01)] == '0')
 	{
 		var->ea = 1;
-		printf("ea");
 	}
 	else if (var->forbidden[(int)(var->posy + sin(angle) * *i + 5 + 0.01)][(int)(var->posx + cos(angle) * *i + 5)] == '0')
 	{
 		var->so = 1;
-		printf("so");
 	}
+	if (var->forbidden[(int)(var->posy + sin(angle) * *i + 5)][(int)(var->posx + cos(angle) * *i + 5 + 0.01)] == '2' ||
+		var->forbidden[(int)(var->posy + sin(angle) * *i + 5 - 0.01)][(int)(var->posx + cos(angle) * *i + 5)] == '2'
+		|| var->forbidden[(int)(var->posy + sin(angle) * *i + 5)][(int)(var->posx + cos(angle) * *i + 5 + 0.01)] == '2')
+		{
+			var->door = 1;
+		}
+	else if (var->forbidden[(int)(var->posy + sin(angle) * *i + 5)][(int)(var->posx + cos(angle) * *i + 5 + 0.01)] == '3' ||
+		var->forbidden[(int)(var->posy + sin(angle) * *i + 5 - 0.01)][(int)(var->posx + cos(angle) * *i + 5)] == '3'
+		|| var->forbidden[(int)(var->posy + sin(angle) * *i + 5)][(int)(var->posx + cos(angle) * *i + 5 + 0.01)] == '3')
+			var->door = 1;
+	else
+		var->door = 0;
+	// printf(" %c\n", var->forbidden[(int)(var->posy + sin(angle) * *i + 5 - 0.01)][(int)(var->posx + cos(angle) * *i + 5)]);
+	// printf("%c", var->forbidden[(int)(var->posy + sin(angle) * *i + 5)][(int)(var->posx + cos(angle) * *i + 5 - 0.01)]);
+	// printf(" %c\n", var->forbidden[(int)(var->posy + sin(angle) * *i + 5)][(int)(var->posx + cos(angle) * *i + 5 + 0.01)]);
+	// printf(" %c\n", var->forbidden[(int)(var->posy + sin(angle) * *i + 5 + 0.01)][(int)(var->posx + cos(angle) * *i + 5)]);
 	var->wall_x = var->posx + cos(angle) * *i + 5;
 	var->wall_y = var->posy + sin(angle) * *i + 5;
 	var->plusx = var->posx + cos(angle) * *i + 5;
 	var->plusy = var->posy + sin(angle) * *i + 5;
-	printf("x:%f, ", var->wall_x);
-	printf("y:%f\n", var->wall_y);
+	var->dist = sqrt(pow(var->posx - var->plusx, 2) + pow(var->posy - var->plusy, 2));
+	if (var->door == 1 && var->door2 == 0 && var->dist < 30)
+	{
+		var->door2 = 1;
+		var->doorx = var->plusx;
+		var->doory = var->plusy;
+	}
+	if (var->door == 1 && var->door2 == 1 && var->dist < 30)
+	{
+		var->doorx = (var->doorx + var->plusx) / 2;
+		var->doory = (var->doory + var->plusy) / 2;
+	}
+	printf("%f\n", (fabs(var->posx - var->plusx) + fabs(var->posy - var->plusy)));
+	printf("door :%f\n", var->door);
+	printf("door2 :%f\n", var->door2);
+	// printf("x:%f, ", var->wall_x);
+	// printf("y:%f\n", var->wall_y);
 	get_wall_xy(var);
 	get_text_x(var);
 	if (100 + cos(angle) * *i < 150 && 100 + cos(angle) * *i > 0)
 		if (100 + sin(angle) * *i < 150 && 100 + sin(angle) * *i > 0)
 			my_pixel_put(var, 100 + cos(angle) * *i, 100 + sin(angle) * *i, 0x00FFFFFF);
-	if (*i >= DIST && var->forbidden[(int)(var->posy + sin(angle) * *i + 5)][(int)(var->posx + cos(angle) * *i) + 5] != '1')
+	if (*i >= DIST && var->forbidden[(int)(var->posy + sin(angle) * *i + 5)][(int)(var->posx + cos(angle) * *i) + 5] == '0')
 		var->vide = 1;
 }
 
@@ -459,11 +446,11 @@ int	update(t_var *var)
 	var->addr2 = mlx_get_data_addr(var->imag2, &var->bit2, &var->len2, &var->endian2);
 	if (var->w_pressed == 1)
 	{
-		if (var->w_pressed == 1 && is_a_wall(var, var->posy + var->directy, var->posx) && !is_a_wall(var, var->posy, var->posx + var->directx))
+		if (var->w_pressed == 1 && var->forbidden[(int)(var->posy + var->directy) + 5][(int)var->posx + 5] != '0' && var->forbidden[(int)var->posy + 5][(int)(var->posx + var->directx) + 5] == '0')
 			var->posx += var->directx * (var->shift_pressed * 0.25 + 0.25);
-		else if (var->w_pressed == 1 && is_a_wall(var, var->posy, var->posx + var->directx) && !is_a_wall(var, var->posy + var->directy, var->posx))
+		else if (var->w_pressed == 1 && var->forbidden[(int)var->posy + 5][(int)(var->posx + var->directx) + 5] != '0' && var->forbidden[(int)(var->posy + var->directy) + 5][(int)var->posx + 5] == '0')
 			var->posy += var->directy * (var->shift_pressed * 0.25 + 0.25);
-		else if (!is_a_wall(var, var->posy + var->directy, var->posx + var->directx))
+		else if (var->forbidden[(int)(var->posy + var->directy) + 5][(int)(var->posx + var->directx) + 5] == '0')
 		{
 			var->posx += var->directx * (var->shift_pressed * 0.25 + 0.25);
 			var->posy += var->directy * (var->shift_pressed * 0.25 + 0.25);
@@ -471,11 +458,11 @@ int	update(t_var *var)
 	}
 	if (var->s_pressed == 1)
 	{
-		if (is_a_wall(var, var->posy - var->directy, var->posx) && !is_a_wall(var, var->posy, var->posx - var->directx))
+		if (var->forbidden[(int)(var->posy - var->directy) + 5][(int)var->posx + 5] != '0' && var->forbidden[(int)var->posy + 5][(int)(var->posx - var->directx) + 5] == '0')
 			var->posx -= var->directx * (var->shift_pressed * 0.25 + 0.25);
-		else if (is_a_wall(var, var->posy, var->posx - var->directx) && !is_a_wall(var, var->posy - var->directy, var->posx))
+		else if (var->forbidden[(int)var->posy + 5][(int)(var->posx - var->directx) + 5] != '0' && var->forbidden[(int)(var->posy - var->directy) + 5][(int)var->posx + 5] == '0')
 			var->posy -= var->directy * (var->shift_pressed * 0.25 + 0.25);
-		else if (!is_a_wall(var, var->posy - var->directy, var->posx - var->directx))
+		else if (var->forbidden[(int)(var->posy - var->directy) + 5][(int)(var->posx - var->directx) + 5] == '0')
 		{
 			var->posx -= var->directx * (var->shift_pressed * 0.25 + 0.25);
 			var->posy -= var->directy * (var->shift_pressed * 0.25 + 0.25);
@@ -483,11 +470,11 @@ int	update(t_var *var)
 	}
 	if (var->a_pressed == 1)
 	{
-		if (is_a_wall(var, var->posy - var->directx, var->posx) && !is_a_wall(var, var->posy, var->posx + var->directy))
+		if (var->forbidden[(int)(var->posy - var->directx) + 5][(int)var->posx + 5] != '0' && var->forbidden[(int)var->posy + 5][(int)(var->posx + var->directy) + 5] == '0')
 			var->posx += var->directy * (var->shift_pressed * 0.25 + 0.25);
-		else if (is_a_wall(var, var->posy, var->posx + var->directy) && !is_a_wall(var, var->posy - var->directx, var->posx))
+		else if (var->forbidden[(int)var->posy + 5][(int)(var->posx + var->directy) + 5] != '0' && var->forbidden[(int)(var->posy - var->directx) + 5][(int)var->posx + 5] == '0')
 			var->posy -= var->directx * (var->shift_pressed * 0.25 + 0.25);
-		else if (!is_a_wall(var, var->posy - var->directx, var->posx + var->directy))
+		else if (var->forbidden[(int)(var->posy - var->directx) + 5][(int)(var->posx + var->directy) + 5] == '0')
 		{
 			var->posx += var->directy * (var->shift_pressed * 0.25 + 0.25);
 			var->posy -= var->directx * (var->shift_pressed * 0.25 + 0.25);
@@ -495,11 +482,11 @@ int	update(t_var *var)
 	}
 	if (var->d_pressed == 1)
 	{
-		if (is_a_wall(var, var->posy + var->directx, var->posx) && !is_a_wall(var, var->posy, var->posx - var->directy))
+		if (var->forbidden[(int)(var->posy + var->directx) + 5][(int)var->posx + 5] != '0' && var->forbidden[(int)var->posy + 5][(int)(var->posx - var->directy) + 5] == '0')
 			var->posx -= var->directy * (var->shift_pressed * 0.25 + 0.25);
-		else if (is_a_wall(var, var->posy, var->posx - var->directy) && !is_a_wall(var, var->posy + var->directx, var->posx))
+		else if (var->forbidden[(int)var->posy + 5][(int)(var->posx - var->directy) + 5] != '0' && var->forbidden[(int)(var->posy + var->directx) + 5][(int)var->posx + 5] == '0')
 			var->posy += var->directx * (var->shift_pressed * 0.25 + 0.25);
-		else if (!is_a_wall(var, var->posy + var->directx, var->posx - var->directy))
+		else if (var->forbidden[(int)(var->posy + var->directx) + 5][(int)(var->posx - var->directy) + 5] == '0')
 		{
 			var->posx -= var->directy * (var->shift_pressed * 0.25 + 0.25);
 			var->posy += var->directx * (var->shift_pressed * 0.25 + 0.25);
@@ -548,12 +535,108 @@ int	update(t_var *var)
 	var->ea = 0;
 	var->vide = 0;
 	mlx_mouse_move(var->mlx, var->win, 1800, 900);
+	init_forbidden(var, 0, 0);
 	mlx_put_image_to_window(var->mlx, var->win, var->imag2, 0, 0);
 	mlx_put_image_to_window(var->mlx, var->win, var->imag, -50, -50);
 	mlx_destroy_image(var->mlx, var->imag2);
 	mlx_put_image_to_window(var->mlx, var->win, var->img, 50, 50);
-	mlx_put_image_to_window(var->mlx, var->win, var->img, 50 + var->directx * 3, 50 + var->directy * 3);
+	mlx_put_image_to_window(var->mlx, var->win, var->img, 50 + var->directx * 5, 50 + var->directy * 5);
+	if (var->door2 == 1)
+		mlx_string_put(var->mlx, var->win, 940, 750, 0x00FF0000, "Press E !");
+	if (var->door2 == 1 && var->e_pressed == 1)
+		var->door2 = 2;
+	if (var->door2 == 2 && var->doorsense == 0)
+		var->doortime += 1;
+	if (var->doortime == 16 && var->doorsense == 0)
+	{
+		var->door2 = 0;
+		var->doortime = 0;
+		// var->doorsense = 1;
+	}
+	// if (var->doorsense == 1 && var->door2 == 2)
+	// 	var->doortime -= 1;
+	// if (var->doortime == 0 && var->doorsense == 1)
+	// 	var->doorsense = 1;
+	if (var->door2 == 2 && var->map[(int)var->doory / 15][(int)var->doorx / 15] == '2')
+		var->map[(int)var->doory / 15][(int)var->doorx / 15] = '4';
+	else if (var->door2 == 2 && var->map[(int)var->doory / 15][(int)var->doorx / 15] == '3')
+		var->map[(int)var->doory / 15][(int)var->doorx / 15] = '5';
+	if (var->door2 == 1)
+		var->door2 = 0;
 	return (0);
+}
+
+void	forbidden_helper4(t_var *var, int i, int j, char c)
+{
+	int	k;
+	int	l;
+
+	if (c == '5')
+	{
+		k = 1;
+		while (k < 15 - var->doortime)
+			k++;
+		while (++k < 16)
+		{
+			l = 4;
+			while (++l < 6)
+				var->forbidden[i + k][j + l] = '0';
+		}
+	}
+}
+
+void	forbidden_helper3(t_var *var, int i, int j, char c)
+{
+	int	k;
+	int	l;
+
+	if (c == '4')
+	{
+		k = 8;
+		while (++k < 10)
+		{
+			l = 1;
+			if (var->doorsense == 0)
+			{
+				while (l < 16 - var->doortime)
+					l++;
+				while (++l < 16)
+					var->forbidden[i + k][j + l] = '0';
+			}
+			if (var->doorsense == 1)
+			{
+				while (l < 16 - var->doortime)
+					var->forbidden[i + k][j + l++] = '2';
+			}
+		}
+	}
+}
+
+void	forbidden_helper2(t_var *var, int i, int j, char c)
+{
+	int	k;
+	int	l;
+
+	if (c == '2')
+	{
+		k = 8;
+		while (++k < 10)
+		{
+			l = -1;
+			while (++l < 16)
+				var->forbidden[i + k][j + l] = c;
+		}
+	}
+	else if (c == '3')
+	{
+		k = -1;
+		while (++k < 16)
+		{
+			l = 4;
+			while (++l < 6)
+				var->forbidden[i + k][j + l] = c;
+		}
+	}
 }
 
 void	forbidden_helper(t_var *var, int i, int j, char c)
@@ -583,6 +666,14 @@ void	init_forbidden(t_var *var, int i, int j)
 		{
 			if (var->map[i][j] == '1')
 				forbidden_helper(var, i * 15, j * 15, '1');
+			if (var->map[i][j] == '2')
+				forbidden_helper2(var, i * 15, j * 15, '2');
+			if (var->map[i][j] == '3')
+				forbidden_helper2(var, i * 15, j * 15, '3');
+			if (var->map[i][j] == '4')
+				forbidden_helper3(var, i * 15, j * 15, '4');
+			if (var->map[i][j] == '5')
+				forbidden_helper4(var, i * 15, j * 15, '5');
 			j++;
 		}
 		printf("\n");
@@ -626,6 +717,10 @@ int	main(int argc, char **argv)
 	var.ceiling = -1;
 	var.wall_x = 0;
 	var.wall_y = 0;
+	var.door = 0;
+	var.door2 = 0;
+	var.doortime = 0;
+	var.doorsense = 0;
 	var.e_pressed = 0;
 	var.w_pressed = 0;
 	var.s_pressed = 0;

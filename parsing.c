@@ -63,12 +63,13 @@ int	is_wall_closed(t_var *var, int i, int j)
 		{
 			if (var->map[i][j] == '0' || var->map[i][j] == 'W'
 				|| var->map[i][j] == 'E' || var->map[i][j] == 'S'
-				|| var->map[i][j] == 'N')
+				|| var->map[i][j] == 'N' || var->map[i][j] == '2'
+				|| var->map[i][j] == '3')
 			{
 				if (var->map[i - 1][j] == ' ' || var->map[i + 1][j] == ' '
 					|| var->map[i][j - 1] == ' ' || var->map[i][j + 1] == ' ')
 				{
-					printf("Error : Wall not closed\n");
+					printf("Error : Wall not correctly closed\n");
 					return (free4(var, -1, 0), 0);
 				}
 			}
