@@ -391,7 +391,7 @@ void	trace_ray(t_var *var, double angle, double *i)
 		var->doorx = var->plusx;
 		var->doory = var->plusy;
 	}
-	if (var->door == 1 && var->door2 == 1 && var->dist < 30)
+	if (var->door == 1 && var->door2 && var->dist < 30)
 	{
 		var->doorx = (var->doorx + var->plusx) / 2;
 		var->doory = (var->doory + var->plusy) / 2;
@@ -544,19 +544,14 @@ int	update(t_var *var)
 	if (var->door2 == 1)
 		mlx_string_put(var->mlx, var->win, 940, 750, 0x00FF0000, "Press E !");
 	if (var->door2 == 1 && var->e_pressed == 1)
-		var->door2 = 2;
-	if (var->door2 == 2 && var->doorsense == 0)
-		var->doortime += 1;
-	if (var->doortime == 16 && var->doorsense == 0)
 	{
-		var->door2 = 0;
+		var->door2 = 2;
 		var->doortime = 0;
-		// var->doorsense = 1;
 	}
-	// if (var->doorsense == 1 && var->door2 == 2)
-	// 	var->doortime -= 1;
-	// if (var->doortime == 0 && var->doorsense == 1)
-	// 	var->doorsense = 1;
+	if (var->door2 == 2)
+		var->doortime += 1;
+	if (var->doortime == 16 && var->door2 == 2)
+		var->door2 = 0;
 	if (var->door2 == 2 && var->map[(int)var->doory / 15][(int)var->doorx / 15] == '2')
 		var->map[(int)var->doory / 15][(int)var->doorx / 15] = '4';
 	else if (var->door2 == 2 && var->map[(int)var->doory / 15][(int)var->doorx / 15] == '3')
@@ -596,18 +591,10 @@ void	forbidden_helper3(t_var *var, int i, int j, char c)
 		while (++k < 10)
 		{
 			l = 1;
-			if (var->doorsense == 0)
-			{
-				while (l < 16 - var->doortime)
-					l++;
-				while (++l < 16)
-					var->forbidden[i + k][j + l] = '0';
-			}
-			if (var->doorsense == 1)
-			{
-				while (l < 16 - var->doortime)
-					var->forbidden[i + k][j + l++] = '2';
-			}
+			while (l < 16 - var->doortime)
+				l++;
+			while (++l < 16)
+				var->forbidden[i + k][j + l] = '0';
 		}
 	}
 }

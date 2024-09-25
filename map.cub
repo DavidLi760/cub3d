@@ -21,11 +21,9 @@ C 168, 89, 50
 (3) Closed door vertical
 (4) Opened door horizontal
 (5) Opened door vertical
-(6) Locked door vertical
-(7) Locked door horizontal
+(6) Reopenable door
 (C) Closet
 (d) Drawer
-(k) Drawer with key
 
     111
     1S1
