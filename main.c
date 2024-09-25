@@ -561,25 +561,6 @@ int	update(t_var *var)
 	return (0);
 }
 
-void	forbidden_helper4(t_var *var, int i, int j, char c)
-{
-	int	k;
-	int	l;
-
-	if (c == '5')
-	{
-		k = 1;
-		while (k < 15 - var->doortime)
-			k++;
-		while (++k < 16)
-		{
-			l = 4;
-			while (++l < 6)
-				var->forbidden[i + k][j + l] = '0';
-		}
-	}
-}
-
 void	forbidden_helper3(t_var *var, int i, int j, char c)
 {
 	int	k;
@@ -594,6 +575,18 @@ void	forbidden_helper3(t_var *var, int i, int j, char c)
 			while (l < 16 - var->doortime)
 				l++;
 			while (++l < 16)
+				var->forbidden[i + k][j + l] = '0';
+		}
+	}
+	else if (c == '5')
+	{
+		k = 1;
+		while (k < 15 - var->doortime)
+			k++;
+		while (++k < 16)
+		{
+			l = 4;
+			while (++l < 6)
 				var->forbidden[i + k][j + l] = '0';
 		}
 	}
@@ -660,7 +653,7 @@ void	init_forbidden(t_var *var, int i, int j)
 			if (var->map[i][j] == '4')
 				forbidden_helper3(var, i * 15, j * 15, '4');
 			if (var->map[i][j] == '5')
-				forbidden_helper4(var, i * 15, j * 15, '5');
+				forbidden_helper3(var, i * 15, j * 15, '5');
 			j++;
 		}
 		printf("\n");
