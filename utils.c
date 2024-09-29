@@ -64,6 +64,8 @@ int my_pixel_from_texture(t_var *var, int x, int y, char no)
         pixel = var->addrwe + (y * var->lenwe + x * (var->bitwe / 8));
     if (no == 'e')
         pixel = var->addrea + (y * var->lenea + x * (var->bitea / 8));
+    if (no == 'd')
+        pixel = var->addrd + (y * var->lend + x * (var->bitd / 8));
     color = *(unsigned int *)pixel;
     return (color);
 }
@@ -80,6 +82,43 @@ void	draw_block(t_var *var, int i, int j, int color)
         while (++l < 16)
             my_pixel_put(var, j * 15 + 50 + l, i * 15 + 50 + k, color);
         k++;
+    }
+}
+
+void    draw_door(t_var *var, int j, int i, int no)
+{
+    int k;
+    int l;
+
+    k = -1;
+    if (no == 0)
+    {
+        while (++k < 16)
+        {
+            l = -1;
+            while (++l < 16)
+            {
+                if (l == 8)
+                    my_pixel_put(var, j + l, i + k, 0x0000FF00);
+                else
+                    my_pixel_put(var, j + l, i + k, 0x00000000);
+            }
+        }
+    }
+    else if (no == 1)
+    {
+        k = -1;
+        while (++k < 16)
+        {
+            l = -1;
+            while (++l < 16)
+            {
+                if (k == 8)
+                    my_pixel_put(var, j + l, i + k, 0x0000FF00);
+                else
+                    my_pixel_put(var, j + l, i + k, 0x00000000);
+            }
+        }
     }
 }
 

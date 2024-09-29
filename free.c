@@ -78,10 +78,7 @@ void	free_list(t_var *var)
 {
 	free4(var, MAP_SIZE, 0);
 	mlx_destroy_image(var->mlx, var->img);
-	mlx_destroy_image(var->mlx, var->img1);
-	mlx_destroy_image(var->mlx, var->img2);
-	mlx_destroy_image(var->mlx, var->img2a);
-	mlx_destroy_image(var->mlx, var->img3);
+	mlx_destroy_image(var->mlx, var->imgd);
 	mlx_destroy_image(var->mlx, var->imag);
 	mlx_destroy_image(var->mlx, var->imgno);
 	mlx_destroy_image(var->mlx, var->imgso);

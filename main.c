@@ -114,7 +114,9 @@ void	draw_obstacle(t_var *var, int i, int j)
 					if (var->map[i][j] == '1')
 						draw_wall(var, var->diff_x + 95, var->diff_y + 95, 0x000000FF);
 					else if (var->map[i][j] == '2')
-						draw_wall(var, var->diff_x + 95, var->diff_y + 95, 0x0000FF00);
+						draw_door(var, var->diff_x + 95, var->diff_y + 95, 1);
+					else if (var->map[i][j] == '3')
+						draw_door(var, var->diff_x + 95, var->diff_y + 95, 0);
 					else
 						draw_wall(var, var->diff_x + 95, var->diff_y + 95, 0x00000000);
 				}
@@ -209,13 +211,13 @@ void	draw_health_bar(t_var *var, int i, int j)
 void	get_text_y(t_var *var, int i, int max)
 {
 	if (var->no)
-		var->text_y = var->heightno * i / max + (var->plusx / 14.00);
+		var->text_y = var->heightno * i / max;
 	if (var->so)
-		var->text_y = var->heightso * i / max + (var->plusx / 14.00);
+		var->text_y = var->heightso * i / max;
 	if (var->we)
-		var->text_y = var->heightwe * i / max + (var->plusy / 14.00);
+		var->text_y = var->heightwe * i / max;
 	if (var->ea)
-		var->text_y = var->heightea * i / max + (var->plusy / 14.00);
+		var->text_y = var->heightea * i / max;
 }
 
 int	mix_color(t_var *var, int now)
@@ -277,8 +279,8 @@ void	draw_wall_column(t_var *var, int x, int height)
 	// }
 	while (var->vide == 1 && start_y < end_y && start_y < 1010)
 	{
-		my_pixel_put2(var, x, start_y, 0x0F0000);
-		my_pixel_put2(var, x + 1, start_y++, 0x0F0000);
+		my_pixel_put2(var, x, start_y, 0x000000);
+		my_pixel_put2(var, x + 1, start_y++, 0x000000);
 	}
 	while (!var->vide && start_y < end_y && start_y < 1010)
 	{
@@ -294,7 +296,7 @@ void	draw_wall_column(t_var *var, int x, int height)
 		if (var->dist < 0)
 			var->dist *= -1;
 		if (var->door == 1)
-			color = 0x00FFFFFF;
+			color = my_pixel_from_texture(var, var->text_x, var->text_y, 'd');
 		color = mix_color(var, color);
 		my_pixel_put2(var, x, start_y, color);
 		my_pixel_put2(var, x + 1, start_y++, color);
@@ -310,9 +312,7 @@ void	draw_wall_column(t_var *var, int x, int height)
 
 void	get_wall_xy(t_var *var)
 {
-	if (var->we)
 		var->wall_x = fmod(var->wall_x, 15.00);
-	if (var->no)
 		var->wall_y = fmod(var->wall_y, 15.00);
 }
 
@@ -321,17 +321,23 @@ void	get_text_x(t_var *var)
 	if (var->we == 1|| var->ea == 1)
 	{
 		if (var->we)
-			var->text_x = var->widthwe * ((30 - var->wall_y) / 15.00);
+			var->text_x = var->widthwe * ((var->wall_y) / 15.00);
 		else if (var->ea)
-			var->text_x = var->widthea * ((15 - var->wall_y) / 15.00);	
+			var->text_x = var->widthea * ((var->wall_y) / 15.00);	
 	}
 	else if (var->no == 1|| var->so == 1)
 	{
 		if (var->no)
-			var->text_x = var->widthno * ((30 - var->wall_x) / 15.00);
+			var->text_x = var->widthno * ((var->wall_x) / 15.00);
 		else if (var->so)
-			var->text_x = var->widthso * ((15 - var->wall_x) / 15.00);
+			var->text_x = var->widthso * ((var->wall_x) / 15.00);
 	}
+	if (var->door && (var->map[(int)var->doory / 15][(int)var->doorx / 15] == '4' || var->map[(int)var->doory / 15][(int)var->doorx / 15] == '5') && var->doortime * 28 - 84 >= 0)
+		var->text_x += var->doortime * 28 - 84;
+	if (var->text_x < 0)
+		var->text_x = 0;
+	else if (var->text_x > 399)
+		var->text_x = var->widthno - 2;
 	printf("wallx:%f\n", var->wall_x);
 	printf("wally%f\n", var->wall_y);
 	printf("width:%d\n", var->widthno);
@@ -343,6 +349,9 @@ void	trace_ray(t_var *var, double angle, double *i)
 	*i = 0;
 	while (var->forbidden[(int)(var->posy + sin(angle) * *i + 5)][(int)(var->posx + cos(angle) * *i + 5)] == '0' && *i < DIST)
 	{
+		if (100 + cos(angle) * *i < 150 && 100 + cos(angle) * *i > 0)
+		if (100 + sin(angle) * *i < 150 && 100 + sin(angle) * *i > 0)
+			my_pixel_put(var, 100 + cos(angle) * *i, 100 + sin(angle) * *i, 0x00FFFFFF);
 		if (var->forbidden[(int)(var->posy + sin(angle) * ((*i) + 1) + 5)][(int)(var->posx + cos(angle) * ((*i) + 1) + 5)] == '0')
 			*i += 1;
 		else
@@ -403,9 +412,6 @@ void	trace_ray(t_var *var, double angle, double *i)
 	// printf("y:%f\n", var->wall_y);
 	get_wall_xy(var);
 	get_text_x(var);
-	if (100 + cos(angle) * *i < 150 && 100 + cos(angle) * *i > 0)
-		if (100 + sin(angle) * *i < 150 && 100 + sin(angle) * *i > 0)
-			my_pixel_put(var, 100 + cos(angle) * *i, 100 + sin(angle) * *i, 0x00FFFFFF);
 	if (*i >= DIST && var->forbidden[(int)(var->posy + sin(angle) * *i + 5)][(int)(var->posx + cos(angle) * *i) + 5] == '0')
 		var->vide = 1;
 }
@@ -426,7 +432,7 @@ void	ray_casting(t_var *var, int i)
 	{
 		var->ray_angle = start_angle + i * (PI / 3 / 960);
 		trace_ray(var, var->ray_angle, &distance);
-		wall_height = 1010 / (distance * cos(var->ray_angle - var->angle) / 15);
+		wall_height = 1500 / (distance * cos(var->ray_angle - var->angle) / 15);
 		draw_wall_column(var, pixel, wall_height);
 		i++;
 		pixel += 2;
@@ -541,9 +547,9 @@ int	update(t_var *var)
 	mlx_destroy_image(var->mlx, var->imag2);
 	mlx_put_image_to_window(var->mlx, var->win, var->img, 50, 50);
 	mlx_put_image_to_window(var->mlx, var->win, var->img, 50 + var->directx * 5, 50 + var->directy * 5);
-	if (var->door2 == 1)
+	if (var->door2 == 1 && (var->map[(int)var->doory / 15][(int)var->doorx / 15] == '2' || var->map[(int)var->doory / 15][(int)var->doorx / 15] == '3'))
 		mlx_string_put(var->mlx, var->win, 940, 750, 0x00FF0000, "Press E !");
-	if (var->door2 == 1 && var->e_pressed == 1)
+	if (var->door2 == 1 && var->e_pressed == 1 && (var->map[(int)var->doory / 15][(int)var->doorx / 15] == '2' || var->map[(int)var->doory / 15][(int)var->doorx / 15] == '3'))
 	{
 		var->door2 = 2;
 		var->doortime = 0;
@@ -551,15 +557,27 @@ int	update(t_var *var)
 	if (var->door2 == 2)
 		var->doortime += 1;
 	if (var->doortime == 16 && var->door2 == 2)
+	{
 		var->door2 = 0;
-	if (var->door2 == 2 && var->map[(int)var->doory / 15][(int)var->doorx / 15] == '2')
+		var->map[(int)var->fermy / 15][(int)var->fermx / 15] = '6';
+	}
+	if (var->door2 == 2 && var->doortime == 1 && var->map[(int)var->doory / 15][(int)var->doorx / 15] == '2')
+	{
 		var->map[(int)var->doory / 15][(int)var->doorx / 15] = '4';
-	else if (var->door2 == 2 && var->map[(int)var->doory / 15][(int)var->doorx / 15] == '3')
+		var->fermx = var->doorx;
+		var->fermy = var->doory;
+	}
+	else if (var->door2 == 2 && var->doortime == 1 && var->map[(int)var->doory / 15][(int)var->doorx / 15] == '3')
+	{
 		var->map[(int)var->doory / 15][(int)var->doorx / 15] = '5';
+		var->fermx = var->doorx;
+		var->fermy = var->doory;
+	}
 	if (var->door2 == 1)
 		var->door2 = 0;
 	return (0);
 }
+
 
 void	forbidden_helper3(t_var *var, int i, int j, char c)
 {
@@ -712,6 +730,7 @@ int	main(int argc, char **argv)
 	var.right_pressed = 0;
 	var.shift_pressed = 0;
 	var.vide = 0;
+	var.health = 0;
 	var.directx = 0;
 	var.directy = 0;
 	var.pitch = 0;
@@ -739,19 +758,13 @@ int	main(int argc, char **argv)
 	if (!var.mlx)
 		return (0);
 	var.win = mlx_new_window(var.mlx, 1920, 1010, "cub3d");
-	var.img = mlx_xpm_file_to_image(var.mlx, "./Red_dot.xpm", &var.height, &var.width);
+	var.img = mlx_xpm_file_to_image(var.mlx, "./xpms/Red_dot.xpm", &var.height, &var.width);
 	if (!var.img)
 		return (0);
-	var.img1 = mlx_xpm_file_to_image(var.mlx, "carre_bleu.xpm", &var.height, &var.width);
-	if (!var.img1)
+	var.imgd = mlx_xpm_file_to_image(var.mlx, "./xpms/Door.xpm", &var.height1, &var.width1);
+	if (!var.imgd)
 		return (0);
-	var.img2 = mlx_xpm_file_to_image(var.mlx, "carre_blanc.xpm", &var.height, &var.width);
-	if (!var.img2)
-		return (0);
-	var.img2a = mlx_xpm_file_to_image(var.mlx, "pixel_noir.xpm", &var.height, &var.width);
-	var.img3 = mlx_xpm_file_to_image(var.mlx, "carre_vide.xpm", &var.height, &var.width);
-	if (!var.img3)
-		return (0);
+	var.addrd = mlx_get_data_addr(var.imgd, &var.bitd, &var.lend, &var.endiand);
 	var.imag = mlx_new_image(var.mlx, 150, 150);
 	var.addr = mlx_get_data_addr(var.imag, &var.bit, &var.len, &var.endian);
 	i = 0;
