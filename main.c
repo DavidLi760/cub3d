@@ -241,6 +241,28 @@ int	mix_color(t_var *var, int now)
 	return (color);
 }
 
+int	mix_f_c(t_var *var, int x, int y, int now)
+{
+	int		color;
+	float	t;
+	
+	var->maximum = sqrt(pow(960, 2) + pow(505 - var->pitch, 2));
+	t = sqrt(pow(x - 960, 2) + pow(y - 505 + var->pitch, 2));
+	t = 1.0 - (t / var->maximum);
+	color = now;
+	int r1 = color >> 16 & 0xFF;
+	int	g1 = color >> 8 & 0xFF;
+	int	b1 = (color & 0xFF);
+	int	r2 = 0x000000 >> 16 & 0xFF;
+	int	g2 = 0x000000 >> 8 & 0xFF;
+	int	b2 = 0x000000 & 0xFF;
+	int	r = (int)((1 - (t)) * r1 + t * r2);
+	int	g = (int)((1 - (t)) * g1 + t * g2);
+	int	b = (int)((1 - (t)) * b1 + t * b2);
+	color = (r << 16) | (g << 8) | b;
+	return (color);
+}
+
 void	draw_wall_column(t_var *var, int x, int height)
 {
 	int	i;
@@ -262,21 +284,6 @@ void	draw_wall_column(t_var *var, int x, int height)
 	}
 	while (start_y < 0)
 		start_y++;
-	// while (var->vide == 1 && start_y < 505 - var->pitch)
-	// {
-	// 	my_pixel_put2(var, x, start_y, var->ceiling);
-	// 	my_pixel_put2(var, x + 1, start_y++, var->ceiling);
-	// }
-	// while (var->vide == 1 && start_y < 505 - var->pitch)
-	// {
-	// 	my_pixel_put2(var, x, start_y, 0x00000000);
-	// 	my_pixel_put2(var, x + 1, start_y++, 0x00000000);
-	// }
-	// while (var->vide == 1 && start_y < 1010)
-	// {
-	// 	my_pixel_put2(var, x, start_y, var->floor);
-	// 	my_pixel_put2(var, x + 1, start_y++, var->floor);
-	// }
 	while (var->vide == 1 && start_y < end_y && start_y < 1010)
 	{
 		my_pixel_put2(var, x, start_y, 0x000000);
@@ -550,29 +557,19 @@ int	update(t_var *var)
 	if (var->door2 == 1 && (var->map[(int)var->doory / 15][(int)var->doorx / 15] == '2' || var->map[(int)var->doory / 15][(int)var->doorx / 15] == '3'))
 		mlx_string_put(var->mlx, var->win, 940, 750, 0x00FF0000, "Press E !");
 	if (var->door2 == 1 && var->e_pressed == 1 && (var->map[(int)var->doory / 15][(int)var->doorx / 15] == '2' || var->map[(int)var->doory / 15][(int)var->doorx / 15] == '3'))
-	{
 		var->door2 = 2;
-		var->doortime = 0;
-	}
 	if (var->door2 == 2)
 		var->doortime += 1;
 	if (var->doortime == 16 && var->door2 == 2)
 	{
 		var->door2 = 0;
-		var->map[(int)var->fermy / 15][(int)var->fermx / 15] = '6';
+		var->doortime = 0;
 	}
 	if (var->door2 == 2 && var->doortime == 1 && var->map[(int)var->doory / 15][(int)var->doorx / 15] == '2')
-	{
 		var->map[(int)var->doory / 15][(int)var->doorx / 15] = '4';
-		var->fermx = var->doorx;
-		var->fermy = var->doory;
-	}
+
 	else if (var->door2 == 2 && var->doortime == 1 && var->map[(int)var->doory / 15][(int)var->doorx / 15] == '3')
-	{
 		var->map[(int)var->doory / 15][(int)var->doorx / 15] = '5';
-		var->fermx = var->doorx;
-		var->fermy = var->doory;
-	}
 	if (var->door2 == 1)
 		var->door2 = 0;
 	return (0);
@@ -709,6 +706,7 @@ int	main(int argc, char **argv)
 	int		i;
 
 	var.delay = 0;
+	var.maximum = sqrt(pow(960, 2) + pow(505, 2));
 	var.height = 5;
 	var.width = 5;
 	var.floor = -1;
