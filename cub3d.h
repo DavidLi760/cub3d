@@ -24,7 +24,7 @@
 # include "mlx/mlx.h"
 
 # define MS 10
-# define DIST 150
+# define DIST 30
 # define MAP_SIZE 5000
 # define HEIGHT 1010
 # define BUFFER_SIZE 500
@@ -156,6 +156,7 @@ typedef struct s_var
 	double	doorx;
 	double	doory;
 	double	doortime;
+	double	doortime2;
 	double	doorsense;
 	double	fermx;
 	double	fermy;

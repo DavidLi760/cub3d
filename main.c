@@ -282,6 +282,8 @@ void	draw_wall_column(t_var *var, int x, int height)
 		my_pixel_put2(var, x, i, var->ceiling);
 		my_pixel_put2(var, x + 1, i++, var->ceiling);
 	}
+	perror("on s'arrete la ?\n");
+	printf("%d\n", start_y);
 	while (start_y < 0)
 		start_y++;
 	while (var->vide == 1 && start_y < end_y && start_y < 1010)
@@ -354,6 +356,8 @@ void	get_text_x(t_var *var)
 void	trace_ray(t_var *var, double angle, double *i)
 {
 	*i = 0;
+	if (var->forbidden[(int)(var->posy + sin(angle) * *i + 5)][(int)(var->posx + cos(angle) * *i + 5)] == '1')
+		return ;
 	while (var->forbidden[(int)(var->posy + sin(angle) * *i + 5)][(int)(var->posx + cos(angle) * *i + 5)] == '0' && *i < DIST)
 	{
 		if (100 + cos(angle) * *i < 150 && 100 + cos(angle) * *i > 0)
@@ -389,6 +393,10 @@ void	trace_ray(t_var *var, double angle, double *i)
 	else if (var->forbidden[(int)(var->posy + sin(angle) * *i + 5)][(int)(var->posx + cos(angle) * *i + 5 + 0.01)] == '3' ||
 		var->forbidden[(int)(var->posy + sin(angle) * *i + 5 - 0.01)][(int)(var->posx + cos(angle) * *i + 5)] == '3'
 		|| var->forbidden[(int)(var->posy + sin(angle) * *i + 5)][(int)(var->posx + cos(angle) * *i + 5 + 0.01)] == '3')
+			var->door = 1;
+	else if (var->forbidden[(int)(var->posy + sin(angle) * *i + 5)][(int)(var->posx + cos(angle) * *i + 5 + 0.01)] == '6' ||
+		var->forbidden[(int)(var->posy + sin(angle) * *i + 5 - 0.01)][(int)(var->posx + cos(angle) * *i + 5)] == '6'
+		|| var->forbidden[(int)(var->posy + sin(angle) * *i + 5)][(int)(var->posx + cos(angle) * *i + 5 + 0.01)] == '6')
 			var->door = 1;
 	else
 		var->door = 0;
@@ -439,7 +447,7 @@ void	ray_casting(t_var *var, int i)
 	{
 		var->ray_angle = start_angle + i * (PI / 3 / 960);
 		trace_ray(var, var->ray_angle, &distance);
-		wall_height = 1500 / (distance * cos(var->ray_angle - var->angle) / 15);
+		wall_height = 1000 / (distance * cos(var->ray_angle - var->angle) / 15);
 		draw_wall_column(var, pixel, wall_height);
 		i++;
 		pixel += 2;
@@ -554,17 +562,35 @@ int	update(t_var *var)
 	mlx_destroy_image(var->mlx, var->imag2);
 	mlx_put_image_to_window(var->mlx, var->win, var->img, 50, 50);
 	mlx_put_image_to_window(var->mlx, var->win, var->img, 50 + var->directx * 5, 50 + var->directy * 5);
-	if (var->door2 == 1 && (var->map[(int)var->doory / 15][(int)var->doorx / 15] == '2' || var->map[(int)var->doory / 15][(int)var->doorx / 15] == '3'))
+	if (var->door2 == 1 && (var->map[(int)var->doory / 15][(int)var->doorx / 15] == '2' || var->map[(int)var->doory / 15][(int)var->doorx / 15] == '3' || var->map[(int)var->doory / 15][(int)var->doorx / 15] == '6'))
 		mlx_string_put(var->mlx, var->win, 940, 750, 0x00FF0000, "Press E !");
 	if (var->door2 == 1 && var->e_pressed == 1 && (var->map[(int)var->doory / 15][(int)var->doorx / 15] == '2' || var->map[(int)var->doory / 15][(int)var->doorx / 15] == '3'))
 		var->door2 = 2;
+	if (var->door2 == 1 && var->e_pressed == 1 && (var->map[(int)var->doory / 15][(int)var->doorx / 15] == '6') && var->doortime2 < 17)
+	{
+		var->door3 = 1;
+		var->door2 = 0;
+	}
 	if (var->door2 == 2)
 		var->doortime += 1;
-	if (var->doortime == 16 && var->door2 == 2)
+	if (var->door3 == 1)
+		var->doortime2 += 1;
+	if (var->doortime > 16 && var->door2 == 2)
 	{
 		var->door2 = 0;
 		var->doortime = 0;
 	}
+	if (var->doortime2 > 16 && var->door3 == 1)
+		var->door3 = 0;
+	if (var->door3 == 0 && var->e_pressed == 1 && var->map[(int)var->doory / 15][(int)var->doorx / 15] == '6' && var->doortime2 == 17)
+	{
+		var->door3 = 2;
+		var->door2 = 0;
+	}
+	if (var->door3 == 2 && var->doortime2 > 0)
+		var->doortime2 -= 1;
+	if (var->doortime2 == 0 && var->door3 == 2)
+		var->door3 = 0;
 	if (var->door2 == 2 && var->doortime == 1 && var->map[(int)var->doory / 15][(int)var->doorx / 15] == '2')
 		var->map[(int)var->doory / 15][(int)var->doorx / 15] = '4';
 
@@ -575,6 +601,24 @@ int	update(t_var *var)
 	return (0);
 }
 
+void	forbidden_helper4(t_var *var, int i, int j, char c)
+{
+	int	k;
+	int	l;
+
+	if (c == '6')
+	{
+		k = 8;
+		while (++k < 10)
+		{
+			l = 1;
+			while (l < 16 - var->doortime2)
+				var->forbidden[i + k][j + l++] = '2';
+			while (++l < 16)
+				var->forbidden[i + k][j + l] = '0';
+		}
+	}
+}
 
 void	forbidden_helper3(t_var *var, int i, int j, char c)
 {
@@ -586,7 +630,7 @@ void	forbidden_helper3(t_var *var, int i, int j, char c)
 		k = 8;
 		while (++k < 10)
 		{
-			l = 1;
+			l = 0;
 			while (l < 16 - var->doortime)
 				l++;
 			while (++l < 16)
@@ -595,7 +639,7 @@ void	forbidden_helper3(t_var *var, int i, int j, char c)
 	}
 	else if (c == '5')
 	{
-		k = 1;
+		k = 0;
 		while (k < 15 - var->doortime)
 			k++;
 		while (++k < 16)
@@ -669,6 +713,8 @@ void	init_forbidden(t_var *var, int i, int j)
 				forbidden_helper3(var, i * 15, j * 15, '4');
 			if (var->map[i][j] == '5')
 				forbidden_helper3(var, i * 15, j * 15, '5');
+			if (var->map[i][j] == '6')
+				forbidden_helper4(var, i * 15, j * 15, '6');
 			j++;
 		}
 		printf("\n");
@@ -715,7 +761,9 @@ int	main(int argc, char **argv)
 	var.wall_y = 0;
 	var.door = 0;
 	var.door2 = 0;
+	var.door3 = 0;
 	var.doortime = 0;
+	var.doortime2 = 0;
 	var.doorsense = 0;
 	var.e_pressed = 0;
 	var.w_pressed = 0;
