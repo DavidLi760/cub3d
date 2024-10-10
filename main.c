@@ -480,17 +480,7 @@ int	update(t_var *var)
 	var->imag2 = mlx_new_image(var->mlx, 1920, 1920);
 	var->addr2 = mlx_get_data_addr(var->imag2, &var->bit2, &var->len2, &var->endian2);
 	if (var->w_pressed == 1)
-	{
-		if (var->w_pressed == 1 && var->forbidden[(int)(var->posy + var->directy) + 5][(int)var->posx + 5] != '0' && var->forbidden[(int)var->posy + 5][(int)(var->posx + var->directx) + 5] == '0')
-			var->posx += var->directx * (var->shift_pressed * 0.5 + 0.25);
-		else if (var->w_pressed == 1 && var->forbidden[(int)var->posy + 5][(int)(var->posx + var->directx) + 5] != '0' && var->forbidden[(int)(var->posy + var->directy) + 5][(int)var->posx + 5] == '0')
-			var->posy += var->directy * (var->shift_pressed * 0.5 + 0.25);
-		else if (var->forbidden[(int)(var->posy + var->directy) + 5][(int)(var->posx + var->directx) + 5] == '0')
-		{
-			var->posx += var->directx * (var->shift_pressed * 0.5 + 0.25);
-			var->posy += var->directy * (var->shift_pressed * 0.5 + 0.25);
-		}
-	}
+		walking_w(var);
 	if (var->s_pressed == 1)
 	{
 		if (var->forbidden[(int)(var->posy - var->directy) + 5][(int)var->posx + 5] != '0' && var->forbidden[(int)var->posy + 5][(int)(var->posx - var->directx) + 5] == '0')
@@ -613,6 +603,25 @@ int	update(t_var *var)
 	return (0);
 }
 
+void	forbidden_helper5(t_var *var, int i, int j, char c)
+{
+	int	k;
+	int	l;
+
+	if (c == 'r')
+	{
+		k = 7;
+		while (++k < 10)
+		{
+			l = 7;
+			while (l < 9 - var->doortime2)
+				var->forbidden[i + k][j + l++] = 'r';
+			while (++l < 16)
+				var->forbidden[i + k][j + l] = '0';
+		}
+	}
+}
+
 void	forbidden_helper4(t_var *var, int i, int j, char c)
 {
 	int	k;
@@ -727,6 +736,8 @@ void	init_forbidden(t_var *var, int i, int j)
 				forbidden_helper3(var, i * 15, j * 15, '5');
 			if (var->map[i][j] == '6')
 				forbidden_helper4(var, i * 15, j * 15, '6');
+			if (var->map[i][j] == 'r')
+				forbidden_helper5(var, i * 15, j * 15, 'r');
 			j++;
 		}
 		// printf("\n");

@@ -199,5 +199,6 @@ void		init_forbidden(t_var *var, int i, int j);
 int			str_cmp(char *s1, char *s2);
 int			is_right_element(t_var *var, int i);
 int			ft_atoi(const char *str);
+void		walking_w(t_var *var);
 
 #endif

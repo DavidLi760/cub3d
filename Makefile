@@ -11,6 +11,7 @@ SRCS		=	main.c\
 				ft_split.c\
 				ft_atoi.c\
 				utils.c\
+				walking.c\
 				free.c
 OBJS		= $(SRCS:.c=.o)
 
