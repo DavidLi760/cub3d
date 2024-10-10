@@ -66,6 +66,8 @@ int my_pixel_from_texture(t_var *var, int x, int y, char no)
         pixel = var->addrea + (y * var->lenea + x * (var->bitea / 8));
     if (no == 'd')
         pixel = var->addrd + (y * var->lend + x * (var->bitd / 8));
+    if (no == 'r')
+        pixel = var->addrru1 + (y * var->lenru1 + x * (var->bitru1 / 8));
     color = *(unsigned int *)pixel;
     return (color);
 }

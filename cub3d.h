@@ -58,6 +58,8 @@ typedef struct s_var
 	void	*imgso;
 	void	*imgwe;
 	void	*imgea;
+	void	*imgru1;
+	void	*imgru2;
 	char	*addr;
 	char	*addr2;
 	char	*addrd;
@@ -65,6 +67,8 @@ typedef struct s_var
 	char	*addrso;
 	char	*addrwe;
 	char	*addrea;
+	char	*addrru1;
+	char	*addrru2;
 	int		vide;
 	int		len;
 	int		len2;
@@ -73,6 +77,8 @@ typedef struct s_var
 	int		lenso;
 	int		lenwe;
 	int		lenea;
+	int		lenru1;
+	int		lenru2;
 	int		bit;
 	int		bit2;
 	int		bitd;
@@ -80,6 +86,8 @@ typedef struct s_var
 	int		bitso;
 	int		bitwe;
 	int		bitea;
+	int		bitru1;
+	int		bitru2;
 	int		endian;
 	int		endian2;
 	int		endiand;
@@ -87,6 +95,8 @@ typedef struct s_var
 	int		endianso;
 	int		endianwe;
 	int		endianea;
+	int		endianru1;
+	int		endianru2;
 	int		diff_x;
 	int		diff_y;
 	char	**forbidden;
@@ -121,6 +131,10 @@ typedef struct s_var
 	int		height;
 	int		width1;
 	int		height1;
+	int		widthru1;
+	int		widthru2;
+	int		heightru1;
+	int		heightru2;
 	int		widthno;
 	int		heightno;
 	int		widthso;
@@ -150,6 +164,7 @@ typedef struct s_var
 	int		so;
 	int		we;
 	int		ea;
+	int		sprite;
 	double	door;
 	double	door2;
 	double	door3;

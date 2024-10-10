@@ -304,6 +304,8 @@ void	draw_wall_column(t_var *var, int x, int height)
 			var->dist *= -1;
 		if (var->door == 1)
 			color = my_pixel_from_texture(var, var->text_x, var->text_y, 'd');
+		else if (var->sprite == 1)
+			color = my_pixel_from_texture(var, var->text_x, var->text_y, 'r');
 		color = mix_color(var, color);
 		my_pixel_put2(var, x, start_y, color);
 		my_pixel_put2(var, x + 1, start_y++, color);
@@ -402,6 +404,10 @@ void	trace_ray(t_var *var, double angle, double *i, int no)
 		var->forbidden[(int)(var->posy + sin(angle) * *i + 5 - 0.01)][(int)(var->posx + cos(angle) * *i + 5)] == '6'
 		|| var->forbidden[(int)(var->posy + sin(angle) * *i + 5)][(int)(var->posx + cos(angle) * *i + 5 + 0.01)] == '6')
 			var->door = 1;
+	else if (var->forbidden[(int)(var->posy + sin(angle) * *i + 5)][(int)(var->posx + cos(angle) * *i + 5 + 0.01)] == 'r' ||
+		var->forbidden[(int)(var->posy + sin(angle) * *i + 5 - 0.01)][(int)(var->posx + cos(angle) * *i + 5)] == 'r'
+		|| var->forbidden[(int)(var->posy + sin(angle) * *i + 5)][(int)(var->posx + cos(angle) * *i + 5 + 0.01)] == 'r')
+			var->sprite = 1;
 	else
 		var->door = 0;
 	if (no == 465)
@@ -463,6 +469,7 @@ void	ray_casting(t_var *var, int i)
 		var->we = 0;
 		var->ea = 0;
 		var->vide = 0;
+		var->sprite = 0;
 	}
 	while (get_time() < start + MS)
 		usleep(5);
@@ -767,6 +774,7 @@ int	main(int argc, char **argv)
 	var.door = 0;
 	var.door2 = 0;
 	var.door3 = 0;
+	var.sprite = 0;
 	var.doortime = 0;
 	var.doortime2 = 0;
 	var.doorsense = 0;
@@ -784,6 +792,8 @@ int	main(int argc, char **argv)
 	var.health = 0;
 	var.directx = 0;
 	var.directy = 0;
+	var.plusx = 0;
+	var.plusy = 0;
 	var.pitch = 0;
 	var.pitch2 = 0;
 	var.angle = 0;
@@ -815,10 +825,17 @@ int	main(int argc, char **argv)
 	var.imgd = mlx_xpm_file_to_image(var.mlx, "./xpms/Door.xpm", &var.height1, &var.width1);
 	if (!var.imgd)
 		return (0);
+	var.imgru1 = mlx_xpm_file_to_image(var.mlx, "./xpms/Rush1.xpm", &var.heightru1, &var.widthru1);
+	if (!var.imgru1)
+		return (0);
+	var.imgru2 = mlx_xpm_file_to_image(var.mlx, "./xpms/Rush2.xpm", &var.heightru2, &var.widthru2);
+	if (!var.imgru2)
+		return (0);
 	var.addrd = mlx_get_data_addr(var.imgd, &var.bitd, &var.lend, &var.endiand);
 	var.imag = mlx_new_image(var.mlx, 150, 150);
 	var.addr = mlx_get_data_addr(var.imag, &var.bit, &var.len, &var.endian);
-	i = 0;
+	var.addrru1 = mlx_get_data_addr(var.imgru1, &var.bitru1, &var.lenru1, &var.endianru1);
+	var.addrru2 = mlx_get_data_addr(var.imgru2, &var.bitru2, &var.lenru2, &var.endianru2);
 	var.imgno = mlx_xpm_file_to_image(var.mlx, var.north, &var.heightno, &var.widthno);
 	var.imgso = mlx_xpm_file_to_image(var.mlx, var.south, &var.heightso, &var.widthso);
 	var.imgwe = mlx_xpm_file_to_image(var.mlx, var.west, &var.heightwe, &var.widthwe);
@@ -827,6 +844,7 @@ int	main(int argc, char **argv)
 	var.addrso = mlx_get_data_addr(var.imgso, &var.bitso, &var.lenso, &var.endianso);
 	var.addrwe = mlx_get_data_addr(var.imgwe, &var.bitwe, &var.lenwe, &var.endianwe);
 	var.addrea = mlx_get_data_addr(var.imgea, &var.bitea, &var.lenea, &var.endianea);
+	i = 0;
 	while (var.element[i])
 		printf("%s\n", var.element[i++]);
 	i = 0;

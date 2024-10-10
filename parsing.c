@@ -92,7 +92,8 @@ int	is_right_char(t_var *var, int i, int j)
 				&& var->map[i][j] != 'N' && var->map[i][j] != 'S'
 				&& var->map[i][j] != ' ' && var->map[i][j] != '0'
 				&& var->map[i][j] != '1' && var->map[i][j] != '2'
-				&& var->map[i][j] != '3' && var->map[i][j] != '6')
+				&& var->map[i][j] != '3' && var->map[i][j] != '6'
+				&& var->map[i][j] != 'r')
 				return (printf("Error : Unknown character on the map\n"), 0);
 			j++;
 		}
