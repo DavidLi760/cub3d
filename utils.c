@@ -12,6 +12,14 @@
 
 #include "cub3d.h"
 
+void    my_put_image_to_image(t_var *var, int size, int dist,)
+{
+    int color;
+
+    color = my_pixel_from_texture(var, x, y, 'r');
+    my_pixel_put2(var, x, y, color);
+}
+
 long long	get_time(void)
 {
 	struct timeval	t;

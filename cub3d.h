@@ -120,6 +120,8 @@ typedef struct s_var
 	double	ray_angle;
 	double		text_x;
 	double		text_y;
+	double	xru;
+	double	yru;
 	t_pos	position;
 	t_pos	position2;
 	int		health;

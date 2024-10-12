@@ -628,8 +628,10 @@ void	forbidden_helper5(t_var *var, int i, int j, char c)
 			while (++l < 16)
 			{
 				if (l == 8 && k == 8)
-					var->forbidden[i + k][j + l++] = 'r';
-				var->forbidden[i + k][j + l++] = 's';
+					var->xru = i + k;
+				if (l == 8 && k == 8)
+					var->yru == j + l;
+				var->forbidden[i + k][j + l] = '0';
 			}
 		}
 	}
@@ -833,6 +835,8 @@ int	main(int argc, char **argv)
 	var.so = 0;
 	var.we = 0;
 	var.ea = 0;
+	var.xru = 0;
+	var.yru = 0;
 	if (argc != 2)
 		return (0);
 	if (!check_arg(&var, argv))
