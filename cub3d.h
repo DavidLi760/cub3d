@@ -175,8 +175,9 @@ typedef struct s_var
 	double	doortime;
 	double	doortime2;
 	double	doorsense;
-	double	fermx;
-	double	fermy;
+	double	iru;
+	double	angleru;
+	int		ru;
 	int		mix;
 }	t_var;
 

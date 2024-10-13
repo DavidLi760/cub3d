@@ -381,6 +381,8 @@ void	trace_ray(t_var *var, double angle, double *i, int no)
 		else
 		*i += 0.01;
 	}
+	if (*i > var->iru)
+		var->ru = 2;
 	if (var->forbidden[(int)(var->posy + sin(angle) * *i + 5 - 0.01)][(int)(var->posx + cos(angle) * *i + 5)] == '0')
 	{
 		var->no = 1;
@@ -465,6 +467,9 @@ void	ray_casting(t_var *var, int i)
 	while (i < 960)
 	{
 		var->ray_angle = start_angle + i * (PI / 3 / 960);
+		var->ru = 0;
+		if (var->ray_angle > var->iru - 0.01 && var->ray_angle < var->iru + 0.01)
+			var->ru = 1;
 		distance = 0;
 		trace_ray(var, var->ray_angle, &distance, i);
 		wall_height = 1500 / (distance * cos(var->ray_angle - var->angle) / 15);
@@ -561,18 +566,20 @@ int	update(t_var *var)
 	if (var->posy <= var->position2.y - 1)
 		var->position2.y -= 1;
 	minimap(var, -1, 0);
+	if (var->iru < DIST)
+	{
+		var->angleru = atan2((var->yru - var->posy) / var->iru, (var->xru - var->posx) / var->iru);
+	}
 	ray_casting(var, 0);
 	var->no = 0;
 	var->so = 0;
 	var->we = 0;
 	var->ea = 0;
 	var->vide = 0;
+	var->iru = (fabs(var->xru - var->posx) + fabs(var->yru - var->posy));
 	mlx_mouse_move(var->mlx, var->win, 1800, 900);
 	init_forbidden(var, 0, 0);
 	mlx_put_image_to_window(var->mlx, var->win, var->imag2, 0, 0);
-	if (var->sprite == 2)
-		mlx_put_image_to_window(var->mlx, var->win, var->imgru1, 500, 500);
-	var->sprite = 0;
 	mlx_put_image_to_window(var->mlx, var->win, var->imag, -50, -50);
 	mlx_destroy_image(var->mlx, var->imag2);
 	mlx_put_image_to_window(var->mlx, var->win, var->img, 49, 49);
@@ -630,7 +637,7 @@ void	forbidden_helper5(t_var *var, int i, int j, char c)
 				if (l == 8 && k == 8)
 					var->xru = i + k;
 				if (l == 8 && k == 8)
-					var->yru == j + l;
+					var->yru = j + l;
 				var->forbidden[i + k][j + l] = '0';
 			}
 		}
@@ -755,7 +762,6 @@ void	init_forbidden(t_var *var, int i, int j)
 				forbidden_helper5(var, i * 15, j * 15, 'r');
 			j++;
 		}
-		// printf("\n");
 		i++;
 	}
 }
@@ -837,6 +843,8 @@ int	main(int argc, char **argv)
 	var.ea = 0;
 	var.xru = 0;
 	var.yru = 0;
+	var.iru = 0;
+	var.angleru = 0;
 	if (argc != 2)
 		return (0);
 	if (!check_arg(&var, argv))
