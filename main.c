@@ -305,13 +305,8 @@ void	draw_wall_column(t_var *var, int x, int height)
 		if (var->door == 1)
 			color = my_pixel_from_texture(var, var->text_x, var->text_y, 'd');
 		color = mix_color(var, color);
-		my_pixel_put2(var, x, start_y, color);
-		my_pixel_put2(var, x + 1, start_y, color);
 		if (var->ru2 == 1)
-		{
 			color = my_pixel_from_texture(var, var->ru * 400, var->text_y, 'r');
-			perror("color rush\n");
-		}
 		my_pixel_put2(var, x, start_y, color);
 		my_pixel_put2(var, x + 1, start_y, color);
 		start_y++;
@@ -463,11 +458,11 @@ void	ray_casting(t_var *var, int i)
 	pixel = 0;
 	start_angle = var->angle - PI / 3 / 2;
 	var->rusize = 1000 / var->iru;
+	var->angledru = (var->angleru + var->iru * 0.001) - (var->angleru - var->iru * 0.001);
 	while (i < 960)
 	{
 		var->ray_angle = start_angle + i * (PI / 3 / 960);
 		var->ru = 0;
-		var->angledru = (var->angleru + var->iru * 0.001) - (var->angleru - var->iru * 0.001);
 		if (var->ray_angle > var->angleru - var->iru * 0.001 && var->ray_angle < var->angleru + var->iru * 0.001)
 			var->ru = (var->ray_angle - (var->angleru - var->iru * 0.001)) / var->angledru;
 		distance = 0;
