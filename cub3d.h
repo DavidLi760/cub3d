@@ -177,7 +177,10 @@ typedef struct s_var
 	double	doorsense;
 	double	iru;
 	double	angleru;
-	int		ru;
+	double	angledru;
+	double	rusize;
+	double		ru;
+	int		ru2;
 	int		mix;
 }	t_var;
 

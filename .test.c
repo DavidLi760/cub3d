@@ -70,8 +70,8 @@ double	is_a_grid(t_var *var, double angle, double x, double y)
 		if (tempx <= 10.00)
 			tempx += 10.00;
 		tempx = fmod(tempx, 15);
-		printf("%f, ", tempx);
-		printf("%f\n", tempy);
+		// printf("%f, ", tempx);
+		// printf("%f\n", tempy);
 		if (sin(angle) >= 0.1)
 			tempy = (15 - tempy) / sin(angle);
 		else if (sin(angle) <= 0.1)
@@ -114,5 +114,5 @@ int	main(int argc, char **argv)
 		return (0);
 	if (!init_var(&var, -1, 0))
 		return (0);
-	printf("%f", is_a_grid(&var, 0, 25, 25));
+	// printf("%f", is_a_grid(&var, 0, 25, 25));
 }

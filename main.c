@@ -304,11 +304,17 @@ void	draw_wall_column(t_var *var, int x, int height)
 			var->dist *= -1;
 		if (var->door == 1)
 			color = my_pixel_from_texture(var, var->text_x, var->text_y, 'd');
-		// else if (var->sprite == 1)
-		// 	color = my_pixel_from_texture(var, var->text_x, var->text_y, 'r');
 		color = mix_color(var, color);
 		my_pixel_put2(var, x, start_y, color);
-		my_pixel_put2(var, x + 1, start_y++, color);
+		my_pixel_put2(var, x + 1, start_y, color);
+		if (var->ru2 == 1)
+		{
+			color = my_pixel_from_texture(var, var->ru * 400, var->text_y, 'r');
+			perror("color rush\n");
+		}
+		my_pixel_put2(var, x, start_y, color);
+		my_pixel_put2(var, x + 1, start_y, color);
+		start_y++;
 	}
 	while (start_y < 1010)
 	{
@@ -381,24 +387,16 @@ void	trace_ray(t_var *var, double angle, double *i, int no)
 		else
 		*i += 0.01;
 	}
-	if (*i > var->iru)
-		var->ru = 2;
+	if (*i > var->iru && var->ru != 0)
+		var->ru2 = 1;
 	if (var->forbidden[(int)(var->posy + sin(angle) * *i + 5 - 0.01)][(int)(var->posx + cos(angle) * *i + 5)] == '0')
-	{
 		var->no = 1;
-	}
 	else if (var->forbidden[(int)(var->posy + sin(angle) * *i + 5)][(int)(var->posx + cos(angle) * *i + 5 - 0.01)] == '0')
-	{
 		var->we = 1;
-	}
 	else if (var->forbidden[(int)(var->posy + sin(angle) * *i + 5)][(int)(var->posx + cos(angle) * *i + 5 + 0.01)] == '0')
-	{
 		var->ea = 1;
-	}
 	else if (var->forbidden[(int)(var->posy + sin(angle) * *i + 5 + 0.01)][(int)(var->posx + cos(angle) * *i + 5)] == '0')
-	{
 		var->so = 1;
-	}
 	if (var->forbidden[(int)(var->posy + sin(angle) * *i + 5)][(int)(var->posx + cos(angle) * *i + 5 + 0.01)] == '2' ||
 		var->forbidden[(int)(var->posy + sin(angle) * *i + 5 - 0.01)][(int)(var->posx + cos(angle) * *i + 5)] == '2'
 		|| var->forbidden[(int)(var->posy + sin(angle) * *i + 5)][(int)(var->posx + cos(angle) * *i + 5 + 0.01)] == '2')
@@ -419,8 +417,8 @@ void	trace_ray(t_var *var, double angle, double *i, int no)
 		var->forbidden[(int)(var->posy + sin(angle) * *i + 5 - 0.01)][(int)(var->posx + cos(angle) * *i + 5)] == 's'
 		|| var->forbidden[(int)(var->posy + sin(angle) * *i + 5)][(int)(var->posx + cos(angle) * *i + 5 + 0.01)] == 's')
 			var->sprite = 1;
-	if (no == 465)
-		printf("%c\n", var->map[(int)var->doory / 15][(int)var->doorx / 15]);
+	// if (no == 465)
+	// 	printf("%c\n", var->map[(int)var->doory / 15][(int)var->doorx / 15]);
 	// printf(" %c\n", var->forbidden[(int)(var->posy + sin(angle) * *i + 5 - 0.01)][(int)(var->posx + cos(angle) * *i + 5)]);
 	// printf("%c", var->forbidden[(int)(var->posy + sin(angle) * *i + 5)][(int)(var->posx + cos(angle) * *i + 5 - 0.01)]);
 	// printf(" %c\n", var->forbidden[(int)(var->posy + sin(angle) * *i + 5)][(int)(var->posx + cos(angle) * *i + 5 + 0.01)]);
@@ -463,13 +461,15 @@ void	ray_casting(t_var *var, int i)
 	start = get_time();
 	distance = 0;
 	pixel = 0;
-	start_angle = var->angle  - PI / 3 / 2;
+	start_angle = var->angle - PI / 3 / 2;
+	var->rusize = 1000 / var->iru;
 	while (i < 960)
 	{
 		var->ray_angle = start_angle + i * (PI / 3 / 960);
 		var->ru = 0;
-		if (var->ray_angle > var->iru - 0.01 && var->ray_angle < var->iru + 0.01)
-			var->ru = 1;
+		var->angledru = (var->angleru + var->iru * 0.001) - (var->angleru - var->iru * 0.001);
+		if (var->ray_angle > var->angleru - var->iru * 0.001 && var->ray_angle < var->angleru + var->iru * 0.001)
+			var->ru = (var->ray_angle - (var->angleru - var->iru * 0.001)) / var->angledru;
 		distance = 0;
 		trace_ray(var, var->ray_angle, &distance, i);
 		wall_height = 1500 / (distance * cos(var->ray_angle - var->angle) / 15);
@@ -481,9 +481,11 @@ void	ray_casting(t_var *var, int i)
 		var->we = 0;
 		var->ea = 0;
 		var->vide = 0;
+		var->ru2 = 0;
 		if (var->sprite == 1)
 			var->sprite = 0;
 	}
+		printf("%f\n", var->iru);
 	while (get_time() < start + MS)
 		usleep(5);
 }
@@ -635,9 +637,9 @@ void	forbidden_helper5(t_var *var, int i, int j, char c)
 			while (++l < 16)
 			{
 				if (l == 8 && k == 8)
-					var->xru = i + k;
+					var->xru = j + l;
 				if (l == 8 && k == 8)
-					var->yru = j + l;
+					var->yru = i + k;
 				var->forbidden[i + k][j + l] = '0';
 			}
 		}
@@ -845,6 +847,7 @@ int	main(int argc, char **argv)
 	var.yru = 0;
 	var.iru = 0;
 	var.angleru = 0;
+	var.ru2 = 0;
 	if (argc != 2)
 		return (0);
 	if (!check_arg(&var, argv))
@@ -899,7 +902,7 @@ int	main(int argc, char **argv)
 	// 		printf("%c", var.forbidden[i][j++]);
 	// 	i++;
 	// }
-	printf("x : %d, y : %d\n", var.position.x, var.position.y);
+	// printf("x : %d, y : %d\n", var.position.x, var.position.y);
 	mlx_hook(var.win, 2, 1L << 0, escape, &var);
 	mlx_hook(var.win, 6, 1L << 6, mouse_move, &var);
 	mlx_hook(var.win, 3, 1L << 1, release, &var);
