@@ -457,14 +457,13 @@ void	ray_casting(t_var *var, int i)
 	distance = 0;
 	pixel = 0;
 	start_angle = var->angle - PI / 3 / 2;
-	var->rusize = 1000 / var->iru;
-	var->angledru = (var->angleru + var->iru * 0.001) - (var->angleru - var->iru * 0.001);
+	var->angledru = (var->angleru + var->iru * (PI / 3 / 960)) - (var->angleru - var->iru * (PI / 3 / 960));
 	while (i < 960)
 	{
 		var->ray_angle = start_angle + i * (PI / 3 / 960);
 		var->ru = 0;
-		if (var->ray_angle > var->angleru - var->iru * 0.001 && var->ray_angle < var->angleru + var->iru * 0.001)
-			var->ru = (var->ray_angle - (var->angleru - var->iru * 0.001)) / var->angledru;
+		if (var->ray_angle > var->angleru - var->iru * (PI / 3 / 960) && var->ray_angle < var->angleru + var->iru * (PI / 3 / 960))
+			var->ru = (var->ray_angle - (var->angleru - var->iru * (PI / 3 / 960))) / var->angledru;
 		distance = 0;
 		trace_ray(var, var->ray_angle, &distance, i);
 		wall_height = 1500 / (distance * cos(var->ray_angle - var->angle) / 15);
@@ -618,6 +617,35 @@ int	update(t_var *var)
 	return (0);
 }
 
+void	forbidden_helper6(t_var *var, int i, int j, char c)
+{
+	int	k;
+	int	l;
+
+	if (var->map[i / 15][j / 15 + 1] == '1')
+		c = 'e';
+	else if (var->map[i / 15][j / 15 - 1] == '1')
+		c = 'w';
+	else if (var->map[i / 15 + 1][j / 15] == '1')
+		c = 'n';
+	else if (var->map[i / 15 - 1][j / 15] == '1')
+		c = 's';
+	
+	k = 0;
+	while (++k < 16)
+	{
+		l = 0;
+		while (++l < 16)
+		{
+			if (l == 8 && k == 8)
+				var->xru = j + l;
+			if (l == 8 && k == 8)
+				var->yru = i + k;
+			var->forbidden[i + k][j + l] = '0';
+		}
+	}
+}
+
 void	forbidden_helper5(t_var *var, int i, int j, char c)
 {
 	int	k;
@@ -757,6 +785,8 @@ void	init_forbidden(t_var *var, int i, int j)
 				forbidden_helper4(var, i * 15, j * 15, '6');
 			if (var->map[i][j] == 'r')
 				forbidden_helper5(var, i * 15, j * 15, 'r');
+			if (var->map[i][j] == 'p')
+				forbidden_helper6(var, i * 15, j * 15, 'p');
 			j++;
 		}
 		i++;
