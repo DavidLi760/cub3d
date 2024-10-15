@@ -627,21 +627,47 @@ void	forbidden_helper6(t_var *var, int i, int j, char c)
 	else if (var->map[i / 15][j / 15 - 1] == '1')
 		c = 'w';
 	else if (var->map[i / 15 + 1][j / 15] == '1')
-		c = 'n';
-	else if (var->map[i / 15 - 1][j / 15] == '1')
 		c = 's';
-	
-	k = 0;
-	while (++k < 16)
+	else if (var->map[i / 15 - 1][j / 15] == '1')
+		c = 'n';
+	if (c == 'w')
 	{
-		l = 0;
-		while (++l < 16)
+		k = 2;
+		while (++k < 14)
 		{
-			if (l == 8 && k == 8)
-				var->xru = j + l;
-			if (l == 8 && k == 8)
-				var->yru = i + k;
-			var->forbidden[i + k][j + l] = '0';
+			l = 0;
+			while (++l < 3)
+				var->forbidden[i + k][j + l] = '2';
+		}
+	}
+	else if (c == 'e')
+	{
+		k = 2;
+		while (++k < 14)
+		{
+			l = 12;
+			while (++l < 15)
+				var->forbidden[i + k][j + l] = '2';
+		}
+	}
+	else if (c == 's')
+	{
+		k = 12;
+		while (++k < 15)
+		{
+			l = 2;
+			while (++l < 14)
+				var->forbidden[i + k][j + l] = '2';
+		}
+	}
+	else if (c == 'n')
+	{
+		k = 0;
+		while (++k > 3)
+		{
+			l = 2;
+			while (++l < 14)
+				var->forbidden[i + k][j + l] = '2';
 		}
 	}
 }
