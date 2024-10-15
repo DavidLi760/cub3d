@@ -650,20 +650,20 @@ void	forbidden_helper6(t_var *var, int i, int j, char c)
 				var->forbidden[i + k][j + l] = '2';
 		}
 	}
-	else if (c == 's')
+	else if (c == 'n')
 	{
-		k = 12;
-		while (++k < 15)
+		k = 0;
+		while (++k < 3)
 		{
 			l = 2;
 			while (++l < 14)
 				var->forbidden[i + k][j + l] = '2';
 		}
 	}
-	else if (c == 'n')
+	else if (c == 's')
 	{
-		k = 0;
-		while (++k > 3)
+		k = 12;
+		while (++k < 15)
 		{
 			l = 2;
 			while (++l < 14)
