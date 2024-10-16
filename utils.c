@@ -78,11 +78,15 @@ int my_pixel_from_texture(t_var *var, int x, int y, char no)
 void my_put_image_to_image(t_var *var, int x, int y, int size)
 {
     int color;
-    double scale_factor = 400.0 / size; // Facteur d'échelle
+    double scale_factor = 400.0 / size;
+    int i;
+    int j;
 
-    for (int i = 0; i < size; i++)
+    i = 0;
+    while (i < size && i < 1010)
     {
-        for (int j = 0; j < size; j++)
+        j = 0;
+        while (j < size && j < 1920)
         {
             int src_x = (int)(j * scale_factor);
             int src_y = (int)(i * scale_factor);
@@ -90,9 +94,12 @@ void my_put_image_to_image(t_var *var, int x, int y, int size)
             if (src_x < 400 && src_y < 400)
             {
                 color = my_pixel_from_texture(var, src_x, src_y, 'r');
-                my_pixel_put2(var, x + j, y + i, color);
+                if (x + j < 1920 && y + i < 1010 && x + j > 0 && y + i > 0)
+                    my_pixel_put2(var, x + j, y + i, color);
             }
+            j++;
         }
+        i++;
     }
 }
 

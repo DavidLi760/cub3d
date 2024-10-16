@@ -472,7 +472,6 @@ void	trace_ray(t_var *var, double angle, double *i, int no)
 
 void	ray_casting(t_var *var, int i)
 {
-	double		start_angle;
 	double		distance;
 	long long	start;
 	int			wall_height;
@@ -481,11 +480,12 @@ void	ray_casting(t_var *var, int i)
 	start = get_time();
 	distance = 0;
 	pixel = 0;
-	start_angle = var->angle - PI / 3 / 2;
-	var->angledru = (var->angleru + var->iru * (PI / 3 / 960)) - (var->angleru - var->iru * (PI / 3 / 960));
+	var->left_angle = var->angle - PI / 3 / 2;
 	while (i < 960)
 	{
-		var->ray_angle = start_angle + i * (PI / 3 / 960);
+		var->ray_angle = var->left_angle + i * (PI / 3 / 960);
+		if (var->ray_angle > 2 * PI)
+			var->ray_angle -= (2 * PI);
 		var->ru = 0;
 		if (var->ray_angle > var->angleru - var->iru * (PI / 3 / 960) && var->ray_angle < var->angleru + var->iru * (PI / 3 / 960))
 			var->ru = (var->ray_angle - (var->angleru - var->iru * (PI / 3 / 960))) / var->angledru;
@@ -504,8 +504,22 @@ void	ray_casting(t_var *var, int i)
 		if (var->sprite == 1)
 			var->sprite = 0;
 	}
-	my_put_image_to_image(var, 960, 505, 200);
-	printf("%f\n", var->iru);
+	if (var->angleru >= 0)
+	{
+		var->right_angle = var->ray_angle;
+		if (var->left_angle > var->right_angle)
+			var->inter = var->left_angle - var->right_angle;
+		else if (var->left_angle < var->right_angle)
+			var->inter = 2 * PI - var->right_angle + var->left_angle;
+		if (var->left_angle > var->right_angle && var->angleru > var->right_angle && var->angleru < var->left_angle)
+			var->angledru = var->angleru / var->inter * 1920;
+		else if (var->left_angle < var->right_angle && var->angleru > var->left_angle && var->angleru > var->right_angle)
+			var->angledru = (2 * PI - var->angleru + var->left_angle) / var->inter * 1920;
+		else if (var->left_angle < var->right_angle && var->angledru < var->left_angle && var->angledru < var->right_angle)
+			var->angledru = (var->left_angle - var->angleru) / var->inter * 1920;
+		my_put_image_to_image(var, var->angledru, (2000 - wall_height) / 2 - var->pitch, 20000 / var->iru);
+		printf("%f\n", var->iru);
+	}
 	while (get_time() < start + MS)
 		usleep(5);
 }
@@ -588,17 +602,20 @@ int	update(t_var *var)
 	if (var->posy <= var->position2.y - 1)
 		var->position2.y -= 1;
 	minimap(var, -1, 0);
-	if (var->iru < DIST)
-	{
-		var->angleru = atan2((var->yru - var->posy) / var->iru, (var->xru - var->posx) / var->iru);
-	}
+	var->iru = (fabs(var->xru - var->posx) + fabs(var->yru - var->posy));
+	var->angleru = atan2((var->posy - var->yru), (var->posx - var->xru));
+	if (var->angleru < 0)
+		var->angleru += 2 * PI;
+	if (var->angleru > 2 * PI)
+		var->angleru -= 2 * PI;
+	if (var->iru > DIST)
+		var->angleru = -1;
 	ray_casting(var, 0);
 	var->no = 0;
 	var->so = 0;
 	var->we = 0;
 	var->ea = 0;
 	var->vide = 0;
-	var->iru = (fabs(var->xru - var->posx) + fabs(var->yru - var->posy));
 	mlx_mouse_move(var->mlx, var->win, 1800, 900);
 	init_forbidden(var, 0, 0);
 	mlx_put_image_to_window(var->mlx, var->win, var->imag2, 0, 0);
@@ -987,7 +1004,7 @@ int	main(int argc, char **argv)
 	var.mlx = mlx_init();
 	if (!var.mlx)
 		return (0);
-	var.win = mlx_new_window(var.mlx, 1920, 1010, "cub3d");
+	var.win = mlx_new_window(var.mlx, 1920, 950, "cub3d");
 	var.img = mlx_xpm_file_to_image(var.mlx, "./xpms/Red_dot.xpm", &var.height, &var.width);
 	if (!var.img)
 		return (0);

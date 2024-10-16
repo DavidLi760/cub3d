@@ -200,6 +200,9 @@ typedef struct s_var
 	double	closet2x;
 	double	closet2y;
 	char	sens;
+	double	left_angle;
+	double	right_angle;
+	double	inter;
 }	t_var;
 
 long long	get_time(void);
@@ -224,6 +227,6 @@ int			str_cmp(char *s1, char *s2);
 int			is_right_element(t_var *var, int i);
 int			ft_atoi(const char *str);
 void		walking_w(t_var *var);
-void    my_put_image_to_image(t_var *var, int x, int y, int size);
+void		my_put_image_to_image(t_var *var, int x, int y, int size);
 
 #endif
