@@ -60,6 +60,8 @@ typedef struct s_var
 	void	*imgea;
 	void	*imgru1;
 	void	*imgru2;
+	void	*imgp;
+
 	char	*addr;
 	char	*addr2;
 	char	*addrd;
@@ -69,7 +71,8 @@ typedef struct s_var
 	char	*addrea;
 	char	*addrru1;
 	char	*addrru2;
-	int		vide;
+	char	*addrp;
+
 	int		len;
 	int		len2;
 	int		lend;
@@ -79,6 +82,8 @@ typedef struct s_var
 	int		lenea;
 	int		lenru1;
 	int		lenru2;
+	int		lenp;
+
 	int		bit;
 	int		bit2;
 	int		bitd;
@@ -88,6 +93,8 @@ typedef struct s_var
 	int		bitea;
 	int		bitru1;
 	int		bitru2;
+	int		bitp;
+
 	int		endian;
 	int		endian2;
 	int		endiand;
@@ -97,6 +104,8 @@ typedef struct s_var
 	int		endianea;
 	int		endianru1;
 	int		endianru2;
+	int		endianp;
+
 	int		diff_x;
 	int		diff_y;
 	char	**forbidden;
@@ -166,10 +175,11 @@ typedef struct s_var
 	int		so;
 	int		we;
 	int		ea;
+	int		vide;
 	int		sprite;
-	double	door;
-	double	door2;
-	double	door3;
+	int		door;
+	int		door2;
+	int		door3;
 	double	doorx;
 	double	doory;
 	double	doortime;
@@ -182,6 +192,14 @@ typedef struct s_var
 	double		ru;
 	int		ru2;
 	int		mix;
+	int		closet;
+	int		closet2;
+	int		closet3;
+	double	closetx;
+	double	closety;
+	double	closet2x;
+	double	closet2y;
+	char	sens;
 }	t_var;
 
 long long	get_time(void);
@@ -206,5 +224,6 @@ int			str_cmp(char *s1, char *s2);
 int			is_right_element(t_var *var, int i);
 int			ft_atoi(const char *str);
 void		walking_w(t_var *var);
+void    my_put_image_to_image(t_var *var, int x, int y, int size);
 
 #endif

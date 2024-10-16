@@ -304,6 +304,8 @@ void	draw_wall_column(t_var *var, int x, int height)
 			var->dist *= -1;
 		if (var->door == 1)
 			color = my_pixel_from_texture(var, var->text_x, var->text_y, 'd');
+		if (var->closet == 1)
+			color = my_pixel_from_texture(var, var->text_x, var->text_y, 'p');
 		color = mix_color(var, color);
 		if (var->ru2 == 1)
 			color = my_pixel_from_texture(var, var->ru * 400, var->text_y, 'r');
@@ -318,6 +320,18 @@ void	draw_wall_column(t_var *var, int x, int height)
 	}
 	if (var->sprite == 1)
 		var->sprite = 2;
+	if (var->closet2 > 3)
+	{
+		i = 0;
+		if (x < var->closet2 * 30 || x > 1920 - var->closet2 * 30)
+		{
+			while (i < 1010)
+			{
+				my_pixel_put2(var, x, i, 0x351713);
+				my_pixel_put2(var, x + 1, i++, 0x351713);
+			}
+		}
+	}
 	draw_cross(var, 504, 1920);
 	draw_health_bar(var, 970, 50);
 }
@@ -408,6 +422,11 @@ void	trace_ray(t_var *var, double angle, double *i, int no)
 			var->door = 1;
 	else
 		var->door = 0;
+	var->closet = 0;
+	if (var->forbidden[(int)(var->posy + sin(angle) * *i + 5)][(int)(var->posx + cos(angle) * *i + 5 + 0.01)] == 'p' ||
+		var->forbidden[(int)(var->posy + sin(angle) * *i + 5 - 0.01)][(int)(var->posx + cos(angle) * *i + 5)] == 'p'
+		|| var->forbidden[(int)(var->posy + sin(angle) * *i + 5)][(int)(var->posx + cos(angle) * *i + 5 + 0.01)] == 'p')
+			var->closet = 1;
 	if (var->forbidden[(int)(var->posy + sin(angle) * *i + 5)][(int)(var->posx + cos(angle) * *i + 5 + 0.01)] == 's' ||
 		var->forbidden[(int)(var->posy + sin(angle) * *i + 5 - 0.01)][(int)(var->posx + cos(angle) * *i + 5)] == 's'
 		|| var->forbidden[(int)(var->posy + sin(angle) * *i + 5)][(int)(var->posx + cos(angle) * *i + 5 + 0.01)] == 's')
@@ -428,6 +447,12 @@ void	trace_ray(t_var *var, double angle, double *i, int no)
 		var->door2 = 1;
 		var->doorx = var->plusx;
 		var->doory = var->plusy;
+	}
+	if (var->closet == 1 && var->closet2 == 0 && var->dist < 30 && no == 465)
+	{
+		var->closet2 = 1;
+		var->closetx = var->plusx;
+		var->closety = var->plusy;
 	}
 	// if (var->door == 1 && var->door2 && var->dist < 30)
 	// {
@@ -479,7 +504,8 @@ void	ray_casting(t_var *var, int i)
 		if (var->sprite == 1)
 			var->sprite = 0;
 	}
-		printf("%f\n", var->iru);
+	my_put_image_to_image(var, 960, 505, 200);
+	printf("%f\n", var->iru);
 	while (get_time() < start + MS)
 		usleep(5);
 }
@@ -581,8 +607,50 @@ int	update(t_var *var)
 	mlx_put_image_to_window(var->mlx, var->win, var->img, 49, 49);
 	if (var->door2 == 1 && (var->map[(int)var->doory / 15][(int)var->doorx / 15] == '2' || var->map[(int)var->doory / 15][(int)var->doorx / 15] == '3' || var->map[(int)var->doory / 15][(int)var->doorx / 15] == '6'))
 		mlx_string_put(var->mlx, var->win, 940, 750, 0x00FF0000, "Press E !");
+	if (var->closet2 == 1 && var->map[(int)var->closety / 15][(int)var->closetx / 15] == 'p')
+		mlx_string_put(var->mlx, var->win, 940, 750, 0x00FF0000, "Press E !");
 	if (var->door2 == 1 && var->e_pressed == 1 && (var->map[(int)var->doory / 15][(int)var->doorx / 15] == '2' || var->map[(int)var->doory / 15][(int)var->doorx / 15] == '3'))
 		var->door2 = 2;
+	if (var->closet2 == 1 && var->e_pressed == 1 && var->map[(int)var->closety / 15][(int)var->closetx / 15] == 'p')
+		var->closet2 = 2;
+	if (var->closet2 == 2)
+	{
+		var->closet2x = ((int)var->closetx / 15) * 15;
+		var->closet2y = ((int)var->closety / 15) * 15;
+		var->closet2 = 3;
+	}
+	if (var->closet2 > 2)
+	{
+		var->posx = var->closet2x;
+		var->posy = var->closet2y;
+		if (var->map[(int)var->posy / 15][(int)var->posx / 15 + 1] == '1')
+			var->sens = 'e';
+		else if (var->map[(int)var->posy / 15][(int)var->posx / 15 - 1] == '1')
+			var->sens = 'w';
+		else if (var->map[(int)var->posy / 15 + 1][(int)var->posx / 15] == '1')
+			var->sens = 's';
+		else if (var->map[(int)var->posy / 15 - 1][(int)var->posx / 15] == '1')
+			var->sens = 'n';
+		if (var->sens == 'e')
+			var->angle = PI;
+		else if (var->sens == 'w')
+			var->angle = 0;
+		else if (var->sens == 'n')
+			var->angle = PI / 2;
+		else if (var->sens == 's')
+			var->angle = 3 * PI / 2;
+		if (var->closet2 < 30 && var->closet3 == 0)
+			var->closet2++;
+	}
+	if (var->closet3 == 1)
+		var->closet2--;
+	if (var->closet3 == 1 && var->closet2 == 2)
+	{
+		var->closet3 = 0;
+		var->closet2 = 0;
+	}
+	if (var->closet2 >= 30 && var->e_pressed == 1)
+		var->closet3 = 1;
 	if (var->door2 == 1 && var->e_pressed == 1 && (var->map[(int)var->doory / 15][(int)var->doorx / 15] == '6') && var->doortime2 < 17)
 	{
 		var->door3 = 1;
@@ -614,6 +682,8 @@ int	update(t_var *var)
 		var->map[(int)var->doory / 15][(int)var->doorx / 15] = '5';
 	if (var->door2 == 1)
 		var->door2 = 0;
+	if (var->closet2 == 1)
+		var->closet2 = 0;
 	return (0);
 }
 
@@ -637,7 +707,7 @@ void	forbidden_helper6(t_var *var, int i, int j, char c)
 		{
 			l = 0;
 			while (++l < 3)
-				var->forbidden[i + k][j + l] = '2';
+				var->forbidden[i + k][j + l] = 'p';
 		}
 	}
 	else if (c == 'e')
@@ -647,7 +717,7 @@ void	forbidden_helper6(t_var *var, int i, int j, char c)
 		{
 			l = 12;
 			while (++l < 15)
-				var->forbidden[i + k][j + l] = '2';
+				var->forbidden[i + k][j + l] = 'p';
 		}
 	}
 	else if (c == 'n')
@@ -657,7 +727,7 @@ void	forbidden_helper6(t_var *var, int i, int j, char c)
 		{
 			l = 2;
 			while (++l < 14)
-				var->forbidden[i + k][j + l] = '2';
+				var->forbidden[i + k][j + l] = 'p';
 		}
 	}
 	else if (c == 's')
@@ -667,7 +737,7 @@ void	forbidden_helper6(t_var *var, int i, int j, char c)
 		{
 			l = 2;
 			while (++l < 14)
-				var->forbidden[i + k][j + l] = '2';
+				var->forbidden[i + k][j + l] = 'p';
 		}
 	}
 }
@@ -899,6 +969,13 @@ int	main(int argc, char **argv)
 	var.iru = 0;
 	var.angleru = 0;
 	var.ru2 = 0;
+	var.closet = 0;
+	var.closet2 = 0;
+	var.closet3 = 0;
+	var.closetx = 0;
+	var.closety = 0;
+	var.closet2x = 0;
+	var.closet2y = 0;
 	if (argc != 2)
 		return (0);
 	if (!check_arg(&var, argv))
@@ -917,6 +994,9 @@ int	main(int argc, char **argv)
 	var.imgd = mlx_xpm_file_to_image(var.mlx, "./xpms/Door.xpm", &var.height1, &var.width1);
 	if (!var.imgd)
 		return (0);
+	var.imgp = mlx_xpm_file_to_image(var.mlx, "./xpms/Closet.xpm", &var.height1, &var.width1);
+	if (!var.imgp)
+		return (0);
 	var.imgru1 = mlx_xpm_file_to_image(var.mlx, "./xpms/Rush1.xpm", &var.heightru1, &var.widthru1);
 	if (!var.imgru1)
 		return (0);
@@ -924,6 +1004,7 @@ int	main(int argc, char **argv)
 	if (!var.imgru2)
 		return (0);
 	var.addrd = mlx_get_data_addr(var.imgd, &var.bitd, &var.lend, &var.endiand);
+	var.addrp = mlx_get_data_addr(var.imgp, &var.bitp, &var.lenp, &var.endianp);
 	var.imag = mlx_new_image(var.mlx, 150, 150);
 	var.addr = mlx_get_data_addr(var.imag, &var.bit, &var.len, &var.endian);
 	var.addrru1 = mlx_get_data_addr(var.imgru1, &var.bitru1, &var.lenru1, &var.endianru1);

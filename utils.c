@@ -12,13 +12,6 @@
 
 #include "cub3d.h"
 
-// void    my_put_image_to_image(t_var *var, int size, int dist)
-// {
-//     int color;
-
-//     color = my_pixel_from_texture(var, x, y, 'r');
-//     my_pixel_put2(var, x, y, color);
-// }
 
 long long	get_time(void)
 {
@@ -76,8 +69,31 @@ int my_pixel_from_texture(t_var *var, int x, int y, char no)
         pixel = var->addrd + (y * var->lend + x * (var->bitd / 8));
     if (no == 'r')
         pixel = var->addrru1 + (y * var->lenru1 + x * (var->bitru1 / 8));
+    if (no == 'p')
+        pixel = var->addrp + (y * var->lenp + x * (var->bitp / 8));
     color = *(unsigned int *)pixel;
     return (color);
+}
+
+void my_put_image_to_image(t_var *var, int x, int y, int size)
+{
+    int color;
+    double scale_factor = 400.0 / size; // Facteur d'échelle
+
+    for (int i = 0; i < size; i++)
+    {
+        for (int j = 0; j < size; j++)
+        {
+            int src_x = (int)(j * scale_factor);
+            int src_y = (int)(i * scale_factor);
+
+            if (src_x < 400 && src_y < 400)
+            {
+                color = my_pixel_from_texture(var, src_x, src_y, 'r');
+                my_pixel_put2(var, x + j, y + i, color);
+            }
+        }
+    }
 }
 
 void	draw_block(t_var *var, int i, int j, int color)
