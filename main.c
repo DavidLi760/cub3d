@@ -384,7 +384,7 @@ void	trace_ray(t_var *var, double angle, double *i, int no)
 	|| var->forbidden[(int)(var->posy + sin(angle) * *i + 5)][(int)(var->posx + cos(angle) * *i + 5)] == 's')
 	&& *i < DIST)
 	{
-		if (no == 465)
+		// if (no == 465)
 			if (100 + cos(angle) * *i < 150 && 100 + cos(angle) * *i > 0)
 				if (100 + sin(angle) * *i < 150 && 100 + sin(angle) * *i > 0)
 					my_pixel_put(var, 100 + cos(angle) * *i, 100 + sin(angle) * *i, 0x00FFFFFF);
@@ -481,6 +481,8 @@ void	ray_casting(t_var *var, int i)
 	distance = 0;
 	pixel = 0;
 	var->left_angle = var->angle - PI / 3 / 2;
+	if (var->left_angle < 0)
+		var->left_angle += 2 * PI;
 	while (i < 960)
 	{
 		var->ray_angle = var->left_angle + i * (PI / 3 / 960);
@@ -504,22 +506,28 @@ void	ray_casting(t_var *var, int i)
 		if (var->sprite == 1)
 			var->sprite = 0;
 	}
+	var->angledru = -1;
 	if (var->angleru >= 0)
 	{
 		var->right_angle = var->ray_angle;
-		if (var->left_angle > var->right_angle)
-			var->inter = var->left_angle - var->right_angle;
-		else if (var->left_angle < var->right_angle)
-			var->inter = 2 * PI - var->right_angle + var->left_angle;
-		if (var->left_angle > var->right_angle && var->angleru > var->right_angle && var->angleru < var->left_angle)
-			var->angledru = var->angleru / var->inter * 1920;
-		else if (var->left_angle < var->right_angle && var->angleru > var->left_angle && var->angleru > var->right_angle)
-			var->angledru = (2 * PI - var->angleru + var->left_angle) / var->inter * 1920;
-		else if (var->left_angle < var->right_angle && var->angledru < var->left_angle && var->angledru < var->right_angle)
-			var->angledru = (var->left_angle - var->angleru) / var->inter * 1920;
-		my_put_image_to_image(var, var->angledru, (2000 - wall_height) / 2 - var->pitch, 20000 / var->iru);
-		printf("%f\n", var->iru);
+		if (var->right_angle > var->left_angle && var->angleru > var->left_angle && var->angleru < var->right_angle)
+			var->angledru = (var->angleru - var->left_angle) / (var->right_angle - var->left_angle);
+		else if (var->right_angle < var->left_angle && var->angleru > var->right_angle && var->angleru > var->left_angle)
+			var->angledru = (2 * PI - var->angleru + var->right_angle) / (2 * PI - var->left_angle + var->right_angle);
+		else if (var->right_angle < var->left_angle && var->angleru < var->right_angle && var->angleru < var->left_angle)
+			var->angledru = (var->angleru + var->right_angle) / (2 * PI - var->left_angle + var->right_angle);
+		else if (var->angledru < 0.0001)
+			var->angledru = -1;
+		else
+			var->angledru = -1;
 	}
+	if (var->angledru > 0)
+		my_put_image_to_image(var, var->angledru * 1920, 0, 20000 / var->iru);
+	// printf("%f\n", var->iru);
+	printf("left : %f\n", var->left_angle);
+	printf("c : %f\n", var->angleru);
+	printf("right : %f\n", var->right_angle);
+	printf("angledru : %f\n", var->angledru);
 	while (get_time() < start + MS)
 		usleep(5);
 }
@@ -533,37 +541,37 @@ int	update(t_var *var)
 	if (var->s_pressed == 1)
 	{
 		if (var->forbidden[(int)(var->posy - var->directy) + 5][(int)var->posx + 5] != '0' && var->forbidden[(int)var->posy + 5][(int)(var->posx - var->directx) + 5] == '0')
-			var->posx -= var->directx * (var->shift_pressed * 0.5 + 0.25);
+			var->posx -= var->directx * (var->shift_pressed * 0.5 + 0.5);
 		else if (var->forbidden[(int)var->posy + 5][(int)(var->posx - var->directx) + 5] != '0' && var->forbidden[(int)(var->posy - var->directy) + 5][(int)var->posx + 5] == '0')
-			var->posy -= var->directy * (var->shift_pressed * 0.5 + 0.25);
+			var->posy -= var->directy * (var->shift_pressed * 0.5 + 0.5);
 		else if (var->forbidden[(int)(var->posy - var->directy) + 5][(int)(var->posx - var->directx) + 5] == '0')
 		{
-			var->posx -= var->directx * (var->shift_pressed * 0.5 + 0.25);
-			var->posy -= var->directy * (var->shift_pressed * 0.5 + 0.25);
+			var->posx -= var->directx * (var->shift_pressed * 0.5 + 0.5);
+			var->posy -= var->directy * (var->shift_pressed * 0.5 + 0.5);
 		}
 	}
 	if (var->a_pressed == 1)
 	{
 		if (var->forbidden[(int)(var->posy - var->directx) + 5][(int)var->posx + 5] != '0' && var->forbidden[(int)var->posy + 5][(int)(var->posx + var->directy) + 5] == '0')
-			var->posx += var->directy * (var->shift_pressed * 0.5 + 0.25);
+			var->posx += var->directy * (var->shift_pressed * 0.5 + 0.5);
 		else if (var->forbidden[(int)var->posy + 5][(int)(var->posx + var->directy) + 5] != '0' && var->forbidden[(int)(var->posy - var->directx) + 5][(int)var->posx + 5] == '0')
-			var->posy -= var->directx * (var->shift_pressed * 0.5 + 0.25);
+			var->posy -= var->directx * (var->shift_pressed * 0.5 + 0.5);
 		else if (var->forbidden[(int)(var->posy - var->directx) + 5][(int)(var->posx + var->directy) + 5] == '0')
 		{
-			var->posx += var->directy * (var->shift_pressed * 0.5 + 0.25);
-			var->posy -= var->directx * (var->shift_pressed * 0.5 + 0.25);
+			var->posx += var->directy * (var->shift_pressed * 0.5 + 0.5);
+			var->posy -= var->directx * (var->shift_pressed * 0.5 + 0.5);
 		}
 	}
 	if (var->d_pressed == 1)
 	{
 		if (var->forbidden[(int)(var->posy + var->directx) + 5][(int)var->posx + 5] != '0' && var->forbidden[(int)var->posy + 5][(int)(var->posx - var->directy) + 5] == '0')
-			var->posx -= var->directy * (var->shift_pressed * 0.5 + 0.25);
+			var->posx -= var->directy * (var->shift_pressed * 0.5 + 0.5);
 		else if (var->forbidden[(int)var->posy + 5][(int)(var->posx - var->directy) + 5] != '0' && var->forbidden[(int)(var->posy + var->directx) + 5][(int)var->posx + 5] == '0')
-			var->posy += var->directx * (var->shift_pressed * 0.5 + 0.25);
+			var->posy += var->directx * (var->shift_pressed * 0.5 + 0.5);
 		else if (var->forbidden[(int)(var->posy + var->directx) + 5][(int)(var->posx - var->directy) + 5] == '0')
 		{
-			var->posx -= var->directy * (var->shift_pressed * 0.5 + 0.25);
-			var->posy += var->directx * (var->shift_pressed * 0.5 + 0.25);
+			var->posx -= var->directy * (var->shift_pressed * 0.5 + 0.5);
+			var->posy += var->directx * (var->shift_pressed * 0.5 + 0.5);
 		}
 	}
 	if ((var->pitch2 <= -1 || var->up_pressed == 1) && var->pitch >= -1500)
@@ -603,7 +611,7 @@ int	update(t_var *var)
 		var->position2.y -= 1;
 	minimap(var, -1, 0);
 	var->iru = (fabs(var->xru - var->posx) + fabs(var->yru - var->posy));
-	var->angleru = atan2((var->posy - var->yru), (var->posx - var->xru));
+	var->angleru = atan2((var->yru - var->posy), (var->xru - var->posx));
 	if (var->angleru < 0)
 		var->angleru += 2 * PI;
 	if (var->angleru > 2 * PI)
@@ -985,6 +993,9 @@ int	main(int argc, char **argv)
 	var.yru = 0;
 	var.iru = 0;
 	var.angleru = 0;
+	var.angledru = 0;
+	var.left_angle = 0;
+	var.right_angle = 0;
 	var.ru2 = 0;
 	var.closet = 0;
 	var.closet2 = 0;
@@ -1004,7 +1015,7 @@ int	main(int argc, char **argv)
 	var.mlx = mlx_init();
 	if (!var.mlx)
 		return (0);
-	var.win = mlx_new_window(var.mlx, 1920, 950, "cub3d");
+	var.win = mlx_new_window(var.mlx, 1920, 1010, "cub3d");
 	var.img = mlx_xpm_file_to_image(var.mlx, "./xpms/Red_dot.xpm", &var.height, &var.width);
 	if (!var.img)
 		return (0);

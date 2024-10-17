@@ -24,7 +24,7 @@
 # include "mlx/mlx.h"
 
 # define MS 10
-# define DIST 200
+# define DIST 150
 # define MAP_SIZE 5000
 # define HEIGHT 1010
 # define BUFFER_SIZE 500

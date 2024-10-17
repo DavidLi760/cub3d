@@ -1,5 +1,5 @@
 Cree le 28/08/2024
-Ca fait 1 mois, 16 jours
+Ca fait 1 mois, 18 jours
 
 MONSTER : Rush, Screech, Statue, Hide, user, davli;
 MEUBLE : Placard (p), Bureau (b), Openable door (2-3);
@@ -34,7 +34,7 @@ C 168, 89, 50
   112111111
   1000p00001
   1000000001
-  1000000001
+  10000r0001
   1000000001
   1000000001
   1000000001
@@ -46,5 +46,5 @@ C 168, 89, 50
    101
    101
    101
-   1r1
+   101
    111

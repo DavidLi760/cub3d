@@ -1,0 +1,37 @@
+if (A > B && C > A && C > B)
+
+A = 1.6PI
+C = 1.8PI
+B = 0.3PI
+D = (2PI - C + B) / (2PI - A + B)
+
+if (A > B && C < A && C < B)
+
+A = 1.6PI
+C = 0.2PI
+B = 0.3PI
+D = (C + B) / (2PI - A + B)
+
+else 
+A = 1.6PI
+C = 1.4PI
+B = 0.3PI
+
+
+if (A < B && C > A && C < B)
+
+A = 0.2PI
+C = 0.6PI
+B = 0.9PI
+D = C / (B - A)
+
+else 
+A = 0.2PI
+C = 1.6PI
+B = 0.9PI
+
+A = 0.2PI
+C = 0.1PI
+B = 0.9PI
+
+
