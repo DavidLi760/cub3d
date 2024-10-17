@@ -16,7 +16,6 @@
 # include <unistd.h>
 # include <stdio.h>
 # include <stdlib.h>
-# include <stdbool.h>
 # include <fcntl.h>
 # include <string.h>
 # include <math.h>
@@ -24,10 +23,10 @@
 # include "mlx/mlx.h"
 
 # define MS 10
-# define DIST 150
+# define DIST 200
 # define MAP_SIZE 5000
 # define HEIGHT 1010
-# define BUFFER_SIZE 500
+# define BUFFER_SIZE 42
 # define W 119
 # define A 97
 # define S 115
@@ -127,8 +126,8 @@ typedef struct s_var
 	double	plusy;
 	double	dist;
 	double	ray_angle;
-	double		text_x;
-	double		text_y;
+	double	text_x;
+	double	text_y;
 	double	xru;
 	double	yru;
 	t_pos	position;

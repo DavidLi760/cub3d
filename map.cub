@@ -11,8 +11,8 @@ SO ./xpms/Wall.xpm
 WE ./xpms/Wall.xpm
 EA ./xpms/Wall.xpm
 
-F 150, 89, 50
-C 168, 89, 50
+F 43, 35, 48
+C 84, 51, 38
 
 (1) Wall
 (0) Space

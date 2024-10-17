@@ -184,7 +184,7 @@ void	draw_cross(t_var *var, int i, int j)
 	{
 		j = 950;
 		while (j <= 970)
-			my_pixel_put2(var, j++, i, 0);
+			my_pixel_put2(var, j++, i, 0x999999);
 		i++;
 	}
 	j = 959;
@@ -192,7 +192,7 @@ void	draw_cross(t_var *var, int i, int j)
 	{
 		i = 495;
 		while (i < 515)
-			my_pixel_put2(var, j, i++, 0);
+			my_pixel_put2(var, j, i++, 0x999999);
 		j++;
 	}
 }
@@ -307,8 +307,6 @@ void	draw_wall_column(t_var *var, int x, int height)
 		if (var->closet == 1)
 			color = my_pixel_from_texture(var, var->text_x, var->text_y, 'p');
 		color = mix_color(var, color);
-		if (var->ru2 == 1)
-			color = my_pixel_from_texture(var, var->ru * 400, var->text_y, 'r');
 		my_pixel_put2(var, x, start_y, color);
 		my_pixel_put2(var, x + 1, start_y, color);
 		start_y++;
@@ -332,8 +330,6 @@ void	draw_wall_column(t_var *var, int x, int height)
 			}
 		}
 	}
-	draw_cross(var, 504, 1920);
-	draw_health_bar(var, 970, 50);
 }
 
 void	get_wall_xy(t_var *var)
@@ -396,8 +392,6 @@ void	trace_ray(t_var *var, double angle, double *i, int no)
 		else
 		*i += 0.01;
 	}
-	if (*i > var->iru && var->ru != 0)
-		var->ru2 = 1;
 	if (var->forbidden[(int)(var->posy + sin(angle) * *i + 5 - 0.01)][(int)(var->posx + cos(angle) * *i + 5)] == '0')
 		var->no = 1;
 	else if (var->forbidden[(int)(var->posy + sin(angle) * *i + 5)][(int)(var->posx + cos(angle) * *i + 5 - 0.01)] == '0')
@@ -420,6 +414,10 @@ void	trace_ray(t_var *var, double angle, double *i, int no)
 		var->forbidden[(int)(var->posy + sin(angle) * *i + 5 - 0.01)][(int)(var->posx + cos(angle) * *i + 5)] == '6'
 		|| var->forbidden[(int)(var->posy + sin(angle) * *i + 5)][(int)(var->posx + cos(angle) * *i + 5 + 0.01)] == '6')
 			var->door = 1;
+	else if (var->forbidden[(int)(var->posy + sin(angle) * *i + 5)][(int)(var->posx + cos(angle) * *i + 5 + 0.01)] == 'r' ||
+		var->forbidden[(int)(var->posy + sin(angle) * *i + 5 - 0.01)][(int)(var->posx + cos(angle) * *i + 5)] == 'r'
+		|| var->forbidden[(int)(var->posy + sin(angle) * *i + 5)][(int)(var->posx + cos(angle) * *i + 5 + 0.01)] == 'r')
+			var->door = 1;
 	else
 		var->door = 0;
 	var->closet = 0;
@@ -427,10 +425,6 @@ void	trace_ray(t_var *var, double angle, double *i, int no)
 		var->forbidden[(int)(var->posy + sin(angle) * *i + 5 - 0.01)][(int)(var->posx + cos(angle) * *i + 5)] == 'p'
 		|| var->forbidden[(int)(var->posy + sin(angle) * *i + 5)][(int)(var->posx + cos(angle) * *i + 5 + 0.01)] == 'p')
 			var->closet = 1;
-	if (var->forbidden[(int)(var->posy + sin(angle) * *i + 5)][(int)(var->posx + cos(angle) * *i + 5 + 0.01)] == 's' ||
-		var->forbidden[(int)(var->posy + sin(angle) * *i + 5 - 0.01)][(int)(var->posx + cos(angle) * *i + 5)] == 's'
-		|| var->forbidden[(int)(var->posy + sin(angle) * *i + 5)][(int)(var->posx + cos(angle) * *i + 5 + 0.01)] == 's')
-			var->sprite = 1;
 	// if (no == 465)
 	// 	printf("%c\n", var->map[(int)var->doory / 15][(int)var->doorx / 15]);
 	// printf(" %c\n", var->forbidden[(int)(var->posy + sin(angle) * *i + 5 - 0.01)][(int)(var->posx + cos(angle) * *i + 5)]);
@@ -506,28 +500,27 @@ void	ray_casting(t_var *var, int i)
 		if (var->sprite == 1)
 			var->sprite = 0;
 	}
-	var->angledru = -1;
 	if (var->angleru >= 0)
 	{
 		var->right_angle = var->ray_angle;
 		if (var->right_angle > var->left_angle && var->angleru > var->left_angle && var->angleru < var->right_angle)
 			var->angledru = (var->angleru - var->left_angle) / (var->right_angle - var->left_angle);
 		else if (var->right_angle < var->left_angle && var->angleru > var->right_angle && var->angleru > var->left_angle)
-			var->angledru = (2 * PI - var->angleru + var->right_angle) / (2 * PI - var->left_angle + var->right_angle);
+			var->angledru = (var->angleru - var->left_angle) / (2 * PI - var->left_angle + var->right_angle);
 		else if (var->right_angle < var->left_angle && var->angleru < var->right_angle && var->angleru < var->left_angle)
-			var->angledru = (var->angleru + var->right_angle) / (2 * PI - var->left_angle + var->right_angle);
-		else if (var->angledru < 0.0001)
-			var->angledru = -1;
-		else
-			var->angledru = -1;
+			var->angledru = (var->angleru + (2 * PI - var->left_angle)) / (2 * PI - var->left_angle + var->right_angle);
+		else if (var->left_angle < var->right_angle && var->angleru > var->left_angle && var->angleru > var->right_angle)
+			var->angledru = (var->angleru - 2 * PI - var->left_angle) / (var->right_angle - var->left_angle);
+		else if (var->left_angle < var->right_angle && var->angleru < var->left_angle && var->angleru < var->right_angle)
+			var->angledru = (var->angleru - var->left_angle) / (var->right_angle - var->left_angle);
+		else if (var->left_angle > var->right_angle && var->angleru < var->left_angle && var->angleru > var->right_angle)
+			var->angledru = (var->angleru - var->left_angle) / (2 * PI - var->left_angle + var->right_angle);
 	}
-	if (var->angledru > 0)
-		my_put_image_to_image(var, var->angledru * 1920, 0, 20000 / var->iru);
-	// printf("%f\n", var->iru);
-	printf("left : %f\n", var->left_angle);
-	printf("c : %f\n", var->angleru);
-	printf("right : %f\n", var->right_angle);
-	printf("angledru : %f\n", var->angledru);
+	var->rusize = 40000 / var->iru;
+	if (var->angleru >= 0)
+		my_put_image_to_image(var, var->angledru * 1920 - var->rusize / 1.5, 500 - var->pitch - var->rusize / 2, var->rusize);
+	draw_cross(var, 504, 1920);
+	draw_health_bar(var, 970, 50);
 	while (get_time() < start + MS)
 		usleep(5);
 }
@@ -575,9 +568,7 @@ int	update(t_var *var)
 		}
 	}
 	if ((var->pitch2 <= -1 || var->up_pressed == 1) && var->pitch >= -1500)
-	{
 		var->pitch += -50;
-	}
 	if (var->left_pressed == 1)
 	{
 		var->angle += -0.15;
@@ -624,16 +615,20 @@ int	update(t_var *var)
 	var->we = 0;
 	var->ea = 0;
 	var->vide = 0;
+	printf("posx :%f\n", var->posx);
+	printf("posy :%f\n", var->posy);
+	printf("xru :%f\n", var->xru);
+	printf("yru :%f\n", var->yru);
 	mlx_mouse_move(var->mlx, var->win, 1800, 900);
 	init_forbidden(var, 0, 0);
 	mlx_put_image_to_window(var->mlx, var->win, var->imag2, 0, 0);
-	mlx_put_image_to_window(var->mlx, var->win, var->imag, -50, -50);
+	mlx_put_image_to_window(var->mlx, var->win, var->imag, -55, -55);
 	mlx_destroy_image(var->mlx, var->imag2);
-	mlx_put_image_to_window(var->mlx, var->win, var->img, 49, 49);
+	mlx_put_image_to_window(var->mlx, var->win, var->img, 44, 44);
 	if (var->door2 == 1 && (var->map[(int)var->doory / 15][(int)var->doorx / 15] == '2' || var->map[(int)var->doory / 15][(int)var->doorx / 15] == '3' || var->map[(int)var->doory / 15][(int)var->doorx / 15] == '6'))
-		mlx_string_put(var->mlx, var->win, 940, 750, 0x00FF0000, "Press E !");
+		mlx_string_put(var->mlx, var->win, 940, 750, 0x00FF0000, "Press E to open!");
 	if (var->closet2 == 1 && var->map[(int)var->closety / 15][(int)var->closetx / 15] == 'p')
-		mlx_string_put(var->mlx, var->win, 940, 750, 0x00FF0000, "Press E !");
+		mlx_string_put(var->mlx, var->win, 940, 750, 0x00FF0000, "Press E to hide!");
 	if (var->door2 == 1 && var->e_pressed == 1 && (var->map[(int)var->doory / 15][(int)var->doorx / 15] == '2' || var->map[(int)var->doory / 15][(int)var->doorx / 15] == '3'))
 		var->door2 = 2;
 	if (var->closet2 == 1 && var->e_pressed == 1 && var->map[(int)var->closety / 15][(int)var->closetx / 15] == 'p')
@@ -767,27 +762,10 @@ void	forbidden_helper6(t_var *var, int i, int j, char c)
 	}
 }
 
-void	forbidden_helper5(t_var *var, int i, int j, char c)
+void	forbidden_helper5(t_var *var, int i, int j)
 {
-	int	k;
-	int	l;
-
-	if (c == 'r')
-	{
-		k = 0;
-		while (++k < 16)
-		{
-			l = 0;
-			while (++l < 16)
-			{
-				if (l == 8 && k == 8)
-					var->xru = j + l;
-				if (l == 8 && k == 8)
-					var->yru = i + k;
-				var->forbidden[i + k][j + l] = '0';
-			}
-		}
-	}
+	var->xru = j + 3;
+	var->yru = i + 3.5;
 }
 
 void	forbidden_helper4(t_var *var, int i, int j, char c)
@@ -905,7 +883,7 @@ void	init_forbidden(t_var *var, int i, int j)
 			if (var->map[i][j] == '6')
 				forbidden_helper4(var, i * 15, j * 15, '6');
 			if (var->map[i][j] == 'r')
-				forbidden_helper5(var, i * 15, j * 15, 'r');
+				forbidden_helper5(var, i * 15, j * 15);
 			if (var->map[i][j] == 'p')
 				forbidden_helper6(var, i * 15, j * 15, 'p');
 			j++;
