@@ -188,8 +188,9 @@ typedef struct s_var
 	double	angleru;
 	double	angledru;
 	double	rusize;
-	double		ru;
+	double	ru;
 	int		ru2;
+	int		rusens;
 	int		mix;
 	int		closet;
 	int		closet2;
@@ -202,6 +203,7 @@ typedef struct s_var
 	double	left_angle;
 	double	right_angle;
 	double	inter;
+	double	*i;
 }	t_var;
 
 long long	get_time(void);
@@ -227,5 +229,7 @@ int			is_right_element(t_var *var, int i);
 int			ft_atoi(const char *str);
 void		walking_w(t_var *var);
 void		my_put_image_to_image(t_var *var, int x, int y, int size);
+void		my_put_image_to_image2(t_var *var, int x, int y, int size);
+
 
 #endif
