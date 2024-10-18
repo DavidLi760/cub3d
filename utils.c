@@ -98,7 +98,10 @@ void my_put_image_to_image(t_var *var, int x, int y, int size)
                 color = my_pixel_from_texture(var, src_x, src_y, 'r');
                 if (x + j < 1920 && y + i < 1010 && x + j > 0 && y + i > 0)
                     if (var->i[(x + j)] * 1.5 > var->iru)
+                    {
                         my_pixel_put2(var, x + j, y + i, color);
+                        // var->distance = 75;
+                    }
             }
             j++;
         }

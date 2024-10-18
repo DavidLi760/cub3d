@@ -225,7 +225,7 @@ int	mix_color(t_var *var, int now)
 	int		color;
 	float	t;
 
-	t = fmin(var->dist / DIST, 1.0);
+	t = fmin(var->dist / var->distance, 1.0);
 	color = now;
 	int r1 = color >> 16 & 0xFF;
 	int	g1 = color >> 8 & 0xFF;
@@ -366,7 +366,7 @@ void	trace_ray(t_var *var, double angle, double *i, int no)
 		return ;
 	while ((var->forbidden[(int)(var->posy + sin(angle) * *i + 5)][(int)(var->posx + cos(angle) * *i + 5)] == '0'
 	|| var->forbidden[(int)(var->posy + sin(angle) * *i + 5)][(int)(var->posx + cos(angle) * *i + 5)] == 's')
-	&& *i < DIST)
+	&& *i < var->distance)
 	{
 		// if (no == 465)
 			if (100 + cos(angle) * *i < 150 && 100 + cos(angle) * *i > 0)
@@ -448,7 +448,7 @@ void	trace_ray(t_var *var, double angle, double *i, int no)
 	// printf("y:%f\n", var->wall_y);
 	get_wall_xy(var);
 	get_text_x(var);
-	if (*i >= DIST && var->forbidden[(int)(var->posy + sin(angle) * *i + 5)][(int)(var->posx + cos(angle) * *i) + 5] == '0')
+	if (*i >= var->distance && var->forbidden[(int)(var->posy + sin(angle) * *i + 5)][(int)(var->posx + cos(angle) * *i) + 5] == '0')
 		var->vide = 1;
 }
 
@@ -615,7 +615,7 @@ int	update(t_var *var)
 		var->angleru += 2 * PI;
 	if (var->angleru > 2 * PI)
 		var->angleru -= 2 * PI;
-	if (var->iru > DIST)
+	if (var->iru > var->distance)
 		var->angleru = -1;
 	ray_casting(var, 0);
 	var->no = 0;
@@ -781,10 +781,17 @@ void	forbidden_helper6(t_var *var, int i, int j, char c)
 	}
 }
 
-void	forbidden_helper5(t_var *var, int i, int j)
+void	forbidden_helper5(t_var *var, int i, int j, char c)
 {
-	var->xru = j + 3;
-	var->yru = i + 3.5;
+	if (c == 'r')
+	{
+		var->xru = j + 3;
+		var->yru = i + 3.5;
+	}
+	if (c == 's')
+	{
+
+	}
 }
 
 void	forbidden_helper4(t_var *var, int i, int j, char c)
@@ -902,7 +909,9 @@ void	init_forbidden(t_var *var, int i, int j)
 			if (var->map[i][j] == '6')
 				forbidden_helper4(var, i * 15, j * 15, '6');
 			if (var->map[i][j] == 'r' && var->xru == 0)
-				forbidden_helper5(var, i * 15, j * 15);
+				forbidden_helper5(var, i * 15, j * 15, 'r');
+			if (var->map[i][j] == 'S')
+				forbidden_helper5(var, i * 15, j * 15, 'S');
 			if (var->map[i][j] == 'p')
 				forbidden_helper6(var, i * 15, j * 15, 'p');
 			j++;
@@ -1008,6 +1017,7 @@ int	main(int argc, char **argv)
 	var.closety = 0;
 	var.closet2x = 0;
 	var.closet2y = 0;
+	var.distance = DIST;
 	if (argc != 2)
 		return (0);
 	if (!check_arg(&var, argv))
@@ -1029,14 +1039,17 @@ int	main(int argc, char **argv)
 	var.imgp = mlx_xpm_file_to_image(var.mlx, "./xpms/Closet.xpm", &var.height1, &var.width1);
 	if (!var.imgp)
 		return (0);
-	var.imgru1 = mlx_xpm_file_to_image(var.mlx, "./xpms/Rush1.xpm", &var.heightru1, &var.widthru1);
+	var.imgru1 = mlx_xpm_file_to_image(var.mlx, "./xpms/nbellila.xpm", &var.heightru1, &var.widthru1);
 	if (!var.imgru1)
 		return (0);
-	var.imgru2 = mlx_xpm_file_to_image(var.mlx, "./xpms/Rush2.xpm", &var.heightru2, &var.widthru2);
+	var.imgru2 = mlx_xpm_file_to_image(var.mlx, "./xpms/nbellila.xpm", &var.heightru2, &var.widthru2);
 	if (!var.imgru2)
 		return (0);
-	var.imgru2 = mlx_xpm_file_to_image(var.mlx, "./xpms/Rush2.xpm", &var.heightru2, &var.widthru2);
-	if (!var.imgru2)
+	var.imgscp = mlx_xpm_file_to_image(var.mlx, "./xpms/SCP173.xpm", &var.heightscp, &var.widthscp);
+	if (!var.imgscp)
+		return (0);
+	var.imgscp2 = mlx_xpm_file_to_image(var.mlx, "./xpms/SCP173_2.xpm", &var.heightscp2, &var.widthscp2);
+	if (!var.imgscp2)
 		return (0);
 	var.addrd = mlx_get_data_addr(var.imgd, &var.bitd, &var.lend, &var.endiand);
 	var.addrp = mlx_get_data_addr(var.imgp, &var.bitp, &var.lenp, &var.endianp);
@@ -1044,6 +1057,8 @@ int	main(int argc, char **argv)
 	var.addr = mlx_get_data_addr(var.imag, &var.bit, &var.len, &var.endian);
 	var.addrru1 = mlx_get_data_addr(var.imgru1, &var.bitru1, &var.lenru1, &var.endianru1);
 	var.addrru2 = mlx_get_data_addr(var.imgru2, &var.bitru2, &var.lenru2, &var.endianru2);
+	var.addrscp = mlx_get_data_addr(var.imgscp, &var.bitscp, &var.lenscp, &var.endianscp);
+	var.addrscp2 = mlx_get_data_addr(var.imgscp2, &var.bitscp2, &var.lenscp2, &var.endianscp2);
 	var.imgno = mlx_xpm_file_to_image(var.mlx, var.north, &var.heightno, &var.widthno);
 	var.imgso = mlx_xpm_file_to_image(var.mlx, var.south, &var.heightso, &var.widthso);
 	var.imgwe = mlx_xpm_file_to_image(var.mlx, var.west, &var.heightwe, &var.widthwe);

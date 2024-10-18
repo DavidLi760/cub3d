@@ -60,6 +60,8 @@ typedef struct s_var
 	void	*imgru1;
 	void	*imgru2;
 	void	*imgp;
+	void	*imgscp;
+	void	*imgscp2;
 
 	char	*addr;
 	char	*addr2;
@@ -71,6 +73,8 @@ typedef struct s_var
 	char	*addrru1;
 	char	*addrru2;
 	char	*addrp;
+	char	*addrscp;
+	char	*addrscp2;
 
 	int		len;
 	int		len2;
@@ -82,6 +86,8 @@ typedef struct s_var
 	int		lenru1;
 	int		lenru2;
 	int		lenp;
+	int		lenscp;
+	int		lenscp2;
 
 	int		bit;
 	int		bit2;
@@ -93,6 +99,8 @@ typedef struct s_var
 	int		bitru1;
 	int		bitru2;
 	int		bitp;
+	int		bitscp;
+	int		bitscp2;
 
 	int		endian;
 	int		endian2;
@@ -104,6 +112,8 @@ typedef struct s_var
 	int		endianru1;
 	int		endianru2;
 	int		endianp;
+	int		endianscp;
+	int		endianscp2;
 
 	int		diff_x;
 	int		diff_y;
@@ -153,6 +163,10 @@ typedef struct s_var
 	int		heightwe;
 	int		widthea;
 	int		heightea;
+	int		widthscp;
+	int		widthscp2;
+	int		heightscp;
+	int		heightscp2;
 	int		delay;
 	char	*north;
 	char	*south;
@@ -204,6 +218,7 @@ typedef struct s_var
 	double	right_angle;
 	double	inter;
 	double	*i;
+	int		distance;
 }	t_var;
 
 long long	get_time(void);
