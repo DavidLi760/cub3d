@@ -168,12 +168,14 @@ typedef struct s_var
 	int		heightscp;
 	int		heightscp2;
 	int		delay;
+	
 	char	*north;
 	char	*south;
 	char	*west;
 	char	*east;
 	int		floor;
 	int		ceiling;
+	
 	int		w_pressed;
 	int		a_pressed;
 	int		s_pressed;
@@ -184,12 +186,14 @@ typedef struct s_var
 	int		up_pressed;
 	int		right_pressed;
 	int		down_pressed;
+	
 	int		no;
 	int		so;
 	int		we;
 	int		ea;
 	int		vide;
 	int		sprite;
+	
 	int		door;
 	int		door2;
 	int		door3;
@@ -198,6 +202,7 @@ typedef struct s_var
 	double	doortime;
 	double	doortime2;
 	double	doorsense;
+
 	double	iru;
 	double	angleru;
 	double	angledru;
@@ -205,6 +210,14 @@ typedef struct s_var
 	double	ru;
 	int		ru2;
 	int		rusens;
+	
+	double	xscp;
+	double	yscp;
+	double	iscp;
+	double	anglescp;
+	double	angledscp;
+	double	scpsize;
+
 	int		mix;
 	int		closet;
 	int		closet2;
@@ -245,6 +258,7 @@ int			ft_atoi(const char *str);
 void		walking_w(t_var *var);
 void		my_put_image_to_image(t_var *var, int x, int y, int size);
 void		my_put_image_to_image2(t_var *var, int x, int y, int size);
-
+void		my_put_image_to_image3(t_var *var, int x, int y, int size);
+void		my_put_image_to_image4(t_var *var, int x, int y, int size);
 
 #endif

@@ -295,7 +295,7 @@ void	draw_wall_column(t_var *var, int x, int height)
 		if (var->no)
 			color = my_pixel_from_texture(var, var->text_x, var->text_y, 'n');
 		if (var->so)
-			color = my_pixel_from_texture(var, var->text_x, var->text_y, 's');
+			color = my_pixel_from_texture(var, var->text_x, var->text_y, 'S');
 		if (var->we)
 			color = my_pixel_from_texture(var, var->text_x, var->text_y, 'w');
 		if (var->ea)
@@ -511,6 +511,38 @@ void	ray_casting(t_var *var, int i)
 		my_put_image_to_image(var, var->angledru * 1920 - var->rusize / 1.5, 500 - var->pitch - var->rusize / 2, var->rusize);
 	else if (var->angleru >= 0 && fmod(var->xru, 2) == 1)
 		my_put_image_to_image2(var, var->angledru * 1920 - var->rusize / 1.5, 500 - var->pitch - var->rusize / 2, var->rusize);
+	if (var->anglescp >= 0)
+	{
+		var->right_angle = var->ray_angle;
+		if (var->right_angle > var->left_angle && var->anglescp > var->left_angle && var->anglescp < var->right_angle)
+			var->angledscp = (var->anglescp - var->left_angle) / (var->right_angle - var->left_angle);
+		else if (var->right_angle < var->left_angle && var->anglescp > var->right_angle && var->anglescp > var->left_angle)
+			var->angledscp = (var->anglescp - var->left_angle) / (2 * PI - var->left_angle + var->right_angle);
+		else if (var->right_angle < var->left_angle && var->anglescp < var->right_angle && var->anglescp < var->left_angle)
+			var->angledscp = (var->anglescp + (2 * PI - var->left_angle)) / (2 * PI - var->left_angle + var->right_angle);
+		else if (var->left_angle < var->right_angle && var->anglescp > var->left_angle && var->anglescp > var->right_angle)
+			var->angledscp = (var->anglescp - 2 * PI - var->left_angle) / (var->right_angle - var->left_angle);
+		else if (var->left_angle < var->right_angle && var->anglescp < var->left_angle && var->anglescp < var->right_angle)
+			var->angledscp = (var->anglescp - var->left_angle) / (var->right_angle - var->left_angle);
+		else if (var->left_angle > var->right_angle && var->anglescp < var->left_angle && var->anglescp > var->right_angle)
+			var->angledscp = (var->anglescp - var->left_angle) / (2 * PI - var->left_angle + var->right_angle);
+	}
+	var->scpsize = 40000 / (var->iscp * 1.5);
+	if ((var->angledscp < 0.1 || var->angledscp > 0.9))
+	{
+		if (var->xscp < var->posx)
+			var->xscp += 0.5;
+		else if (var->xscp > var->posx)
+			var->xscp -= 0.5;
+		if (var->yscp < var->posy)
+			var->yscp += 0.5;
+		else if (var->yscp > var->posy)
+			var->yscp -= 0.5;
+	}
+	if (var->anglescp >= 0 && var->angledscp > 0.2 && var->angledscp < 0.8)
+		my_put_image_to_image3(var, var->angledscp * 1920 - var->scpsize / 1.5, 500 - var->pitch - var->scpsize / 2, var->scpsize);
+	else if (var->anglescp >= 0 && (var->angledscp < 0.2 || var->angledscp > 0.8))
+		my_put_image_to_image4(var, var->angledscp * 1920 - var->scpsize / 1.5, 500 - var->pitch - var->scpsize / 2, var->scpsize);
 	while (x < 1920)
 	{
 		if (var->closet2 > 3)
@@ -609,7 +641,7 @@ int	update(t_var *var)
 	if (var->posy <= var->position2.y - 1)
 		var->position2.y -= 1;
 	minimap(var, -1, 0);
-	var->iru = (fabs(var->xru - var->posx) + fabs(var->yru - var->posy));
+	var->iru = sqrt(pow(fabs(var->xru - var->posx), 2) + pow(fabs(var->yru - var->posy), 2));
 	var->angleru = atan2((var->yru - var->posy), (var->xru - var->posx));
 	if (var->angleru < 0)
 		var->angleru += 2 * PI;
@@ -617,6 +649,16 @@ int	update(t_var *var)
 		var->angleru -= 2 * PI;
 	if (var->iru > var->distance)
 		var->angleru = -1;
+	
+	var->iscp = sqrt(pow(fabs(var->xscp - var->posx), 2) + pow(fabs(var->yscp - var->posy), 2));
+	var->anglescp = atan2((var->yscp - var->posy), (var->xscp - var->posx));
+	if (var->anglescp < 0)
+		var->anglescp += 2 * PI;
+	if (var->anglescp > 2 * PI)
+		var->anglescp -= 2 * PI;
+	if (var->iscp > var->distance)
+		var->anglescp = -1;
+	
 	ray_casting(var, 0);
 	var->no = 0;
 	var->so = 0;
@@ -790,7 +832,9 @@ void	forbidden_helper5(t_var *var, int i, int j, char c)
 	}
 	if (c == 's')
 	{
-
+		var->forbidden[i + 8][j + 8] = '2';
+		var->xscp = j + 3;
+		var->yscp = i + 5.5;
 	}
 }
 
@@ -910,8 +954,8 @@ void	init_forbidden(t_var *var, int i, int j)
 				forbidden_helper4(var, i * 15, j * 15, '6');
 			if (var->map[i][j] == 'r' && var->xru == 0)
 				forbidden_helper5(var, i * 15, j * 15, 'r');
-			if (var->map[i][j] == 'S')
-				forbidden_helper5(var, i * 15, j * 15, 'S');
+			if (var->map[i][j] == 's' && var->xscp == 0)
+				forbidden_helper5(var, i * 15, j * 15, 's');
 			if (var->map[i][j] == 'p')
 				forbidden_helper6(var, i * 15, j * 15, 'p');
 			j++;
@@ -1006,6 +1050,11 @@ int	main(int argc, char **argv)
 	var.iru = 0;
 	var.angleru = 0;
 	var.angledru = 0;
+	var.xscp = 0;
+	var.yscp = 0;
+	var.iscp = 0;
+	var.anglescp = 0;
+	var.angledscp = 0;
 	var.left_angle = 0;
 	var.right_angle = 0;
 	var.ru2 = 0;
@@ -1039,10 +1088,10 @@ int	main(int argc, char **argv)
 	var.imgp = mlx_xpm_file_to_image(var.mlx, "./xpms/Closet.xpm", &var.height1, &var.width1);
 	if (!var.imgp)
 		return (0);
-	var.imgru1 = mlx_xpm_file_to_image(var.mlx, "./xpms/nbellila.xpm", &var.heightru1, &var.widthru1);
+	var.imgru1 = mlx_xpm_file_to_image(var.mlx, "./xpms/Rush1.xpm", &var.heightru1, &var.widthru1);
 	if (!var.imgru1)
 		return (0);
-	var.imgru2 = mlx_xpm_file_to_image(var.mlx, "./xpms/nbellila.xpm", &var.heightru2, &var.widthru2);
+	var.imgru2 = mlx_xpm_file_to_image(var.mlx, "./xpms/Rush2.xpm", &var.heightru2, &var.widthru2);
 	if (!var.imgru2)
 		return (0);
 	var.imgscp = mlx_xpm_file_to_image(var.mlx, "./xpms/SCP173.xpm", &var.heightscp, &var.widthscp);
