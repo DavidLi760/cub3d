@@ -101,10 +101,9 @@ void my_put_image_to_image(t_var *var, int x, int y, int size)
             {
                 color = my_pixel_from_texture(var, src_x, src_y, 'r');
                 if (x + j < 1920 && y + i < 1010 && x + j > 0 && y + i > 0)
-                    if (var->i[(x + j)] * 1.5 > var->iru)
+                    if (var->i[(x + j)] > var->iru)
                     {
                         my_pixel_put2(var, x + j, y + i, color);
-                        // var->distance = 75;
                     }
             }
             j++;
@@ -134,10 +133,9 @@ void my_put_image_to_image2(t_var *var, int x, int y, int size)
                 color = my_pixel_from_texture(var, src_x, src_y, 'u');
                 if (x + j < 1920 && y + i < 1010 && x + j > 0 && y + i > 0)
                 {
-                    if (var->i[(x + j)] * 1.5 > var->iru)
+                    if (var->i[(x + j)] > var->iru)
                     {
                         my_pixel_put2(var, x + j, y + i, color);
-                        var->distance = 75;
                     }                
                 }
             }
@@ -167,7 +165,7 @@ void my_put_image_to_image3(t_var *var, int x, int y, int size)
             {
                 color = my_pixel_from_texture(var, src_x, src_y, 's');
                 if (x + j < 1920 && y + i < 1010 && x + j > 0 && y + i > 0 && color != 0xFFFFFF)
-                    if (var->i[(x + j)] * 1.5 > var->iscp)
+                    if (var->i[(x + j)] > var->iscp)
                         my_pixel_put2(var, x + j, y + i, color);
             }
             j++;
@@ -196,7 +194,7 @@ void my_put_image_to_image4(t_var *var, int x, int y, int size)
             {
                 color = my_pixel_from_texture(var, src_x, src_y, 'c');
                 if (x + j < 1920 && y + i < 1010 && x + j > 0 && y + i > 0 && color != 0xFFFFFF)
-                    if (var->i[(x + j)] * 1.5 > var->iscp)
+                    if (var->i[(x + j)] > var->iscp)
                         my_pixel_put2(var, x + j, y + i, color);
             }
             j++;

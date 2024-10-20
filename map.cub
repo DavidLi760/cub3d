@@ -1,11 +1,11 @@
 Cree le 28/08/2024
-Ca fait 1 mois, 18 jours
+Ca fait 1 mois, 20 jours
 
 MONSTER : rush(r, u), screech (e, h), SCP173(s, c), davli;
 MEUBLE : Placard (p), Openable door (2-3);
 CONSUMABLE : Medicine, Monster Reborn;
 
-NO ./xpms/Mona_Lisa.xpm
+NO ./xpms/Screech2.xpm
 SO ./xpms/Wall.xpm
 
 WE ./xpms/Wall.xpm

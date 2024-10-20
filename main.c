@@ -212,11 +212,11 @@ void	get_text_y(t_var *var, int i, int max)
 {
 	if (var->no)
 		var->text_y = var->heightno * i / max;
-	if (var->so)
+	else if (var->so)
 		var->text_y = var->heightso * i / max;
-	if (var->we)
+	else if (var->we)
 		var->text_y = var->heightwe * i / max;
-	if (var->ea)
+	else if (var->ea)
 		var->text_y = var->heightea * i / max;
 }
 
@@ -311,6 +311,7 @@ void	draw_wall_column(t_var *var, int x, int height)
 		my_pixel_put2(var, x + 1, start_y, color);
 		start_y++;
 	}
+	printf("helo%d\n", x);
 	while (start_y < 1010)
 	{
 		my_pixel_put2(var, x, start_y, var->floor);
@@ -480,6 +481,7 @@ void	ray_casting(t_var *var, int i)
 		wall_height = 1500 / (distance * cos(var->ray_angle - var->angle) / 15);
 		draw_wall_column(var, pixel, wall_height);
 		i++;
+
 		pixel += 2;
 		var->no = 0;
 		var->so = 0;
@@ -540,9 +542,9 @@ void	ray_casting(t_var *var, int i)
 			var->yscp -= 0.5;
 	}
 	if (var->anglescp >= 0 && var->angledscp > 0.2 && var->angledscp < 0.8)
-		my_put_image_to_image3(var, var->angledscp * 1920 - var->scpsize / 1.5, 500 - var->pitch - var->scpsize / 2, var->scpsize);
+		my_put_image_to_image3(var, var->angledscp * 1920 - (var->scpsize / 2), 500 - var->pitch - var->scpsize / 2, var->scpsize);
 	else if (var->anglescp >= 0 && (var->angledscp < 0.2 || var->angledscp > 0.8))
-		my_put_image_to_image4(var, var->angledscp * 1920 - var->scpsize / 1.5, 500 - var->pitch - var->scpsize / 2, var->scpsize);
+		my_put_image_to_image4(var, var->angledscp * 1920 - (var->scpsize / 2), 500 - var->pitch - var->scpsize / 2, var->scpsize);
 	while (x < 1920)
 	{
 		if (var->closet2 > 3)
@@ -658,7 +660,6 @@ int	update(t_var *var)
 		var->anglescp -= 2 * PI;
 	if (var->iscp > var->distance)
 		var->anglescp = -1;
-	
 	ray_casting(var, 0);
 	var->no = 0;
 	var->so = 0;
@@ -758,7 +759,7 @@ int	update(t_var *var)
 		var->xru -= 1;
 	if (var->rusens == 0)
 		var->xru += 1;
-	// if (var->iru < 50 && var->closet2 < 3)
+	// if (var->iscp < 10 && var->closet2 < 3)
 	// {
 	// 	printf("\n ------------\n");
 	// 	printf("|  You Died  |\n");
@@ -834,7 +835,7 @@ void	forbidden_helper5(t_var *var, int i, int j, char c)
 	{
 		var->forbidden[i + 8][j + 8] = '2';
 		var->xscp = j + 3;
-		var->yscp = i + 5.5;
+		var->yscp = i + 3.5;
 	}
 }
 
@@ -1100,6 +1101,7 @@ int	main(int argc, char **argv)
 	var.imgscp2 = mlx_xpm_file_to_image(var.mlx, "./xpms/SCP173_2.xpm", &var.heightscp2, &var.widthscp2);
 	if (!var.imgscp2)
 		return (0);
+	
 	var.addrd = mlx_get_data_addr(var.imgd, &var.bitd, &var.lend, &var.endiand);
 	var.addrp = mlx_get_data_addr(var.imgp, &var.bitp, &var.lenp, &var.endianp);
 	var.imag = mlx_new_image(var.mlx, 150, 150);
