@@ -294,11 +294,11 @@ void	draw_wall_column(t_var *var, int x, int height)
 		get_text_y(var, start_y - start, height);
 		if (var->no)
 			color = my_pixel_from_texture(var, var->text_x, var->text_y, 'n');
-		if (var->so)
+		else if (var->so)
 			color = my_pixel_from_texture(var, var->text_x, var->text_y, 'S');
-		if (var->we)
+		else if (var->we)
 			color = my_pixel_from_texture(var, var->text_x, var->text_y, 'w');
-		if (var->ea)
+		else if (var->ea)
 			color = my_pixel_from_texture(var, var->text_x, var->text_y, 'e');
 		if (var->dist < 0)
 			var->dist *= -1;
@@ -311,14 +311,11 @@ void	draw_wall_column(t_var *var, int x, int height)
 		my_pixel_put2(var, x + 1, start_y, color);
 		start_y++;
 	}
-	printf("helo%d\n", x);
 	while (start_y < 1010)
 	{
 		my_pixel_put2(var, x, start_y, var->floor);
 		my_pixel_put2(var, x + 1, start_y++, var->floor);
 	}
-	if (var->sprite == 1)
-		var->sprite = 2;
 }
 
 void	get_wall_xy(t_var *var)
@@ -329,14 +326,14 @@ void	get_wall_xy(t_var *var)
 
 void	get_text_x(t_var *var)
 {
-	if (var->we == 1|| var->ea == 1)
+	if (var->we == 1 || var->ea == 1)
 	{
 		if (var->we)
 			var->text_x = var->widthwe * ((var->wall_y) / 15.00);
 		else if (var->ea)
 			var->text_x = var->widthea * ((var->wall_y) / 15.00);	
 	}
-	else if (var->no == 1|| var->so == 1)
+	else if (var->no == 1 || var->so == 1)
 	{
 		if (var->no)
 			var->text_x = var->widthno * ((var->wall_x) / 15.00);
@@ -353,12 +350,6 @@ void	get_text_x(t_var *var)
 		var->text_x += var->doortime * 28 - 84;
 	if (var->text_x < 0)
 		var->text_x = 0;
-	else if (var->text_x > 399)
-		var->text_x = var->widthno - 2;
-	// printf("wallx:%f\n", var->wall_x);
-	// printf("wally%f\n", var->wall_y);
-	// printf("width:%d\n", var->widthno);
-	// printf("text:%f\n", var->text_x);
 }
 
 void	trace_ray(t_var *var, double angle, double *i, int no)
@@ -530,7 +521,7 @@ void	ray_casting(t_var *var, int i)
 			var->angledscp = (var->anglescp - var->left_angle) / (2 * PI - var->left_angle + var->right_angle);
 	}
 	var->scpsize = 40000 / (var->iscp * 1.5);
-	if ((var->angledscp < 0.1 || var->angledscp > 0.9))
+	if ((var->angledscp < 0.1 || var->angledscp > 0.9) && var->iscp > 10 && var->iscp < 130)
 	{
 		if (var->xscp < var->posx)
 			var->xscp += 0.5;
@@ -541,9 +532,9 @@ void	ray_casting(t_var *var, int i)
 		else if (var->yscp > var->posy)
 			var->yscp -= 0.5;
 	}
-	if (var->anglescp >= 0 && var->angledscp > 0.2 && var->angledscp < 0.8)
+	if (var->anglescp >= 0 && var->angledscp > 0.2 && var->angledscp < 0.8 && var->iscp > 15)
 		my_put_image_to_image3(var, var->angledscp * 1920 - (var->scpsize / 2), 500 - var->pitch - var->scpsize / 2, var->scpsize);
-	else if (var->anglescp >= 0 && (var->angledscp < 0.2 || var->angledscp > 0.8))
+	else if ((var->anglescp >= 0 && (var->angledscp < 0.2 || var->angledscp > 0.8)) || var->iscp <= 15)
 		my_put_image_to_image4(var, var->angledscp * 1920 - (var->scpsize / 2), 500 - var->pitch - var->scpsize / 2, var->scpsize);
 	while (x < 1920)
 	{
@@ -1080,25 +1071,25 @@ int	main(int argc, char **argv)
 	if (!var.mlx)
 		return (0);
 	var.win = mlx_new_window(var.mlx, 1920, 1010, "cub3d");
-	var.img = mlx_xpm_file_to_image(var.mlx, "./xpms/Red_dot.xpm", &var.height, &var.width);
+	var.img = mlx_xpm_file_to_image(var.mlx, "./xpms/Red_dot.xpm", &var.width, &var.height);
 	if (!var.img)
 		return (0);
-	var.imgd = mlx_xpm_file_to_image(var.mlx, "./xpms/Door.xpm", &var.height1, &var.width1);
+	var.imgd = mlx_xpm_file_to_image(var.mlx, "./xpms/Door.xpm", &var.width1, &var.height1);
 	if (!var.imgd)
 		return (0);
-	var.imgp = mlx_xpm_file_to_image(var.mlx, "./xpms/Closet.xpm", &var.height1, &var.width1);
+	var.imgp = mlx_xpm_file_to_image(var.mlx, "./xpms/Closet.xpm", &var.width1, &var.height1);
 	if (!var.imgp)
 		return (0);
-	var.imgru1 = mlx_xpm_file_to_image(var.mlx, "./xpms/Rush1.xpm", &var.heightru1, &var.widthru1);
+	var.imgru1 = mlx_xpm_file_to_image(var.mlx, "./xpms/Rush1.xpm", &var.widthru1, &var.heightru1);
 	if (!var.imgru1)
 		return (0);
-	var.imgru2 = mlx_xpm_file_to_image(var.mlx, "./xpms/Rush2.xpm", &var.heightru2, &var.widthru2);
+	var.imgru2 = mlx_xpm_file_to_image(var.mlx, "./xpms/Rush2.xpm", &var.widthru2, &var.heightru2);
 	if (!var.imgru2)
 		return (0);
-	var.imgscp = mlx_xpm_file_to_image(var.mlx, "./xpms/SCP173.xpm", &var.heightscp, &var.widthscp);
+	var.imgscp = mlx_xpm_file_to_image(var.mlx, "./xpms/SCP173.xpm", &var.widthscp, &var.heightscp);
 	if (!var.imgscp)
 		return (0);
-	var.imgscp2 = mlx_xpm_file_to_image(var.mlx, "./xpms/SCP173_2.xpm", &var.heightscp2, &var.widthscp2);
+	var.imgscp2 = mlx_xpm_file_to_image(var.mlx, "./xpms/SCP173_2.xpm", &var.widthscp2, &var.heightscp2);
 	if (!var.imgscp2)
 		return (0);
 	
@@ -1110,10 +1101,10 @@ int	main(int argc, char **argv)
 	var.addrru2 = mlx_get_data_addr(var.imgru2, &var.bitru2, &var.lenru2, &var.endianru2);
 	var.addrscp = mlx_get_data_addr(var.imgscp, &var.bitscp, &var.lenscp, &var.endianscp);
 	var.addrscp2 = mlx_get_data_addr(var.imgscp2, &var.bitscp2, &var.lenscp2, &var.endianscp2);
-	var.imgno = mlx_xpm_file_to_image(var.mlx, var.north, &var.heightno, &var.widthno);
-	var.imgso = mlx_xpm_file_to_image(var.mlx, var.south, &var.heightso, &var.widthso);
-	var.imgwe = mlx_xpm_file_to_image(var.mlx, var.west, &var.heightwe, &var.widthwe);
-	var.imgea = mlx_xpm_file_to_image(var.mlx, var.east, &var.heightea, &var.widthea);
+	var.imgno = mlx_xpm_file_to_image(var.mlx, var.north, &var.widthno, &var.heightno);
+	var.imgso = mlx_xpm_file_to_image(var.mlx, var.south, &var.widthso, &var.heightso);
+	var.imgwe = mlx_xpm_file_to_image(var.mlx, var.west, &var.widthwe, &var.heightwe);
+	var.imgea = mlx_xpm_file_to_image(var.mlx, var.east, &var.widthea, &var.heightea);
 	var.addrno = mlx_get_data_addr(var.imgno, &var.bitno, &var.lenno, &var.endianno);
 	var.addrso = mlx_get_data_addr(var.imgso, &var.bitso, &var.lenso, &var.endianso);
 	var.addrwe = mlx_get_data_addr(var.imgwe, &var.bitwe, &var.lenwe, &var.endianwe);

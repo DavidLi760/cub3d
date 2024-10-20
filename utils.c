@@ -59,23 +59,23 @@ int my_pixel_from_texture(t_var *var, int x, int y, char no)
 
     if (no == 'n')
         pixel = var->addrno + (y * var->lenno + x * (var->bitno / 8));
-    if (no == 'S')
+    else if (no == 'S')
         pixel = var->addrso + (y * var->lenso + x * (var->bitso / 8));
-    if (no == 'w')
+    else if (no == 'w')
         pixel = var->addrwe + (y * var->lenwe + x * (var->bitwe / 8));
-    if (no == 'e')
+    else if (no == 'e')
         pixel = var->addrea + (y * var->lenea + x * (var->bitea / 8));
-    if (no == 'd')
+    else if (no == 'd')
         pixel = var->addrd + (y * var->lend + x * (var->bitd / 8));
-    if (no == 'r')
+    else if (no == 'r')
         pixel = var->addrru1 + (y * var->lenru1 + x * (var->bitru1 / 8));
-    if (no == 'u')
+    else if (no == 'u')
         pixel = var->addrru2 + (y * var->lenru2 + x * (var->bitru2 / 8));
-    if (no == 'p')
+    else if (no == 'p')
         pixel = var->addrp + (y * var->lenp + x * (var->bitp / 8));
-    if (no == 's')
+    else if (no == 's')
         pixel = var->addrscp + (y * var->lenscp + x * (var->bitscp / 8));
-    if (no == 'c')
+    else if (no == 'c')
         pixel = var->addrscp2 + (y * var->lenscp2 + x * (var->bitscp2 / 8));    
     color = *(unsigned int *)pixel;
     return (color);
