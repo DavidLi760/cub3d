@@ -12,6 +12,7 @@ SRCS		=	main.c\
 				ft_atoi.c\
 				utils.c\
 				walking.c\
+				monster.c\
 				free.c
 OBJS		= $(SRCS:.c=.o)
 

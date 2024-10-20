@@ -486,62 +486,28 @@ void	ray_casting(t_var *var, int i)
 		var->ea = 0;
 		var->vide = 0;
 		var->ru2 = 0;
-		if (var->sprite == 1)
-			var->sprite = 0;
 	}
-	if (var->angleru >= 0)
-	{
-		var->right_angle = var->ray_angle;
-		if (var->right_angle > var->left_angle && var->angleru > var->left_angle && var->angleru < var->right_angle)
-			var->angledru = (var->angleru - var->left_angle) / (var->right_angle - var->left_angle);
-		else if (var->right_angle < var->left_angle && var->angleru > var->right_angle && var->angleru > var->left_angle)
-			var->angledru = (var->angleru - var->left_angle) / (2 * PI - var->left_angle + var->right_angle);
-		else if (var->right_angle < var->left_angle && var->angleru < var->right_angle && var->angleru < var->left_angle)
-			var->angledru = (var->angleru + (2 * PI - var->left_angle)) / (2 * PI - var->left_angle + var->right_angle);
-		else if (var->left_angle < var->right_angle && var->angleru > var->left_angle && var->angleru > var->right_angle)
-			var->angledru = (var->angleru - 2 * PI - var->left_angle) / (var->right_angle - var->left_angle);
-		else if (var->left_angle < var->right_angle && var->angleru < var->left_angle && var->angleru < var->right_angle)
-			var->angledru = (var->angleru - var->left_angle) / (var->right_angle - var->left_angle);
-		else if (var->left_angle > var->right_angle && var->angleru < var->left_angle && var->angleru > var->right_angle)
-			var->angledru = (var->angleru - var->left_angle) / (2 * PI - var->left_angle + var->right_angle);
-	}
-	var->rusize = 40000 / (var->iru * 1.5);
-	if (var->angleru >= 0 && fmod(var->xru, 2) == 0)
-		my_put_image_to_image(var, var->angledru * 1920 - var->rusize / 1.5, 500 - var->pitch - var->rusize / 2, var->rusize);
-	else if (var->angleru >= 0 && fmod(var->xru, 2) == 1)
-		my_put_image_to_image2(var, var->angledru * 1920 - var->rusize / 1.5, 500 - var->pitch - var->rusize / 2, var->rusize);
-	if (var->anglescp >= 0)
-	{
-		var->right_angle = var->ray_angle;
-		if (var->right_angle > var->left_angle && var->anglescp > var->left_angle && var->anglescp < var->right_angle)
-			var->angledscp = (var->anglescp - var->left_angle) / (var->right_angle - var->left_angle);
-		else if (var->right_angle < var->left_angle && var->anglescp > var->right_angle && var->anglescp > var->left_angle)
-			var->angledscp = (var->anglescp - var->left_angle) / (2 * PI - var->left_angle + var->right_angle);
-		else if (var->right_angle < var->left_angle && var->anglescp < var->right_angle && var->anglescp < var->left_angle)
-			var->angledscp = (var->anglescp + (2 * PI - var->left_angle)) / (2 * PI - var->left_angle + var->right_angle);
-		else if (var->left_angle < var->right_angle && var->anglescp > var->left_angle && var->anglescp > var->right_angle)
-			var->angledscp = (var->anglescp - 2 * PI - var->left_angle) / (var->right_angle - var->left_angle);
-		else if (var->left_angle < var->right_angle && var->anglescp < var->left_angle && var->anglescp < var->right_angle)
-			var->angledscp = (var->anglescp - var->left_angle) / (var->right_angle - var->left_angle);
-		else if (var->left_angle > var->right_angle && var->anglescp < var->left_angle && var->anglescp > var->right_angle)
-			var->angledscp = (var->anglescp - var->left_angle) / (2 * PI - var->left_angle + var->right_angle);
-	}
-	var->scpsize = 40000 / (var->iscp * 1.5);
-	if ((var->angledscp < 0.1 || var->angledscp > 0.9) && var->iscp > 10 && var->iscp < 130)
-	{
-		if (var->xscp < var->posx)
-			var->xscp += 0.5;
-		else if (var->xscp > var->posx)
-			var->xscp -= 0.5;
-		if (var->yscp < var->posy)
-			var->yscp += 0.5;
-		else if (var->yscp > var->posy)
-			var->yscp -= 0.5;
-	}
-	if (var->anglescp >= 0 && var->angledscp > 0.2 && var->angledscp < 0.8 && var->iscp > 15)
-		my_put_image_to_image3(var, var->angledscp * 1920 - (var->scpsize / 2), 500 - var->pitch - var->scpsize / 2, var->scpsize);
-	else if ((var->anglescp >= 0 && (var->angledscp < 0.2 || var->angledscp > 0.8)) || var->iscp <= 15)
-		my_put_image_to_image4(var, var->angledscp * 1920 - (var->scpsize / 2), 500 - var->pitch - var->scpsize / 2, var->scpsize);
+
+	if (var->iru > var->iscp && var->iru > var->iech)
+		var->spriteorder[0] = 'r';
+	else if (var->iru > var->iech || var->iru > var->iscp)
+		var->spriteorder[1] = 'r';
+	else
+		var->spriteorder[2] = 'r';
+	if (var->iscp > var->iru && var->iscp > var->iech)
+		var->spriteorder[0] = 's';
+	else if (var->iscp > var->iech || var->iscp > var->iru)
+		var->spriteorder[1] = 's';
+	else
+		var->spriteorder[2] = 's';
+	if (var->iech > var->iru && var->iech > var->iscp)
+		var->spriteorder[0] = 'e';
+	else if (var->iech > var->iscp || var->iech > var->iscp)
+		var->spriteorder[1] = 'e';
+	else
+		var->spriteorder[2] = 'e';
+	var->spriteorder[3] = 0;
+	print_monster(var, var->spriteorder);
 	while (x < 1920)
 	{
 		if (var->closet2 > 3)
@@ -648,7 +614,6 @@ int	update(t_var *var)
 		var->angleru -= 2 * PI;
 	if (var->iru > var->distance)
 		var->angleru = -1;
-	
 	var->iscp = sqrt(pow(fabs(var->xscp - var->posx), 2) + pow(fabs(var->yscp - var->posy), 2));
 	var->anglescp = atan2((var->yscp - var->posy), (var->xscp - var->posx));
 	if (var->anglescp < 0)
@@ -657,6 +622,16 @@ int	update(t_var *var)
 		var->anglescp -= 2 * PI;
 	if (var->iscp > var->distance)
 		var->anglescp = -1;
+	
+	var->iech = sqrt(pow(fabs(var->xech - var->posx), 2) + pow(fabs(var->yech - var->posy), 2));
+	var->angleech = atan2((var->yech - var->posy), (var->xech - var->posx));
+	if (var->angleech < 0)
+		var->angleech += 2 * PI;
+	if (var->angleech > 2 * PI)
+		var->angleech -= 2 * PI;
+	if (var->iech > var->distance)
+		var->angleech = -1;
+	
 	ray_casting(var, 0);
 	var->no = 0;
 	var->so = 0;
@@ -825,14 +800,18 @@ void	forbidden_helper5(t_var *var, int i, int j, char c)
 {
 	if (c == 'r')
 	{
-		var->xru = j + 3;
-		var->yru = i + 3.5;
+		var->xru = j + 4;
+		var->yru = i + 4.5;
 	}
 	if (c == 's')
 	{
-		var->forbidden[i + 8][j + 8] = '2';
 		var->xscp = j + 3;
 		var->yscp = i + 3.5;
+	}
+	if (c == 'e')
+	{
+		var->xech = j + 3;
+		var->yech = i + 3.5;
 	}
 }
 
@@ -954,6 +933,8 @@ void	init_forbidden(t_var *var, int i, int j)
 				forbidden_helper5(var, i * 15, j * 15, 'r');
 			if (var->map[i][j] == 's' && var->xscp == 0)
 				forbidden_helper5(var, i * 15, j * 15, 's');
+			if (var->map[i][j] == 'e' && var->xech == 0)
+				forbidden_helper5(var, i * 15, j * 15, 'e');
 			if (var->map[i][j] == 'p')
 				forbidden_helper6(var, i * 15, j * 15, 'p');
 			j++;
@@ -1053,6 +1034,11 @@ int	main(int argc, char **argv)
 	var.iscp = 0;
 	var.anglescp = 0;
 	var.angledscp = 0;
+	var.xech = 0;
+	var.yech = 0;
+	var.iech = 0;
+	var.angleech = 0;
+	var.angledech = 0;
 	var.left_angle = 0;
 	var.right_angle = 0;
 	var.ru2 = 0;
@@ -1098,7 +1084,12 @@ int	main(int argc, char **argv)
 	var.imgscp2 = mlx_xpm_file_to_image(var.mlx, "./xpms/SCP173_2.xpm", &var.widthscp2, &var.heightscp2);
 	if (!var.imgscp2)
 		return (0);
-	
+	var.imgech = mlx_xpm_file_to_image(var.mlx, "./xpms/Screech1.xpm", &var.widthech, &var.heightech);
+	if (!var.imgech)
+		return (0);
+	var.imgech2 = mlx_xpm_file_to_image(var.mlx, "./xpms/Screech2.xpm", &var.widthech2, &var.heightech2);
+	if (!var.imgech2)
+		return (0);
 	var.addrd = mlx_get_data_addr(var.imgd, &var.bitd, &var.lend, &var.endiand);
 	var.addrp = mlx_get_data_addr(var.imgp, &var.bitp, &var.lenp, &var.endianp);
 	var.imag = mlx_new_image(var.mlx, 150, 150);
@@ -1107,6 +1098,9 @@ int	main(int argc, char **argv)
 	var.addrru2 = mlx_get_data_addr(var.imgru2, &var.bitru2, &var.lenru2, &var.endianru2);
 	var.addrscp = mlx_get_data_addr(var.imgscp, &var.bitscp, &var.lenscp, &var.endianscp);
 	var.addrscp2 = mlx_get_data_addr(var.imgscp2, &var.bitscp2, &var.lenscp2, &var.endianscp2);
+	var.addrech = mlx_get_data_addr(var.imgech, &var.bitech, &var.lenech, &var.endianech);
+	var.addrech2 = mlx_get_data_addr(var.imgech2, &var.bitech2, &var.lenech2, &var.endianech2);
+
 	var.imgno = mlx_xpm_file_to_image(var.mlx, var.north, &var.widthno, &var.heightno);
 	var.imgso = mlx_xpm_file_to_image(var.mlx, var.south, &var.widthso, &var.heightso);
 	var.imgwe = mlx_xpm_file_to_image(var.mlx, var.west, &var.widthwe, &var.heightwe);

@@ -62,6 +62,8 @@ typedef struct s_var
 	void	*imgp;
 	void	*imgscp;
 	void	*imgscp2;
+	void	*imgech;
+	void	*imgech2;
 
 	char	*addr;
 	char	*addr2;
@@ -75,6 +77,8 @@ typedef struct s_var
 	char	*addrp;
 	char	*addrscp;
 	char	*addrscp2;
+	char	*addrech;
+	char	*addrech2;
 
 	int		len;
 	int		len2;
@@ -88,6 +92,8 @@ typedef struct s_var
 	int		lenp;
 	int		lenscp;
 	int		lenscp2;
+	int		lenech;
+	int		lenech2;
 
 	int		bit;
 	int		bit2;
@@ -101,6 +107,8 @@ typedef struct s_var
 	int		bitp;
 	int		bitscp;
 	int		bitscp2;
+	int		bitech;
+	int		bitech2;
 
 	int		endian;
 	int		endian2;
@@ -114,6 +122,8 @@ typedef struct s_var
 	int		endianp;
 	int		endianscp;
 	int		endianscp2;
+	int		endianech;
+	int		endianech2;
 
 	int		diff_x;
 	int		diff_y;
@@ -151,10 +161,6 @@ typedef struct s_var
 	int		height;
 	int		width1;
 	int		height1;
-	int		widthru1;
-	int		widthru2;
-	int		heightru1;
-	int		heightru2;
 	int		widthno;
 	int		heightno;
 	int		widthso;
@@ -163,10 +169,6 @@ typedef struct s_var
 	int		heightwe;
 	int		widthea;
 	int		heightea;
-	int		widthscp;
-	int		widthscp2;
-	int		heightscp;
-	int		heightscp2;
 	int		delay;
 	
 	char	*north;
@@ -210,6 +212,10 @@ typedef struct s_var
 	double	ru;
 	int		ru2;
 	int		rusens;
+	int		widthru1;
+	int		widthru2;
+	int		heightru1;
+	int		heightru2;
 	
 	double	xscp;
 	double	yscp;
@@ -217,6 +223,21 @@ typedef struct s_var
 	double	anglescp;
 	double	angledscp;
 	double	scpsize;
+	int		widthscp;
+	int		widthscp2;
+	int		heightscp;
+	int		heightscp2;
+
+	double	xech;
+	double	yech;
+	double	iech;
+	double	angleech;
+	double	angledech;
+	double	echsize;
+	int		widthech;
+	int		widthech2;
+	int		heightech;
+	int		heightech2;
 
 	int		mix;
 	int		closet;
@@ -232,6 +253,7 @@ typedef struct s_var
 	double	inter;
 	double	*i;
 	int		distance;
+	char	spriteorder[3];
 }	t_var;
 
 long long	get_time(void);
@@ -260,5 +282,11 @@ void		my_put_image_to_image(t_var *var, int x, int y, int size);
 void		my_put_image_to_image2(t_var *var, int x, int y, int size);
 void		my_put_image_to_image3(t_var *var, int x, int y, int size);
 void		my_put_image_to_image4(t_var *var, int x, int y, int size);
+void		my_put_image_to_image5(t_var *var, int x, int y, int size);
+void		my_put_image_to_image6(t_var *var, int x, int y, int size);
+void		rush(t_var *var);
+void		scp173(t_var *var);
+void		screech(t_var *var);
+void		print_monster(t_var *var, char *tab);
 
 #endif

@@ -77,6 +77,8 @@ int my_pixel_from_texture(t_var *var, int x, int y, char no)
         pixel = var->addrscp + (y * var->lenscp + x * (var->bitscp / 8));
     else if (no == 'c')
         pixel = var->addrscp2 + (y * var->lenscp2 + x * (var->bitscp2 / 8));    
+    else if (no == 'E')
+        pixel = var->addrech + (y * var->lenech + x * (var->bitech / 8));
     color = *(unsigned int *)pixel;
     return (color);
 }
@@ -202,6 +204,64 @@ void my_put_image_to_image4(t_var *var, int x, int y, int size)
         i++;
     }
 }
+
+void my_put_image_to_image5(t_var *var, int x, int y, int size)
+{
+    int color;
+    double scale_factor = 400.0 / size;
+    int i;
+    int j;
+
+    i = 0;
+    while (i < size && i < 2000)
+    {
+        j = 0;
+        while (j < size && j < 1920)
+        {
+            int src_x = (int)(j * scale_factor);
+            int src_y = (int)(i * scale_factor);
+
+            if (src_x < 400 && src_y < 400)
+            {
+                color = my_pixel_from_texture(var, src_x, src_y, 'E');
+                if (x + j < 1920 && y + i < 1010 && x + j > 0 && y + i > 0 && color != 0xFFFFFF)
+                    if (var->i[(x + j)] > var->iech && color != 0x0000FF)
+                        my_pixel_put2(var, x + j, y + i, color);
+            }
+            j++;
+        }
+        i++;
+    }
+}
+
+// void my_put_image_to_image6(t_var *var, int x, int y, int size)
+// {
+//     int color;
+//     double scale_factor = 400.0 / size;
+//     int i;
+//     int j;
+
+//     i = 0;
+//     while (i < size && i < 2000)
+//     {
+//         j = 0;
+//         while (j < size && j < 1920)
+//         {
+//             int src_x = (int)(j * scale_factor);
+//             int src_y = (int)(i * scale_factor);
+
+//             if (src_x < 1796 && src_y < 1010)
+//             {
+//                 color = my_pixel_from_texture(var, src_x, src_y, 'h');
+//                 if (x + j < 1920 && y + i < 1010 && x + j > 0 && y + i > 0 && color != 0xFFFFFF)
+//                     if (var->i[(x + j)] > var->iech)
+//                         my_pixel_put2(var, x + j, y + i, color);
+//             }
+//             j++;
+//         }
+//         i++;
+//     }
+// }
 
 void	draw_block(t_var *var, int i, int j, int color)
 {
