@@ -218,6 +218,8 @@ void	get_text_y(t_var *var, int i, int max)
 		var->text_y = var->heightwe * i / max;
 	else if (var->ea)
 		var->text_y = var->heightea * i / max;
+	if (var->door || var->closet)
+		var->text_y = 400 * i / max;
 }
 
 int	mix_color(t_var *var, int now)
@@ -332,6 +334,8 @@ void	get_text_x(t_var *var)
 			var->text_x = var->widthwe * ((var->wall_y) / 15.00);
 		else if (var->ea)
 			var->text_x = var->widthea * ((var->wall_y) / 15.00);	
+		if (var->door || var->closet)
+			var->text_x = 400 * ((var->wall_y) / 15.00);
 	}
 	else if (var->no == 1 || var->so == 1)
 	{
@@ -339,6 +343,8 @@ void	get_text_x(t_var *var)
 			var->text_x = var->widthno * ((var->wall_x) / 15.00);
 		else if (var->so)
 			var->text_x = var->widthso * ((var->wall_x) / 15.00);
+		if (var->door || var->closet)
+			var->text_x = 400 * ((var->wall_x) / 15.00);
 	}
 	if (var->door && (var->map[(int)var->plusy / 15][(int)var->plusx / 15] == '2' || var->map[(int)var->plusy / 15][(int)var->plusx / 15] == '3'))
 		var->text_x = var->text_x;
