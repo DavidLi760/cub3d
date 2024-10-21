@@ -113,3 +113,17 @@ int is_right_element(t_var *var, int i)
         return (printf("Error : Incorrect Elements\n"), 0);
     return (1);
 }
+
+void    get_money(t_var *var)
+{
+    int     fd;
+    char    *file;
+
+    fd = open("money", O_CREAT | O_RDWR, 0644);
+    file = get_next_line(fd);
+    if (!file)
+        file = 0;
+    close(fd);
+    var->money = ft_atoi(file);
+    printf("%d\n", var->money);
+}

@@ -235,6 +235,10 @@ typedef struct s_var
 	double	angleech;
 	double	angledech;
 	double	echsize;
+	double	xangleech;
+	double	yangleech;
+	double	highech;
+	int		lookech;
 	int		widthech;
 	int		widthech2;
 	int		heightech;
@@ -255,6 +259,8 @@ typedef struct s_var
 	double	*i;
 	int		distance;
 	char	spriteorder[3];
+	int		screech;
+	int		money;
 }	t_var;
 
 long long	get_time(void);
@@ -289,5 +295,6 @@ void		rush(t_var *var);
 void		scp173(t_var *var);
 void		screech(t_var *var);
 void		print_monster(t_var *var, char *tab);
+void		get_money(t_var *var);
 
 #endif

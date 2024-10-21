@@ -764,6 +764,18 @@ int	update(t_var *var)
 		var->energy += 1;
 	else if (var->shift_pressed == 0 && var->energy > 0)
 		var->energy -= 2;
+	if (var->screech == 0 && var->doortime2 == 6)
+	{
+		var->screech = 1;
+		var->xangleech = var->directx;
+		var->yangleech = var->directy;
+	}
+	var->xech = var->posx - var->xangleech * 25;
+	var->yech = var->posy - var->yangleech * 25;
+	if (fmod(var->posx, 2.0) > 0.5 && var->highech == 0)
+		var->highech = 1;
+	else if (fmod(var->posx, 2.0) <= 0.5 && var->highech == 0)
+		var->highech = 2;
 	// if (var->iech > 25)
 	// {
 	// 	if (var->xech < var->posx)
@@ -1089,6 +1101,8 @@ int	main(int argc, char **argv)
 	var.left_angle = 0;
 	var.right_angle = 0;
 	var.ru2 = 0;
+	var.screech = 0;
+	var.lookech = 0;
 	var.rusens = 0;
 	var.closet = 0;
 	var.closet2 = 0;
