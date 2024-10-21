@@ -153,6 +153,7 @@ typedef struct s_var
 	t_pos	position;
 	t_pos	position2;
 	int		health;
+	int		energy;
 	int		max;
 	int		maxj;
 	int		maximum;

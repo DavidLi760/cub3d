@@ -199,11 +199,38 @@ void	draw_cross(t_var *var, int i, int j)
 
 void	draw_health_bar(t_var *var, int i, int j)
 {
-	while (i <= 980)
+	while (i <= 960)
+	{
+		j = 50;
+		while (j <= 250)
+			my_pixel_put2(var, j++, i, 0x999999);
+		i++;
+	}
+	i = 950;
+	while (i <= 960)
 	{
 		j = 50;
 		while (j <= 250 - var->health)
 			my_pixel_put2(var, j++, i, 0x00FF00);
+		i++;
+	}
+}
+
+void	draw_energy_bar(t_var *var, int i, int j)
+{
+	while (i <= 980)
+	{
+		j = 50;
+		while (j <= 250)
+			my_pixel_put2(var, j++, i, 0x999999);
+		i++;
+	}
+	i = 970;
+	while (i <= 980)
+	{
+		j = 50;
+		while (j <= 250 - var->energy)
+			my_pixel_put2(var, j++, i, 0x0055FF);
 		i++;
 	}
 }
@@ -523,7 +550,8 @@ void	ray_casting(t_var *var, int i)
 		x += 2;
 	}
 	draw_cross(var, 504, 1920);
-	draw_health_bar(var, 970, 50);
+	draw_health_bar(var, 950, 50);
+	draw_energy_bar(var, 970, 50);
 }
 
 int	update(t_var *var)
@@ -538,37 +566,37 @@ int	update(t_var *var)
 	if (var->s_pressed == 1)
 	{
 		if (var->forbidden[(int)(var->posy - var->directy) + 5][(int)var->posx + 5] != '0' && var->forbidden[(int)var->posy + 5][(int)(var->posx - var->directx) + 5] == '0')
-			var->posx -= var->directx * (1 - var->shift_pressed * 0.5);
+			var->posx -= var->directx * (0.5 + (var->shift_pressed && var->energy < 190) * 0.5);
 		else if (var->forbidden[(int)var->posy + 5][(int)(var->posx - var->directx) + 5] != '0' && var->forbidden[(int)(var->posy - var->directy) + 5][(int)var->posx + 5] == '0')
-			var->posy -= var->directy * (1 - var->shift_pressed * 0.5);
+			var->posy -= var->directy * (0.5 + (var->shift_pressed && var->energy < 190) * 0.5);
 		else if (var->forbidden[(int)(var->posy - var->directy) + 5][(int)(var->posx - var->directx) + 5] == '0')
 		{
-			var->posx -= var->directx * (1 - var->shift_pressed * 0.5);
-			var->posy -= var->directy * (1 - var->shift_pressed * 0.5);
+			var->posx -= var->directx * (0.5 + (var->shift_pressed && var->energy < 190) * 0.5);
+			var->posy -= var->directy * (0.5 + (var->shift_pressed && var->energy < 190) * 0.5);
 		}
 	}
 	if (var->a_pressed == 1)
 	{
 		if (var->forbidden[(int)(var->posy - var->directx) + 5][(int)var->posx + 5] != '0' && var->forbidden[(int)var->posy + 5][(int)(var->posx + var->directy) + 5] == '0')
-			var->posx += var->directy * (1 - var->shift_pressed * 0.5);
+			var->posx += var->directy * (0.5 + (var->shift_pressed && var->energy < 190) * 0.5);
 		else if (var->forbidden[(int)var->posy + 5][(int)(var->posx + var->directy) + 5] != '0' && var->forbidden[(int)(var->posy - var->directx) + 5][(int)var->posx + 5] == '0')
-			var->posy -= var->directx * (1 - var->shift_pressed * 0.5);
+			var->posy -= var->directx * (0.5 + (var->shift_pressed && var->energy < 190) * 0.5);
 		else if (var->forbidden[(int)(var->posy - var->directx) + 5][(int)(var->posx + var->directy) + 5] == '0')
 		{
-			var->posx += var->directy * (1 - var->shift_pressed * 0.5);
-			var->posy -= var->directx * (1 - var->shift_pressed * 0.5);
+			var->posx += var->directy * (0.5 + (var->shift_pressed && var->energy < 190) * 0.5);
+			var->posy -= var->directx * (0.5 + (var->shift_pressed && var->energy < 190) * 0.5);
 		}
 	}
 	if (var->d_pressed == 1)
 	{
 		if (var->forbidden[(int)(var->posy + var->directx) + 5][(int)var->posx + 5] != '0' && var->forbidden[(int)var->posy + 5][(int)(var->posx - var->directy) + 5] == '0')
-			var->posx -= var->directy * (1 - var->shift_pressed * 0.5);
+			var->posx -= var->directy * (0.5 + (var->shift_pressed && var->energy < 190) * 0.5);
 		else if (var->forbidden[(int)var->posy + 5][(int)(var->posx - var->directy) + 5] != '0' && var->forbidden[(int)(var->posy + var->directx) + 5][(int)var->posx + 5] == '0')
-			var->posy += var->directx * (1 - var->shift_pressed * 0.5);
+			var->posy += var->directx * (0.5 + (var->shift_pressed && var->energy < 190) * 0.5);
 		else if (var->forbidden[(int)(var->posy + var->directx) + 5][(int)(var->posx - var->directy) + 5] == '0')
 		{
-			var->posx -= var->directy * (1 - var->shift_pressed * 0.5);
-			var->posy += var->directx * (1 - var->shift_pressed * 0.5);
+			var->posx -= var->directy * (0.5 + (var->shift_pressed && var->energy < 190) * 0.5);
+			var->posy += var->directx * (0.5 + (var->shift_pressed && var->energy < 190) * 0.5);
 		}
 	}
 	if ((var->pitch2 <= -1 || var->up_pressed == 1) && var->pitch >= -1500)
@@ -732,6 +760,10 @@ int	update(t_var *var)
 		var->xru += 1;
 	var->xech = var->posx + 25;
 	var->yech = var->posy + 25;
+	if (var->shift_pressed && var->energy < 220)
+		var->energy += 1;
+	else if (var->shift_pressed == 0 && var->energy > 0)
+		var->energy -= 2;
 	// if (var->iech > 25)
 	// {
 	// 	if (var->xech < var->posx)
@@ -1021,6 +1053,7 @@ int	main(int argc, char **argv)
 	var.shift_pressed = 0;
 	var.vide = 0;
 	var.health = 0;
+	var.energy = 0;
 	var.directx = 0;
 	var.directy = 0;
 	var.plusx = 0;
