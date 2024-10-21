@@ -538,37 +538,37 @@ int	update(t_var *var)
 	if (var->s_pressed == 1)
 	{
 		if (var->forbidden[(int)(var->posy - var->directy) + 5][(int)var->posx + 5] != '0' && var->forbidden[(int)var->posy + 5][(int)(var->posx - var->directx) + 5] == '0')
-			var->posx -= var->directx * (var->shift_pressed * 0.5 + 0.5);
+			var->posx -= var->directx * (1 - var->shift_pressed * 0.5);
 		else if (var->forbidden[(int)var->posy + 5][(int)(var->posx - var->directx) + 5] != '0' && var->forbidden[(int)(var->posy - var->directy) + 5][(int)var->posx + 5] == '0')
-			var->posy -= var->directy * (var->shift_pressed * 0.5 + 0.5);
+			var->posy -= var->directy * (1 - var->shift_pressed * 0.5);
 		else if (var->forbidden[(int)(var->posy - var->directy) + 5][(int)(var->posx - var->directx) + 5] == '0')
 		{
-			var->posx -= var->directx * (var->shift_pressed * 0.5 + 0.5);
-			var->posy -= var->directy * (var->shift_pressed * 0.5 + 0.5);
+			var->posx -= var->directx * (1 - var->shift_pressed * 0.5);
+			var->posy -= var->directy * (1 - var->shift_pressed * 0.5);
 		}
 	}
 	if (var->a_pressed == 1)
 	{
 		if (var->forbidden[(int)(var->posy - var->directx) + 5][(int)var->posx + 5] != '0' && var->forbidden[(int)var->posy + 5][(int)(var->posx + var->directy) + 5] == '0')
-			var->posx += var->directy * (var->shift_pressed * 0.5 + 0.5);
+			var->posx += var->directy * (1 - var->shift_pressed * 0.5);
 		else if (var->forbidden[(int)var->posy + 5][(int)(var->posx + var->directy) + 5] != '0' && var->forbidden[(int)(var->posy - var->directx) + 5][(int)var->posx + 5] == '0')
-			var->posy -= var->directx * (var->shift_pressed * 0.5 + 0.5);
+			var->posy -= var->directx * (1 - var->shift_pressed * 0.5);
 		else if (var->forbidden[(int)(var->posy - var->directx) + 5][(int)(var->posx + var->directy) + 5] == '0')
 		{
-			var->posx += var->directy * (var->shift_pressed * 0.5 + 0.5);
-			var->posy -= var->directx * (var->shift_pressed * 0.5 + 0.5);
+			var->posx += var->directy * (1 - var->shift_pressed * 0.5);
+			var->posy -= var->directx * (1 - var->shift_pressed * 0.5);
 		}
 	}
 	if (var->d_pressed == 1)
 	{
 		if (var->forbidden[(int)(var->posy + var->directx) + 5][(int)var->posx + 5] != '0' && var->forbidden[(int)var->posy + 5][(int)(var->posx - var->directy) + 5] == '0')
-			var->posx -= var->directy * (var->shift_pressed * 0.5 + 0.5);
+			var->posx -= var->directy * (1 - var->shift_pressed * 0.5);
 		else if (var->forbidden[(int)var->posy + 5][(int)(var->posx - var->directy) + 5] != '0' && var->forbidden[(int)(var->posy + var->directx) + 5][(int)var->posx + 5] == '0')
-			var->posy += var->directx * (var->shift_pressed * 0.5 + 0.5);
+			var->posy += var->directx * (1 - var->shift_pressed * 0.5);
 		else if (var->forbidden[(int)(var->posy + var->directx) + 5][(int)(var->posx - var->directy) + 5] == '0')
 		{
-			var->posx -= var->directy * (var->shift_pressed * 0.5 + 0.5);
-			var->posy += var->directx * (var->shift_pressed * 0.5 + 0.5);
+			var->posx -= var->directy * (1 - var->shift_pressed * 0.5);
+			var->posy += var->directx * (1 - var->shift_pressed * 0.5);
 		}
 	}
 	if ((var->pitch2 <= -1 || var->up_pressed == 1) && var->pitch >= -1500)
