@@ -453,13 +453,11 @@ void	trace_ray(t_var *var, double angle, double *i, int no)
 void	ray_casting(t_var *var, int i)
 {
 	double		distance;
-	long long	start;
 	int			wall_height;
 	int			pixel;
 	int			x;
 
 	x = 0;
-	start = get_time();
 	distance = 0;
 	pixel = 0;
 	var->left_angle = var->angle - PI / 3 / 2;
@@ -502,7 +500,7 @@ void	ray_casting(t_var *var, int i)
 		var->spriteorder[2] = 's';
 	if (var->iech > var->iru && var->iech > var->iscp)
 		var->spriteorder[0] = 'e';
-	else if (var->iech > var->iscp || var->iech > var->iscp)
+	else if (var->iech > var->iscp || var->iech > var->iru)
 		var->spriteorder[1] = 'e';
 	else
 		var->spriteorder[2] = 'e';
@@ -526,12 +524,13 @@ void	ray_casting(t_var *var, int i)
 	}
 	draw_cross(var, 504, 1920);
 	draw_health_bar(var, 970, 50);
-	while (get_time() < start + MS)
-		usleep(5);
 }
 
 int	update(t_var *var)
 {
+	long long	start;
+
+	start = get_time();
 	var->imag2 = mlx_new_image(var->mlx, 1920, 1920);
 	var->addr2 = mlx_get_data_addr(var->imag2, &var->bit2, &var->len2, &var->endian2);
 	if (var->w_pressed == 1)
@@ -731,6 +730,19 @@ int	update(t_var *var)
 		var->xru -= 1;
 	if (var->rusens == 0)
 		var->xru += 1;
+	var->xech = var->posx + 25;
+	var->yech = var->posy + 25;
+	// if (var->iech > 25)
+	// {
+	// 	if (var->xech < var->posx)
+	// 		var->xech += 1;
+	// 	else if (var->xech > var->posx)
+	// 		var->xech -= 1;
+	// 	if (var->yech < var->posy)
+	// 		var->yech += 1;
+	// 	else if (var->yech > var->posy)
+	// 		var->yech -= 1;
+	// }
 	// if (var->iscp < 10 && var->closet2 < 3)
 	// {
 	// 	printf("\n ------------\n");
@@ -738,6 +750,8 @@ int	update(t_var *var)
 	// 	printf(" ------------\n");
 	// 	close_win(var);
 	// }
+	while (get_time() < start + MS)
+		usleep(5);
 	return (0);
 }
 
