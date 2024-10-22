@@ -122,8 +122,9 @@ void    get_money(t_var *var)
     fd = open("money", O_CREAT | O_RDWR, 0644);
     file = get_next_line(fd);
     if (!file)
-        file = 0;
-    close(fd);
+        file = "-1";
+    if (file[0] == '-')
+        write(fd, "0", 1);
     var->money = ft_atoi(file);
     printf("%d\n", var->money);
 }

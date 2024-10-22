@@ -35,19 +35,19 @@ int	check_corner(t_var *var, int i, int j, int max)
 		i++;
 	max = i - 1;
 	while (var->map[0][++j])
-		if (var->map[0][j] == '0')
+		if (var->map[0][j] == '0' || var->map[0][j] == '2' || var->map[0][j] == '3')
 			return (printf("Error : Wall not closed\n"), 0);
 	j = -1;
 	while (var->map[max][++j])
-		if (var->map[max][j] == '0')
+		if (var->map[max][j] == '0' || var->map[max][j] == '2' || var->map[max][j] == '3')
 			return (printf("Error : Wall not closed\n"), 0);
 	i = -1;
 	while (++i <= max)
-		if (var->map[i][0] == '0')
+		if (var->map[i][0] == '0' || var->map[i][0] == '2' || var->map[i][0] == '3')
 			return (printf("Error : Wall not closed\n"), 0);
 	i = -1;
 	while (++i <= max)
-		if (var->map[i][j - 1] == '0')
+		if (var->map[i][j - 1] == '0' || var->map[i][j - 1] == '2' || var->map[i][j - 1] == '3')
 			return (printf("Error : Wall not closed\n"), 0);
 	return (1);
 }
@@ -94,7 +94,8 @@ int	is_right_char(t_var *var, int i, int j)
 				&& var->map[i][j] != '1' && var->map[i][j] != '2'
 				&& var->map[i][j] != '3' && var->map[i][j] != '6'
 				&& var->map[i][j] != 'r' && var->map[i][j] != 'p'
-				&& var->map[i][j] != 's' && var->map[i][j] != 'e')
+				&& var->map[i][j] != 's' && var->map[i][j] != 'e'
+				&& var->map[i][j] != 'D')
 				return (printf("Error : Unknown character on the map\n"), 0);
 			j++;
 		}

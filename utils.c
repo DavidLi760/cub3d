@@ -12,7 +12,6 @@
 
 #include "cub3d.h"
 
-
 long long	get_time(void)
 {
 	struct timeval	t;
@@ -91,7 +90,7 @@ void my_put_image_to_image(t_var *var, int x, int y, int size)
     int j;
 
     i = 0;
-    while (i < size && i < 1010)
+    while (i < size && i < 2010)
     {
         j = 0;
         while (j < size && j < 1920)
@@ -103,7 +102,7 @@ void my_put_image_to_image(t_var *var, int x, int y, int size)
             {
                 color = my_pixel_from_texture(var, src_x, src_y, 'r');
                 if (x + j < 1920 && y + i < 1010 && x + j > 0 && y + i > 0)
-                    if (var->i[(x + j)] > var->iru)
+                    if (var->i[(x + j)] > var->iru || var->died > 0)
                     {
                         my_pixel_put2(var, x + j, y + i, color);
                     }
@@ -122,7 +121,7 @@ void my_put_image_to_image2(t_var *var, int x, int y, int size)
     int j;
 
     i = 0;
-    while (i < size && i < 1010)
+    while (i < size && i < 2010)
     {
         j = 0;
         while (j < size && j < 1920)
@@ -135,7 +134,7 @@ void my_put_image_to_image2(t_var *var, int x, int y, int size)
                 color = my_pixel_from_texture(var, src_x, src_y, 'u');
                 if (x + j < 1920 && y + i < 1010 && x + j > 0 && y + i > 0)
                 {
-                    if (var->i[(x + j)] > var->iru)
+                    if (var->i[(x + j)] > var->iru || var->died > 20)
                     {
                         my_pixel_put2(var, x + j, y + i, color);
                     }                
@@ -225,7 +224,7 @@ void my_put_image_to_image5(t_var *var, int x, int y, int size)
             {
                 color = my_pixel_from_texture(var, src_x, src_y, 'E');
                 if (x + j < 1920 && y + i < 1010 && x + j > 0 && y + i > 0 && color != 0xFFFFFF)
-                    if (var->i[(x + j)] * 2.5 > var->iech && color != 0x0000FF)
+                    if (var->i[(x + j)] * 5 > var->iech && color != 0x0000FF)
                         my_pixel_put2(var, x + j, y + i, color);
             }
             j++;

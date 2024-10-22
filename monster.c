@@ -23,13 +23,11 @@ void    print_monster(t_var *var, char *tab)
     screech(var);
     while (i <= 3)
     {
-		if (tab[i] == 'r' && var->angleru >= 0 && fmod(var->xru, 2) == 0)
+		if (tab[i] == 'r' && var->angleru >= 0)
 			my_put_image_to_image(var, var->angledru * 1920 - var->rusize / 1.5, 500 - var->pitch - var->rusize / 2, var->rusize);
-		else if (tab[i] == 'r' && var->angleru >= 0 && fmod(var->xru, 2) != 0)
-			my_put_image_to_image2(var, var->angledru * 1920 - var->rusize / 1.5, 500 - var->pitch - var->rusize / 2, var->rusize);
-		if (tab[i] == 's' && var->anglescp >= 0 && var->angledscp > 0.2 && var->angledscp < 0.8 && var->iscp > 15)
+		if (tab[i] == 's' && var->anglescp >= 0 && var->angledscp > 0.1 && var->angledscp < 0.8 && var->iscp > 15)
 			my_put_image_to_image3(var, var->angledscp * 1920 - (var->scpsize / 2), 500 - var->pitch - var->scpsize / 2, var->scpsize);
-		else if (tab[i] == 's' && ((var->anglescp >= 0 && (var->angledscp < 0.2 || var->angledscp > 0.8)) || var->iscp <= 15))
+		else if (tab[i] == 's' && ((var->anglescp >= 0 && (var->angledscp < 0.1 || var->angledscp > 0.8)) || var->iscp <= 15))
 			my_put_image_to_image4(var, var->angledscp * 1920 - (var->scpsize / 2), 500 - var->pitch - var->scpsize / 2, var->scpsize);
 		if (tab[i] == 'e' && var->angleech >= 0 && var->highech == 1 && var->screech)
 			my_put_image_to_image5(var, var->angledech * 1920 - var->echsize / 1.5, -800 - var->pitch - var->echsize / 2, var->echsize);
@@ -82,7 +80,7 @@ void    scp173(t_var *var)
 			var->angledscp = (var->anglescp - var->left_angle) / (2 * PI - var->left_angle + var->right_angle);
 	}
 	var->scpsize = 40000 / (var->iscp * 1.5);
-	if ((var->angledscp < 0.3 || var->angledscp > 0.9) && var->iscp > 10 && var->iscp < 130)
+	if ((var->angledscp < 0 || var->angledscp > 0.9) && var->iscp > 10 && var->scp173)
 	{
 		if (var->xscp < var->posx)
 			var->xscp += 0.5;
@@ -123,5 +121,24 @@ void    screech(t_var *var)
 		var->screech = 0;
 		var->lookech = 0;
 		var->highech = 0;
+		var->timeech = 0;
 	}
+	if (var->screech)
+		var->timeech++;
+	if (var->timeech > 200)
+	{
+		var->lookech = 0;
+		var->highech = 0;
+		var->attackech++;
+		var->health++;
+		if (var->timeech > 267)
+		{
+			var->timeech = 0;
+			var->screech = 0;
+		}
+	}
+	if (var->attackech > 0)
+		var->attackech++;
+	if (var->attackech > 6)
+		var->attackech = 0;
 }

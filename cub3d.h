@@ -32,6 +32,7 @@
 # define S 115
 # define D 100
 # define E 101
+# define M 109
 # define SHIFT 65505
 # define LEFT 65361
 # define UP 65362
@@ -184,6 +185,7 @@ typedef struct s_var
 	int		s_pressed;
 	int		d_pressed;
 	int		e_pressed;
+	int		m_pressed;
 	int		shift_pressed;
 	int		left_pressed;
 	int		up_pressed;
@@ -239,6 +241,9 @@ typedef struct s_var
 	double	yangleech;
 	double	highech;
 	int		lookech;
+	int		timeech;
+	int		attackech;
+	int		numberech;
 	int		widthech;
 	int		widthech2;
 	int		heightech;
@@ -260,7 +265,13 @@ typedef struct s_var
 	int		distance;
 	char	spriteorder[3];
 	int		screech;
+	int		scp173;
+	int		rush;
 	int		money;
+	int		died;
+	double	deathx;
+	double	deathy;
+	int		doornumber;
 }	t_var;
 
 long long	get_time(void);
@@ -296,5 +307,7 @@ void		scp173(t_var *var);
 void		screech(t_var *var);
 void		print_monster(t_var *var, char *tab);
 void		get_money(t_var *var);
+char		*ft_itoa(int nb);
+void		scenario(t_var *var);
 
 #endif

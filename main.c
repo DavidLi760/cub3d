@@ -35,6 +35,10 @@ void	move(int keycode, t_var *var)
 		var->d_pressed = 1;
 	if (keycode == E)
 		var->e_pressed = 1;
+	if (keycode == M && var->m_pressed == 0)
+		var->m_pressed = 1;
+	if (keycode == M && var->m_pressed == 2)
+		var->m_pressed = 0;
 	if (keycode == SHIFT)
 		var->shift_pressed = 1;
 	if (keycode == LEFT)
@@ -51,14 +55,17 @@ int	mouse_move(int x, int y, t_var *var)
 {
 	int		d_x = x - (1800);
 	int		d_y = y - (900);
-
-	var->pitch2 = 0;
-	var->angle += d_x * 0.001;
-	var->pitch += d_y * 1;
-	if (var->pitch <= -1500)
-		var->pitch = -1500;
-	if (var->pitch >= 1500)
-		var->pitch = 1500;
+	
+	if (var->m_pressed == 0)
+	{
+		var->pitch2 = 0;
+		var->angle += d_x * 0.001;
+		var->pitch += d_y * 1;
+		if (var->pitch <= -1500)
+			var->pitch = -1500;
+		if (var->pitch >= 1500)
+			var->pitch = 1500;
+	}
 	return (0);
 }
 
@@ -83,6 +90,8 @@ int	release(int keycode, t_var *var)
 		var->d_pressed = 0;
 	if (keycode == E)
 		var->e_pressed = 0;
+	if (keycode == M && var->m_pressed)
+		var->m_pressed = 2;
 	if (keycode == SHIFT)
 		var->shift_pressed = 0;
 	if (keycode == LEFT)
@@ -566,37 +575,37 @@ int	update(t_var *var)
 	if (var->s_pressed == 1)
 	{
 		if (var->forbidden[(int)(var->posy - var->directy) + 5][(int)var->posx + 5] != '0' && var->forbidden[(int)var->posy + 5][(int)(var->posx - var->directx) + 5] == '0')
-			var->posx -= var->directx * (0.5 + (var->shift_pressed && var->energy < 190) * 0.5);
+			var->posx -= var->directx * (0.5 + (var->shift_pressed && var->energy < 190) * 0.5 - 0.25 * var->w_pressed);
 		else if (var->forbidden[(int)var->posy + 5][(int)(var->posx - var->directx) + 5] != '0' && var->forbidden[(int)(var->posy - var->directy) + 5][(int)var->posx + 5] == '0')
-			var->posy -= var->directy * (0.5 + (var->shift_pressed && var->energy < 190) * 0.5);
+			var->posy -= var->directy * (0.5 + (var->shift_pressed && var->energy < 190) * 0.5 - 0.25 * var->w_pressed);
 		else if (var->forbidden[(int)(var->posy - var->directy) + 5][(int)(var->posx - var->directx) + 5] == '0')
 		{
-			var->posx -= var->directx * (0.5 + (var->shift_pressed && var->energy < 190) * 0.5);
-			var->posy -= var->directy * (0.5 + (var->shift_pressed && var->energy < 190) * 0.5);
+			var->posx -= var->directx * (0.5 + (var->shift_pressed && var->energy < 190) * 0.5 - 0.25 * var->w_pressed);
+			var->posy -= var->directy * (0.5 + (var->shift_pressed && var->energy < 190) * 0.5 - 0.25 * var->w_pressed);
 		}
 	}
 	if (var->a_pressed == 1)
 	{
 		if (var->forbidden[(int)(var->posy - var->directx) + 5][(int)var->posx + 5] != '0' && var->forbidden[(int)var->posy + 5][(int)(var->posx + var->directy) + 5] == '0')
-			var->posx += var->directy * (0.5 + (var->shift_pressed && var->energy < 190) * 0.5);
+			var->posx += var->directy * (0.5 + (var->shift_pressed && var->energy < 190) * 0.5 - 0.25 * var->w_pressed);
 		else if (var->forbidden[(int)var->posy + 5][(int)(var->posx + var->directy) + 5] != '0' && var->forbidden[(int)(var->posy - var->directx) + 5][(int)var->posx + 5] == '0')
-			var->posy -= var->directx * (0.5 + (var->shift_pressed && var->energy < 190) * 0.5);
+			var->posy -= var->directx * (0.5 + (var->shift_pressed && var->energy < 190) * 0.5 - 0.25 * var->w_pressed);
 		else if (var->forbidden[(int)(var->posy - var->directx) + 5][(int)(var->posx + var->directy) + 5] == '0')
 		{
-			var->posx += var->directy * (0.5 + (var->shift_pressed && var->energy < 190) * 0.5);
-			var->posy -= var->directx * (0.5 + (var->shift_pressed && var->energy < 190) * 0.5);
+			var->posx += var->directy * (0.5 + (var->shift_pressed && var->energy < 190) * 0.5 - 0.25 * var->w_pressed);
+			var->posy -= var->directx * (0.5 + (var->shift_pressed && var->energy < 190) * 0.5 - 0.25 * var->w_pressed);
 		}
 	}
 	if (var->d_pressed == 1)
 	{
 		if (var->forbidden[(int)(var->posy + var->directx) + 5][(int)var->posx + 5] != '0' && var->forbidden[(int)var->posy + 5][(int)(var->posx - var->directy) + 5] == '0')
-			var->posx -= var->directy * (0.5 + (var->shift_pressed && var->energy < 190) * 0.5);
+			var->posx -= var->directy * (0.5 + (var->shift_pressed && var->energy < 190) * 0.5 - 0.25 * var->w_pressed);
 		else if (var->forbidden[(int)var->posy + 5][(int)(var->posx - var->directy) + 5] != '0' && var->forbidden[(int)(var->posy + var->directx) + 5][(int)var->posx + 5] == '0')
-			var->posy += var->directx * (0.5 + (var->shift_pressed && var->energy < 190) * 0.5);
+			var->posy += var->directx * (0.5 + (var->shift_pressed && var->energy < 190) * 0.5 - 0.25 * var->w_pressed);
 		else if (var->forbidden[(int)(var->posy + var->directx) + 5][(int)(var->posx - var->directy) + 5] == '0')
 		{
-			var->posx -= var->directy * (0.5 + (var->shift_pressed && var->energy < 190) * 0.5);
-			var->posy += var->directx * (0.5 + (var->shift_pressed && var->energy < 190) * 0.5);
+			var->posx -= var->directy * (0.5 + (var->shift_pressed && var->energy < 190) * 0.5 - 0.25 * var->w_pressed);
+			var->posy += var->directx * (0.5 + (var->shift_pressed && var->energy < 190) * 0.5 - 0.25 * var->w_pressed);
 		}
 	}
 	if ((var->pitch2 <= -1 || var->up_pressed == 1) && var->pitch >= -1500)
@@ -658,23 +667,55 @@ int	update(t_var *var)
 		var->angleech -= 2 * PI;
 	if (var->iech > var->distance)
 		var->angleech = -1;
-	
+	if (var->iscp < 10 && var->closet2 < 3)
+		var->died++;
+	if (var->iru < 50 && var->closet2 < 3)
+		var->died++;
+	if (var->died == 1)
+	{
+		var->deathx = var->posx;
+		var->deathy = var->posy;
+	}
+	if (var->died && var->iscp < 15)
+	{
+		var->angle = var->anglescp;
+		var->pitch = -500;
+		var->posx = var->deathx;
+		var->posy = var->deathy;
+	}
 	ray_casting(var, 0);
 	var->no = 0;
 	var->so = 0;
 	var->we = 0;
 	var->ea = 0;
 	var->vide = 0;
-	mlx_mouse_move(var->mlx, var->win, 1800, 900);
+	if (var->m_pressed== 0)
+		mlx_mouse_move(var->mlx, var->win, 1800, 900);
 	init_forbidden(var, 0, 0);
+	if (var->died && var->iru < 60)
+	{
+		if (var->died > 20)
+			my_put_image_to_image2(var, 0, -500, 2000);
+		else
+			my_put_image_to_image(var, 0, -600, 2000);
+	}
+		
 	mlx_put_image_to_window(var->mlx, var->win, var->imag2, 0, 0);
-	mlx_put_image_to_window(var->mlx, var->win, var->imag, -55, -55);
+	if (var->distance > 100)
+		mlx_put_image_to_window(var->mlx, var->win, var->imag, -55, -55);
+	if (var->attackech > 0 && var->attackech < 6)
+		mlx_put_image_to_window(var->mlx, var->win, var->imgech2, 0, 0);
 	mlx_destroy_image(var->mlx, var->imag2);
 	mlx_put_image_to_window(var->mlx, var->win, var->img, 44, 44);
+	if (var->timeech < 50 && var->screech)
+		mlx_string_put(var->mlx, var->win, 930, 450, 0xFF0000, "Pssst...");
 	if (var->door2 == 1 && (var->map[(int)var->doory / 15][(int)var->doorx / 15] == '2' || var->map[(int)var->doory / 15][(int)var->doorx / 15] == '3' || var->map[(int)var->doory / 15][(int)var->doorx / 15] == '6'))
 		mlx_string_put(var->mlx, var->win, 940, 750, 0x00FFFFFF, "Press E to open!");
 	if (var->closet2 == 1 && var->map[(int)var->closety / 15][(int)var->closetx / 15] == 'p')
 		mlx_string_put(var->mlx, var->win, 940, 750, 0x00FFFFFF, "Press E to hide!");
+	mlx_string_put(var->mlx, var->win, 1500, 50, 0xFFFFFF, "Room :");
+	mlx_string_put(var->mlx, var->win, 1550, 50, 0xFFFFFF, ft_itoa(var->doornumber));
+	scenario(var);
 	if (var->door2 == 1 && var->e_pressed == 1 && (var->map[(int)var->doory / 15][(int)var->doorx / 15] == '2' || var->map[(int)var->doory / 15][(int)var->doorx / 15] == '3'))
 		var->door2 = 2;
 	if (var->closet2 == 1 && var->e_pressed == 1 && var->map[(int)var->closety / 15][(int)var->closetx / 15] == 'p')
@@ -750,23 +791,14 @@ int	update(t_var *var)
 		var->door2 = 0;
 	if (var->closet2 == 1)
 		var->closet2 = 0;
-	if (var->xru > 150 && var->rusens == 0)
-		var->rusens = 1;
-	else if (var->xru < 50 && var->rusens == 1)
-		var->rusens = 0;
-	if (var->rusens == 1)
-		var->xru -= 1;
-	if (var->rusens == 0)
-		var->xru += 1;
 	var->xech = var->posx + 25;
 	var->yech = var->posy + 25;
 	if (var->shift_pressed && var->energy < 220)
 		var->energy += 1;
 	else if (var->shift_pressed == 0 && var->energy > 0)
 		var->energy -= 2;
-	if (var->screech == 0 && var->doortime2 == 6)
+	if (var->screech == 0)
 	{
-		var->screech = 1;
 		var->xangleech = var->directx;
 		var->yangleech = var->directy;
 	}
@@ -787,13 +819,19 @@ int	update(t_var *var)
 	// 	else if (var->yech > var->posy)
 	// 		var->yech -= 1;
 	// }
-	// if (var->iscp < 10 && var->closet2 < 3)
-	// {
-	// 	printf("\n ------------\n");
-	// 	printf("|  You Died  |\n");
-	// 	printf(" ------------\n");
-	// 	close_win(var);
-	// }
+	if (var->health > 200)
+		var->died = 30;
+	if (var->died)
+	{
+		var->died++;
+		if (var->died > 30)
+		{
+			printf("\n ------------\n");
+			printf("|  You Died  |\n");
+			printf(" ------------\n");
+			exit(0);
+		}
+	}
 	while (get_time() < start + MS)
 		usleep(5);
 	return (0);
@@ -865,11 +903,6 @@ void	forbidden_helper5(t_var *var, int i, int j, char c)
 	{
 		var->xscp = j + 3;
 		var->yscp = i + 3.5;
-	}
-	if (c == 'e')
-	{
-		var->xech = j + 3;
-		var->yech = i + 3.5;
 	}
 }
 
@@ -1058,6 +1091,7 @@ int	main(int argc, char **argv)
 	var.s_pressed = 0;
 	var.a_pressed = 0;
 	var.d_pressed = 0;
+	var.m_pressed = 0;
 	var.up_pressed = 0;
 	var.down_pressed = 0;
 	var.left_pressed = 0;
@@ -1102,6 +1136,7 @@ int	main(int argc, char **argv)
 	var.right_angle = 0;
 	var.ru2 = 0;
 	var.screech = 0;
+	var.scp173 = 0;
 	var.lookech = 0;
 	var.rusens = 0;
 	var.closet = 0;
@@ -1111,6 +1146,11 @@ int	main(int argc, char **argv)
 	var.closety = 0;
 	var.closet2x = 0;
 	var.closet2y = 0;
+	var.died = 0;
+	var.timeech = 0;
+	var.attackech = 0;
+	var.highech = 0;
+	var.doornumber = 0;
 	var.distance = DIST;
 	if (argc != 2)
 		return (0);

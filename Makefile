@@ -13,6 +13,8 @@ SRCS		=	main.c\
 				utils.c\
 				walking.c\
 				monster.c\
+				ft_itoa.c\
+				scenario.c\
 				free.c
 OBJS		= $(SRCS:.c=.o)
 
