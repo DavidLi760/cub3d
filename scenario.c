@@ -38,14 +38,18 @@ void    scenario(t_var *var)
     }
     if (var->doornumber == 5)
     {
-        if (var->distance > 150 && (var->xru == 49 || var->xru == 129 || var->xru == 209))
+        if (var->distance > 150 && (var->xru == 49 || var->xru == 89 || var->xru == 129 || var->xru == 169))
             var->distance -= 150;
-        if (var->distance < 150 && (var->xru == 89 || var->xru == 169 || var->xru == 245))
+        if (var->distance < 150 && (var->xru == 69 || var->xru == 109 || var->xru == 149 || var->xru == 189))
             var->distance += 150;
-        if (var->xru < 245 && var->doornumber == 5)
+        if (var->xru < 191)
+            var->xru += 1;
+        if (var->xru < 245 && var->xru > 190)
             var->xru += 2;
         if (var->xru > 244 && var->yru < 700 && var->doornumber == 5)
             var->yru += 2;
+        if (var->yru > 680)
+            var->map[34][16] = '2';
     }
     if (var->posy > 485 && var->posx < 270 && var->doortime == 1 && var->doornumber == 5)
     {
@@ -165,6 +169,11 @@ void    scenario(t_var *var)
         }
         if (var->final == 2)
         {
+            if (var->numberech++ < 650)
+            {
+                var->posx = 393;
+                var->posy = 1950;
+            }
             mlx_string_put(var->mlx, var->win, 850, 750, 0xFF0000, "WHICH ONE OF US IS THE MOST BEAUTIFUL ?");
             if (var->angle > 1.8 && var->posy < 1980)
                 var->angle = 1.8;
@@ -173,7 +182,12 @@ void    scenario(t_var *var)
             if (var->posy > 1980)
                 var->angle = 1.33;
             if (var->posy > 2010)
+            {
                 var->final = 3;
+                var->ydavli += 22;
+                var->xdavli += 6;
+                var->numberech = 0;
+            }
         }
         if (var->final == 3)
         {
@@ -181,12 +195,31 @@ void    scenario(t_var *var)
             var->posy = 2010;
             var->xuser = 0;
             var->yuser = 0;
-            var->ydavli += 11;
-            var->xdavli += 3;
+            var->numberech++;
+            if (var->numberech > 50 && var->numberech < 200)
+                mlx_string_put(var->mlx, var->win, 850, 750, 0xFF0000, "GOOD ANSWER");
+            if (var->numberech > 200)
+                var->final = 4;
+        }
+        if (var->final == 4)
+        {
+            if (var->numberech > 200 && var->numberech < 400)
+                mlx_string_put(var->mlx, var->win, 850, 750, 0xFF0000, "NOW DIE !!");
+            if (var->numberech == 400)
+                var->final = 5;
+            var->numberech++;
+        }
+        printf("%f\n", var->posx);
+        if (var->final == 5)
+        {
+            if (var->rusens == 0 && var->xdavli > 455)
+                var->rusens = 1;
+            if (var->rusens == 1 && var->xdavli < 325)
+                var->rusens = 0;
+            if (var->rusens == 0)
+                var->xdavli += 0.5;
+            if (var->rusens == 1)
+                var->xdavli -= 0.5;
         }
     }
-    printf("posx : %f\n", var->posx);
-    printf("posy : %f\n", var->posy);
-    printf("angle:%f\n", var->angle);
-    // if (var->pos)
 }

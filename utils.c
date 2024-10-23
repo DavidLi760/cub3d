@@ -82,6 +82,8 @@ int my_pixel_from_texture(t_var *var, int x, int y, char no)
         pixel = var->addrdavli + (y * var->lendavli + x * (var->bitdavli / 8));
     else if (no == 'U')
         pixel = var->addruser + (y * var->lenuser + x * (var->bituser / 8));
+    else if (no == 'A')
+        pixel = var->addrdavli2 + (y * var->lendavli2 + x * (var->bitdavli2 / 8));
     color = *(unsigned int *)pixel;
     return (color);
 }
@@ -287,6 +289,35 @@ void my_put_image_to_image7(t_var *var, int x, int y, int size)
                 color = my_pixel_from_texture(var, src_x, src_y, 'U');
                 if (x + j < 1920 && y + i < 1010 && x + j > 0 && y + i > 0 && color != 0xFFFFFF)
                     if (var->i[(x + j)] > var->iuser)
+                        my_pixel_put2(var, x + j, y + i, color);
+            }
+            j++;
+        }
+        i++;
+    }
+}
+
+void my_put_image_to_image8(t_var *var, int x, int y, int size)
+{
+    int color;
+    double scale_factor = 400.0 / size;
+    int i;
+    int j;
+
+    i = 0;
+    while (i < size && i < 2000)
+    {
+        j = 0;
+        while (j < size && j < 1920)
+        {
+            int src_x = (int)(j * scale_factor);
+            int src_y = (int)(i * scale_factor);
+
+            if (src_x < 1796 && src_y < 1010)
+            {
+                color = my_pixel_from_texture(var, src_x, src_y, 'A');
+                if (x + j < 1920 && y + i < 1010 && x + j > 0 && y + i > 0 && color != 0xFFFFFF)
+                    if (var->i[(x + j)] > var->idavli)
                         my_pixel_put2(var, x + j, y + i, color);
             }
             j++;

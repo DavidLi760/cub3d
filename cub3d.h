@@ -66,6 +66,7 @@ typedef struct s_var
 	void	*imgech;
 	void	*imgech2;
 	void	*imgdavli;
+	void	*imgdavli2;
 	void	*imguser;
 
 	char	*addr;
@@ -83,6 +84,7 @@ typedef struct s_var
 	char	*addrech;
 	char	*addrech2;
 	char	*addrdavli;
+	char	*addrdavli2;
 	char	*addruser;
 
 	int		len;
@@ -100,6 +102,7 @@ typedef struct s_var
 	int		lenech;
 	int		lenech2;
 	int		lendavli;
+	int		lendavli2;
 	int		lenuser;
 
 	int		bit;
@@ -117,6 +120,7 @@ typedef struct s_var
 	int		bitech;
 	int		bitech2;
 	int		bitdavli;
+	int		bitdavli2;
 	int		bituser;
 
 	int		endian;
@@ -134,6 +138,7 @@ typedef struct s_var
 	int		endianech;
 	int		endianech2;
 	int		endiandavli;
+	int		endiandavli2;
 	int		endianuser;
 
 	int		diff_x;
@@ -333,6 +338,7 @@ void		my_put_image_to_image4(t_var *var, int x, int y, int size);
 void		my_put_image_to_image5(t_var *var, int x, int y, int size);
 void		my_put_image_to_image6(t_var *var, int x, int y, int size);
 void		my_put_image_to_image7(t_var *var, int x, int y, int size);
+void		my_put_image_to_image8(t_var *var, int x, int y, int size);
 
 void		rush(t_var *var);
 void		scp173(t_var *var);

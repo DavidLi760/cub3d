@@ -559,8 +559,10 @@ void	ray_casting(t_var *var, int i)
 			var->angleddavli = (var->angledavli - var->left_angle) / (2 * PI - var->left_angle + var->right_angle);
 	}
 	var->davlisize = 40000 / (var->idavli * 1.5);
-	if (var->angledavli >= 0)
+	if (var->angledavli >= 0 && var->final <= 3)
 		my_put_image_to_image6(var, var->angleddavli * 1920 - var->davlisize / 1.5, 500 - var->pitch - var->davlisize / 2, var->davlisize);
+	else if (var->angledavli >= 0 && var->final > 3)
+		my_put_image_to_image8(var, var->angleddavli * 1920 - var->davlisize / 1.5, 500 - var->pitch - var->davlisize / 2, var->davlisize);
 	if (var->angleuser >= 0)
 	{
 		var->right_angle = var->ray_angle;
@@ -1028,7 +1030,9 @@ void	forbidden_helper2(t_var *var, int i, int j, char c)
 		{
 			l = -1;
 			while (++l < 16)
-				var->forbidden[i + k][j + l] = c;
+			{
+					var->forbidden[i + k][j + l] = c;
+			}
 		}
 	}
 	else if (c == '3')
@@ -1262,6 +1266,9 @@ int	main(int argc, char **argv)
 	var.imgdavli = mlx_xpm_file_to_image(var.mlx, "./xpms/davli.xpm", &var.widthdavli, &var.heightdavli);
 	if (!var.imgdavli)
 		return (0);
+	var.imgdavli2 = mlx_xpm_file_to_image(var.mlx, "./xpms/davli2.xpm", &var.widthdavli2, &var.heightdavli2);
+	if (!var.imgdavli2)
+		return (0);
 	var.imguser = mlx_xpm_file_to_image(var.mlx, "./xpms/fflamion.xpm", &var.widthuser, &var.heightuser);
 	if (!var.imguser)
 		return (0);
@@ -1276,6 +1283,7 @@ int	main(int argc, char **argv)
 	var.addrech = mlx_get_data_addr(var.imgech, &var.bitech, &var.lenech, &var.endianech);
 	var.addrech2 = mlx_get_data_addr(var.imgech2, &var.bitech2, &var.lenech2, &var.endianech2);
 	var.addrdavli = mlx_get_data_addr(var.imgdavli, &var.bitdavli, &var.lendavli, &var.endiandavli);
+	var.addrdavli2 = mlx_get_data_addr(var.imgdavli2, &var.bitdavli2, &var.lendavli2, &var.endiandavli2);
 	var.addruser = mlx_get_data_addr(var.imguser, &var.bituser, &var.lenuser, &var.endianuser);
 
 	var.imgno = mlx_xpm_file_to_image(var.mlx, var.north, &var.widthno, &var.heightno);
