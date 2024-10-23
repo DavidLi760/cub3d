@@ -68,7 +68,7 @@ void    scenario(t_var *var)
     if (var->doornumber == 7)
     {
         var->numberech++;
-        if (var->numberech == 10 || var->numberech % 400 == 0)
+        if (var->numberech == 200 || var->numberech % 1000 == 0)
             var->screech = 1;
     }
     if (var->posy > 680 && var->posx < 185 && var->doortime && var->doornumber == 7)
