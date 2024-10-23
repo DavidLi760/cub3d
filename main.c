@@ -721,7 +721,8 @@ int	update(t_var *var)
 		var->died++;
 	if (var->iru < 50 && var->closet2 < 3)
 		var->died++;
-		
+	if (var->idavli < 10 && var->final == 5)
+		var->died++;
 	var->idavli = sqrt(pow(fabs(var->xdavli - var->posx), 2) + pow(fabs(var->ydavli - var->posy), 2));
 	var->angledavli = atan2((var->ydavli - var->posy), (var->xdavli - var->posx));
 	if (var->angledavli < 0)
@@ -766,7 +767,11 @@ int	update(t_var *var)
 		else
 			my_put_image_to_image(var, 0, -600, 2000);
 	}
-		
+	if (var->died && var->idavli < 20)
+	{
+		my_put_image_to_image2(var, 0, 0, 5000);
+		my_put_image_to_image8(var, 0, -600, 2000);	
+	}
 	mlx_put_image_to_window(var->mlx, var->win, var->imag2, 0, 0);
 	if (var->distance > 100)
 		mlx_put_image_to_window(var->mlx, var->win, var->imag, -55, -55);

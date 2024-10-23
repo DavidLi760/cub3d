@@ -305,6 +305,8 @@ typedef struct s_var
 	int		died;
 	double	deathx;
 	double	deathy;
+	double	tempx;
+	double	tempy;
 	int		doornumber;
 	int		final;
 }	t_var;

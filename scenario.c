@@ -167,7 +167,7 @@ void    scenario(t_var *var)
         }
         if (var->final == 2)
         {
-            if (var->numberech++ < 650)
+            if (var->numberech++ < 550)
             {
                 var->posx = 393;
                 var->posy = 1950;
@@ -195,29 +195,35 @@ void    scenario(t_var *var)
             var->yuser = 0;
             var->numberech++;
             if (var->numberech > 50 && var->numberech < 200)
-                mlx_string_put(var->mlx, var->win, 850, 750, 0xFF0000, "GOOD ANSWER");
+                mlx_string_put(var->mlx, var->win, 920, 750, 0xFF0000, "GOOD ANSWER");
             if (var->numberech > 200)
                 var->final = 4;
         }
         if (var->final == 4)
         {
             if (var->numberech > 200 && var->numberech < 400)
-                mlx_string_put(var->mlx, var->win, 850, 750, 0xFF0000, "NOW DIE !!");
-            if (var->numberech == 400)
+                mlx_string_put(var->mlx, var->win, 920, 750, 0xFF0000, "NOW DIE !!");
+            if (var->numberech == 450)
                 var->final = 5;
             var->numberech++;
         }
-        printf("%f\n", var->posx);
+        if (var->numberech > 300 && var->final > 3)
+            mlx_string_put(var->mlx, var->win, 920, 50, 0xFFFFFF, "RUN AWAY");
         if (var->final == 5)
         {
-            if (var->rusens == 0 && var->xdavli > 455)
-                var->rusens = 1;
-            if (var->rusens == 1 && var->xdavli < 325)
-                var->rusens = 0;
-            if (var->rusens == 0)
-                var->xdavli += 0.5;
-            if (var->rusens == 1)
-                var->xdavli -= 0.5;
+            var->tempx = fabs(var->xdavli - var->posx);
+            var->tempy = fabs(var->ydavli - var->posy);
+            if (var->xdavli < var->posx)
+                var->xdavli += (var->tempx / (var->tempx + var->tempy)) * 0.85;
+            if (var->xdavli > var->posx)
+                var->xdavli -= (var->tempx / (var->tempx + var->tempy)) * 0.85;
+            if (var->ydavli < var->posy)
+                var->ydavli -= (var->tempy / (var->tempx + var->tempy)) * 0.85;
+            mlx_string_put(var->mlx, var->win, 980, 50, 0xFFFFFF, ft_itoa(var->idavli));
+            if (var->posy < 30)
+                var->final = 6;
         }
     }
+    printf("x :%f\n", var->posx);
+    printf("y :%f\n", var->posy);
 }
