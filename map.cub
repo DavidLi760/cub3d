@@ -1,5 +1,5 @@
 Cree le 28/08/2024
-Ca fait 1 mois, 20 jours
+Ca fait 1 mois, 25 jours
 
 MONSTER : rush(r, u), screech (e, h), SCP173(s, c), davli;
 MEUBLE : Placard (p), Openable door (2-3);
@@ -28,7 +28,7 @@ C 84, 51, 38
 (e,h) screech
 
     111
-    101
+    1S1
   11161111
   100000p111111111111111
   1p000003000000000000001
@@ -153,7 +153,7 @@ C 84, 51, 38
                        1000001
                        1000001
                        1000001
-                       100S001
+                       1000001
                     1111112111111
                     1000000000001
                     1000000000001
