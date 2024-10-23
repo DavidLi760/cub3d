@@ -129,7 +129,13 @@ void    scenario(t_var *var)
         var->yscp = 1605;
         var->scp173 = 1;
     }
-
+    if (var->posx > 380 && var->posy > 1670 && var->doortime && var->doornumber == 13)
+        var->doornumber = 14;
+    if (var->posy > 1880 && var->doortime && var->doornumber == 14)
+    {
+        var->doornumber = 15;
+        
+    }
     printf("posx : %f\n", var->posx);
     printf("posy : %f\n", var->posy);
     // if (var->pos)
