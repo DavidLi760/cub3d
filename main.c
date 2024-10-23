@@ -560,7 +560,26 @@ void	ray_casting(t_var *var, int i)
 	}
 	var->davlisize = 40000 / (var->idavli * 1.5);
 	if (var->angledavli >= 0)
-			my_put_image_to_image6(var, var->angleddavli * 1920 - var->davlisize / 1.5, 500 - var->pitch - var->davlisize / 2, var->davlisize);
+		my_put_image_to_image6(var, var->angleddavli * 1920 - var->davlisize / 1.5, 500 - var->pitch - var->davlisize / 2, var->davlisize);
+	if (var->angleuser >= 0)
+	{
+		var->right_angle = var->ray_angle;
+		if (var->right_angle > var->left_angle && var->angleuser > var->left_angle && var->angleuser < var->right_angle)
+			var->angleduser = (var->angleuser - var->left_angle) / (var->right_angle - var->left_angle);
+		else if (var->right_angle < var->left_angle && var->angleuser > var->right_angle && var->angleuser > var->left_angle)
+			var->angleduser = (var->angleuser - var->left_angle) / (2 * PI - var->left_angle + var->right_angle);
+		else if (var->right_angle < var->left_angle && var->angleuser < var->right_angle && var->angleuser < var->left_angle)
+			var->angleduser = (var->angleuser + (2 * PI - var->left_angle)) / (2 * PI - var->left_angle + var->right_angle);
+		else if (var->left_angle < var->right_angle && var->angleuser > var->left_angle && var->angleuser > var->right_angle)
+			var->angleduser = (var->angleuser - 2 * PI - var->left_angle) / (var->right_angle - var->left_angle);
+		else if (var->left_angle < var->right_angle && var->angleuser < var->left_angle && var->angleuser < var->right_angle)
+			var->angleduser = (var->angleuser - var->left_angle) / (var->right_angle - var->left_angle);
+		else if (var->left_angle > var->right_angle && var->angleuser < var->left_angle && var->angleuser > var->right_angle)
+			var->angleduser = (var->angleuser - var->left_angle) / (2 * PI - var->left_angle + var->right_angle);
+	}
+	var->usersize = 40000 / (var->iuser * 1.5);
+	if (var->angleuser >= 0)
+			my_put_image_to_image7(var, var->angleduser * 1920 - var->usersize / 1.5, 500 - var->pitch - var->usersize / 2, var->usersize);
 	while (x < 1920)
 	{
 		if (var->closet2 > 3)
@@ -589,42 +608,53 @@ int	update(t_var *var)
 	start = get_time();
 	var->imag2 = mlx_new_image(var->mlx, 1920, 1920);
 	var->addr2 = mlx_get_data_addr(var->imag2, &var->bit2, &var->len2, &var->endian2);
-	if (var->w_pressed == 1)
-		walking_w(var);
-	if (var->s_pressed == 1)
+	if (var->final == 2)
 	{
-		if (var->forbidden[(int)(var->posy - var->directy) + 5][(int)var->posx + 5] != '0' && var->forbidden[(int)var->posy + 5][(int)(var->posx - var->directx) + 5] == '0')
-			var->posx -= var->directx * (0.5 + (var->shift_pressed && var->energy < 190) * 0.5 - 0.25 * var->w_pressed);
-		else if (var->forbidden[(int)var->posy + 5][(int)(var->posx - var->directx) + 5] != '0' && var->forbidden[(int)(var->posy - var->directy) + 5][(int)var->posx + 5] == '0')
-			var->posy -= var->directy * (0.5 + (var->shift_pressed && var->energy < 190) * 0.5 - 0.25 * var->w_pressed);
-		else if (var->forbidden[(int)(var->posy - var->directy) + 5][(int)(var->posx - var->directx) + 5] == '0')
+		if (var->w_pressed == 1)
 		{
-			var->posx -= var->directx * (0.5 + (var->shift_pressed && var->energy < 190) * 0.5 - 0.25 * var->w_pressed);
-			var->posy -= var->directy * (0.5 + (var->shift_pressed && var->energy < 190) * 0.5 - 0.25 * var->w_pressed);
+			var->posy += 0.77027027027;
+			var->posx += 0.2297297297;
 		}
 	}
-	if (var->a_pressed == 1)
+	else
 	{
-		if (var->forbidden[(int)(var->posy - var->directx) + 5][(int)var->posx + 5] != '0' && var->forbidden[(int)var->posy + 5][(int)(var->posx + var->directy) + 5] == '0')
-			var->posx += var->directy * (0.5 + (var->shift_pressed && var->energy < 190) * 0.5 - 0.25 * var->w_pressed);
-		else if (var->forbidden[(int)var->posy + 5][(int)(var->posx + var->directy) + 5] != '0' && var->forbidden[(int)(var->posy - var->directx) + 5][(int)var->posx + 5] == '0')
-			var->posy -= var->directx * (0.5 + (var->shift_pressed && var->energy < 190) * 0.5 - 0.25 * var->w_pressed);
-		else if (var->forbidden[(int)(var->posy - var->directx) + 5][(int)(var->posx + var->directy) + 5] == '0')
+		if (var->w_pressed == 1)
+			walking_w(var);
+		if (var->s_pressed == 1)
 		{
-			var->posx += var->directy * (0.5 + (var->shift_pressed && var->energy < 190) * 0.5 - 0.25 * var->w_pressed);
-			var->posy -= var->directx * (0.5 + (var->shift_pressed && var->energy < 190) * 0.5 - 0.25 * var->w_pressed);
+			if (var->forbidden[(int)(var->posy - var->directy) + 5][(int)var->posx + 5] != '0' && var->forbidden[(int)var->posy + 5][(int)(var->posx - var->directx) + 5] == '0')
+				var->posx -= var->directx * (0.5 + (var->shift_pressed && var->energy < 190) * 0.5 - 0.25 * var->w_pressed);
+			else if (var->forbidden[(int)var->posy + 5][(int)(var->posx - var->directx) + 5] != '0' && var->forbidden[(int)(var->posy - var->directy) + 5][(int)var->posx + 5] == '0')
+				var->posy -= var->directy * (0.5 + (var->shift_pressed && var->energy < 190) * 0.5 - 0.25 * var->w_pressed);
+			else if (var->forbidden[(int)(var->posy - var->directy) + 5][(int)(var->posx - var->directx) + 5] == '0')
+			{
+				var->posx -= var->directx * (0.5 + (var->shift_pressed && var->energy < 190) * 0.5 - 0.25 * var->w_pressed);
+				var->posy -= var->directy * (0.5 + (var->shift_pressed && var->energy < 190) * 0.5 - 0.25 * var->w_pressed);
+			}
 		}
-	}
-	if (var->d_pressed == 1)
-	{
-		if (var->forbidden[(int)(var->posy + var->directx) + 5][(int)var->posx + 5] != '0' && var->forbidden[(int)var->posy + 5][(int)(var->posx - var->directy) + 5] == '0')
-			var->posx -= var->directy * (0.5 + (var->shift_pressed && var->energy < 190) * 0.5 - 0.25 * var->w_pressed);
-		else if (var->forbidden[(int)var->posy + 5][(int)(var->posx - var->directy) + 5] != '0' && var->forbidden[(int)(var->posy + var->directx) + 5][(int)var->posx + 5] == '0')
-			var->posy += var->directx * (0.5 + (var->shift_pressed && var->energy < 190) * 0.5 - 0.25 * var->w_pressed);
-		else if (var->forbidden[(int)(var->posy + var->directx) + 5][(int)(var->posx - var->directy) + 5] == '0')
+		if (var->a_pressed == 1)
 		{
-			var->posx -= var->directy * (0.5 + (var->shift_pressed && var->energy < 190) * 0.5 - 0.25 * var->w_pressed);
-			var->posy += var->directx * (0.5 + (var->shift_pressed && var->energy < 190) * 0.5 - 0.25 * var->w_pressed);
+			if (var->forbidden[(int)(var->posy - var->directx) + 5][(int)var->posx + 5] != '0' && var->forbidden[(int)var->posy + 5][(int)(var->posx + var->directy) + 5] == '0')
+				var->posx += var->directy * (0.5 + (var->shift_pressed && var->energy < 190) * 0.5 - 0.25 * var->w_pressed);
+			else if (var->forbidden[(int)var->posy + 5][(int)(var->posx + var->directy) + 5] != '0' && var->forbidden[(int)(var->posy - var->directx) + 5][(int)var->posx + 5] == '0')
+				var->posy -= var->directx * (0.5 + (var->shift_pressed && var->energy < 190) * 0.5 - 0.25 * var->w_pressed);
+			else if (var->forbidden[(int)(var->posy - var->directx) + 5][(int)(var->posx + var->directy) + 5] == '0')
+			{
+				var->posx += var->directy * (0.5 + (var->shift_pressed && var->energy < 190) * 0.5 - 0.25 * var->w_pressed);
+				var->posy -= var->directx * (0.5 + (var->shift_pressed && var->energy < 190) * 0.5 - 0.25 * var->w_pressed);
+			}
+		}
+		if (var->d_pressed == 1)
+		{
+			if (var->forbidden[(int)(var->posy + var->directx) + 5][(int)var->posx + 5] != '0' && var->forbidden[(int)var->posy + 5][(int)(var->posx - var->directy) + 5] == '0')
+				var->posx -= var->directy * (0.5 + (var->shift_pressed && var->energy < 190) * 0.5 - 0.25 * var->w_pressed);
+			else if (var->forbidden[(int)var->posy + 5][(int)(var->posx - var->directy) + 5] != '0' && var->forbidden[(int)(var->posy + var->directx) + 5][(int)var->posx + 5] == '0')
+				var->posy += var->directx * (0.5 + (var->shift_pressed && var->energy < 190) * 0.5 - 0.25 * var->w_pressed);
+			else if (var->forbidden[(int)(var->posy + var->directx) + 5][(int)(var->posx - var->directy) + 5] == '0')
+			{
+				var->posx -= var->directy * (0.5 + (var->shift_pressed && var->energy < 190) * 0.5 - 0.25 * var->w_pressed);
+				var->posy += var->directx * (0.5 + (var->shift_pressed && var->energy < 190) * 0.5 - 0.25 * var->w_pressed);
+			}
 		}
 	}
 	if ((var->pitch2 <= -1 || var->up_pressed == 1) && var->pitch >= -1500)
@@ -698,7 +728,14 @@ int	update(t_var *var)
 		var->angledavli -= 2 * PI;
 	if (var->idavli > var->distance)
 		var->angledavli = -1;
-
+	var->iuser = sqrt(pow(fabs(var->xuser - var->posx), 2) + pow(fabs(var->yuser - var->posy), 2));
+	var->angleuser = atan2((var->yuser - var->posy), (var->xuser - var->posx));
+	if (var->angleuser < 0)
+		var->angleuser += 2 * PI;
+	if (var->angleuser > 2 * PI)
+		var->angleuser -= 2 * PI;
+	if (var->iuser > var->distance)
+		var->angleuser = -1;
 	if (var->died == 1)
 	{
 		var->deathx = var->posx;
@@ -924,8 +961,8 @@ void	forbidden_helper5(t_var *var, int i, int j, char c)
 {
 	if (c == 'D')
 	{
-		var->xdavli = j + 8;
-		var->ydavli = i + 8;
+		var->xdavli = j;
+		var->ydavli = i;
 	}
 }
 
@@ -1225,9 +1262,9 @@ int	main(int argc, char **argv)
 	var.imgdavli = mlx_xpm_file_to_image(var.mlx, "./xpms/davli.xpm", &var.widthdavli, &var.heightdavli);
 	if (!var.imgdavli)
 		return (0);
-	// var.imguser = mlx_xpm_file_to_image(var.mlx, "./xpms/user.xpm", &var.widthuser, &var.heightuser);
-	// if (!var.imguser)
-		// return (0);
+	var.imguser = mlx_xpm_file_to_image(var.mlx, "./xpms/fflamion.xpm", &var.widthuser, &var.heightuser);
+	if (!var.imguser)
+		return (0);
 	var.addrd = mlx_get_data_addr(var.imgd, &var.bitd, &var.lend, &var.endiand);
 	var.addrp = mlx_get_data_addr(var.imgp, &var.bitp, &var.lenp, &var.endianp);
 	var.imag = mlx_new_image(var.mlx, 150, 150);
@@ -1239,7 +1276,7 @@ int	main(int argc, char **argv)
 	var.addrech = mlx_get_data_addr(var.imgech, &var.bitech, &var.lenech, &var.endianech);
 	var.addrech2 = mlx_get_data_addr(var.imgech2, &var.bitech2, &var.lenech2, &var.endianech2);
 	var.addrdavli = mlx_get_data_addr(var.imgdavli, &var.bitdavli, &var.lendavli, &var.endiandavli);
-	// var.addruser = mlx_get_data_addr(var.imguser, &var.bituser, &var.lenuser, &var.endianuser);
+	var.addruser = mlx_get_data_addr(var.imguser, &var.bituser, &var.lenuser, &var.endianuser);
 
 	var.imgno = mlx_xpm_file_to_image(var.mlx, var.north, &var.widthno, &var.heightno);
 	var.imgso = mlx_xpm_file_to_image(var.mlx, var.south, &var.widthso, &var.heightso);

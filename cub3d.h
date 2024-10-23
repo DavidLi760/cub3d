@@ -182,14 +182,14 @@ typedef struct s_var
 	int		widthea;
 	int		heightea;
 	int		delay;
-	
+
 	char	*north;
 	char	*south;
 	char	*west;
 	char	*east;
 	int		floor;
 	int		ceiling;
-	
+
 	int		w_pressed;
 	int		a_pressed;
 	int		s_pressed;
@@ -201,14 +201,14 @@ typedef struct s_var
 	int		up_pressed;
 	int		right_pressed;
 	int		down_pressed;
-	
+
 	int		no;
 	int		so;
 	int		we;
 	int		ea;
 	int		vide;
 	int		sprite;
-	
+
 	int		door;
 	int		door2;
 	int		door3;
@@ -229,7 +229,7 @@ typedef struct s_var
 	int		widthru2;
 	int		heightru1;
 	int		heightru2;
-	
+
 	double	xscp;
 	double	yscp;
 	double	iscp;
@@ -278,7 +278,6 @@ typedef struct s_var
 	double	usersize;
 	int		widthuser;
 	int		heightuser;
-
 	int		mix;
 	int		closet;
 	int		closet2;
@@ -333,6 +332,8 @@ void		my_put_image_to_image3(t_var *var, int x, int y, int size);
 void		my_put_image_to_image4(t_var *var, int x, int y, int size);
 void		my_put_image_to_image5(t_var *var, int x, int y, int size);
 void		my_put_image_to_image6(t_var *var, int x, int y, int size);
+void		my_put_image_to_image7(t_var *var, int x, int y, int size);
+
 void		rush(t_var *var);
 void		scp173(t_var *var);
 void		screech(t_var *var);

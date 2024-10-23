@@ -16,20 +16,20 @@ void    scenario(t_var *var)
 {
     if (var->posy > 2 * 15 && var->doornumber == 0)
         var->doornumber = 1;
-    if (var->posy > 4 * 15 && var->doortime && var->posx < 95 && var->doornumber == 1)
+    if (var->posy > 68 && var->doortime && var->posx < 95 && var->doornumber == 1)
         var->doornumber = 2;
-    if (var->posy > 14 * 15 && var->doortime && var->doornumber == 2)
+    if (var->posy > 200 && var->doortime && var->posx < 95 && var->doornumber == 2)
     {
         var->screech = 1;
         var->doornumber = 3;
         var->distance -= 150;
     }
-    if (var->posy < 18 * 15 && var->posx > 7 * 15 && var->doortime && var->doornumber == 3)
+    if (var->posy > 235 && var->posy < 260 && var->posx > 110 && var->doortime && var->doornumber == 3)
     {
         var->doornumber = 4;
         var->distance += 150;
     }
-    if (var->posy > 22 * 15 && var->posx > 13 * 15 && var->doortime && var->doornumber == 4)
+    if (var->posy > 335 && var->posx > 220 && var->doortime && var->doornumber == 4)
     {
         var->doornumber = 5;
         var->rush = 1;
@@ -47,7 +47,7 @@ void    scenario(t_var *var)
         if (var->xru > 244 && var->yru < 700 && var->doornumber == 5)
             var->yru += 2;
     }
-    if (var->posy > 32 * 15 && var->doortime == 1 && var->doornumber == 5)
+    if (var->posy > 485 && var->posx < 270 && var->doortime == 1 && var->doornumber == 5)
     {
         var->doornumber = 6;
         var->rush = 0;
@@ -57,7 +57,7 @@ void    scenario(t_var *var)
         var->xscp = 225;
         var->yscp = 575;
     }
-    if (var->posy < 540 && var->posy > 520 && var->posx > 270 && var->doortime && var->doornumber == 6)
+    if (var->posy < 550 && var->posy > 520 && var->posx > 275 && var->doortime && var->doornumber == 6)
     {
         var->doornumber = 7;
         var->scp173 = 0;
@@ -71,12 +71,12 @@ void    scenario(t_var *var)
         if (var->numberech == 10 || var->numberech % 400 == 0)
             var->screech = 1;
     }
-    if (var->posy > 680 && var->posy < 710 && var->doortime && var->doornumber == 7)
+    if (var->posy > 680 && var->posx < 185 && var->doortime && var->doornumber == 7)
     {
         var->doornumber = 8;
         var->distance += 150;
     }
-    if (var->posy > 800 && var->posx < 130 && var->doortime && var->doornumber == 8)
+    if (var->posy > 840 && var->posx < 120 && var->doortime && var->doornumber == 8)
     {
         var->doornumber = 9;
         var->rush = 1;
@@ -122,7 +122,7 @@ void    scenario(t_var *var)
         var->doornumber = 12;
         var->distance += 150;
     }
-    if (var->posy > 1505 && var->posy < 1535 && var->posx > 280 && var->doortime && var->doornumber == 12)
+    if (var->posy > 1505 && var->posx > 280 && var->doortime && var->doornumber == 12)
     {
         var->doornumber = 13;
         var->xscp = 285;
@@ -142,26 +142,50 @@ void    scenario(t_var *var)
     if (var->doornumber == 15)
     {
         if (var->posy > 1950 && var->final == 0)
+        {
             var->final = 1;
+            var->angle = 0.5 * PI;
+        }
         if (var->final == 1)
         {
-            var->posx = 399;
+            var->posx = 393;
             var->posy = 1950;
             var->numberech++;
-            if (var->numberech < 80)
+            if (var->numberech > 80 && var->numberech < 180)
                 mlx_string_put(var->mlx, var->win, 920, 750, 0xFF0000,"WELCOME STRANGER");
-            if (var->numberech > 150 && var->numberech < 300)
+            if (var->numberech > 250 && var->numberech < 450)
                 mlx_string_put(var->mlx, var->win, 850, 750, 0xFF0000,"NOW I WILL ASK YOU ONE FINAL QUESTION");
-            if (var->numberech > 350)
+            if (var->numberech > 450)
+            {
                 var->final = 2;
+                var->xuser = var->xdavli - 20;
+                var->yuser = var->ydavli;
+                var->xdavli += 20;
+            }
         }
         if (var->final == 2)
         {
             mlx_string_put(var->mlx, var->win, 850, 750, 0xFF0000, "WHICH ONE OF US IS THE MOST BEAUTIFUL ?");
-
+            if (var->angle > 1.8 && var->posy < 1980)
+                var->angle = 1.8;
+            else if (var->angle < 1.1 && var->posy < 1980)
+                var->angle = 1.1;
+            if (var->posy > 1980)
+                var->angle = 1.33;
+            if (var->posy > 2010)
+                var->final = 3;
         }
+        // if (var->final == 3)
+        // {
+        //     var->posx = 411;
+        //     var->posy = 2010;
+        //     var->xuser = 0;
+        //     var->yuser = 0;
+        //     var->xdavli = 
+        // }
     }
     printf("posx : %f\n", var->posx);
     printf("posy : %f\n", var->posy);
+    printf("angle:%f\n", var->angle);
     // if (var->pos)
 }
