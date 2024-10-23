@@ -48,10 +48,8 @@ void    scenario(t_var *var)
             var->xru += 2;
         if (var->xru > 244 && var->yru < 700 && var->doornumber == 5)
             var->yru += 2;
-        if (var->yru > 680)
-            var->map[34][16] = '2';
     }
-    if (var->posy > 485 && var->posx < 270 && var->doortime == 1 && var->doornumber == 5)
+    if (var->posy > 485 && var->posx < 270 && var->doortime && var->doornumber == 5)
     {
         var->doornumber = 6;
         var->rush = 0;
