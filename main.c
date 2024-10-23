@@ -542,6 +542,25 @@ void	ray_casting(t_var *var, int i)
 		var->spriteorder[2] = 'e';
 	var->spriteorder[3] = 0;
 	print_monster(var, var->spriteorder);
+	if (var->angledavli >= 0)
+	{
+		var->right_angle = var->ray_angle;
+		if (var->right_angle > var->left_angle && var->angledavli > var->left_angle && var->angledavli < var->right_angle)
+			var->angleddavli = (var->angledavli - var->left_angle) / (var->right_angle - var->left_angle);
+		else if (var->right_angle < var->left_angle && var->angledavli > var->right_angle && var->angledavli > var->left_angle)
+			var->angleddavli = (var->angledavli - var->left_angle) / (2 * PI - var->left_angle + var->right_angle);
+		else if (var->right_angle < var->left_angle && var->angledavli < var->right_angle && var->angledavli < var->left_angle)
+			var->angleddavli = (var->angledavli + (2 * PI - var->left_angle)) / (2 * PI - var->left_angle + var->right_angle);
+		else if (var->left_angle < var->right_angle && var->angledavli > var->left_angle && var->angledavli > var->right_angle)
+			var->angleddavli = (var->angledavli - 2 * PI - var->left_angle) / (var->right_angle - var->left_angle);
+		else if (var->left_angle < var->right_angle && var->angledavli < var->left_angle && var->angledavli < var->right_angle)
+			var->angleddavli = (var->angledavli - var->left_angle) / (var->right_angle - var->left_angle);
+		else if (var->left_angle > var->right_angle && var->angledavli < var->left_angle && var->angledavli > var->right_angle)
+			var->angleddavli = (var->angledavli - var->left_angle) / (2 * PI - var->left_angle + var->right_angle);
+	}
+	var->davlisize = 40000 / (var->idavli * 1.5);
+	if (var->angledavli >= 0)
+			my_put_image_to_image6(var, var->angleddavli * 1920 - var->davlisize / 1.5, 500 - var->pitch - var->davlisize / 2, var->davlisize);
 	while (x < 1920)
 	{
 		if (var->closet2 > 3)
@@ -658,7 +677,6 @@ int	update(t_var *var)
 		var->anglescp -= 2 * PI;
 	if (var->iscp > var->distance)
 		var->anglescp = -1;
-	
 	var->iech = sqrt(pow(fabs(var->xech - var->posx), 2) + pow(fabs(var->yech - var->posy), 2));
 	var->angleech = atan2((var->yech - var->posy), (var->xech - var->posx));
 	if (var->angleech < 0)
@@ -671,6 +689,16 @@ int	update(t_var *var)
 		var->died++;
 	if (var->iru < 50 && var->closet2 < 3)
 		var->died++;
+		
+	var->idavli = sqrt(pow(fabs(var->xdavli - var->posx), 2) + pow(fabs(var->ydavli - var->posy), 2));
+	var->angledavli = atan2((var->ydavli - var->posy), (var->xdavli - var->posx));
+	if (var->angledavli < 0)
+		var->angledavli += 2 * PI;
+	if (var->angledavli > 2 * PI)
+		var->angledavli -= 2 * PI;
+	if (var->idavli > var->distance)
+		var->angledavli = -1;
+
 	if (var->died == 1)
 	{
 		var->deathx = var->posx;
@@ -894,15 +922,10 @@ void	forbidden_helper6(t_var *var, int i, int j, char c)
 
 void	forbidden_helper5(t_var *var, int i, int j, char c)
 {
-	if (c == 'r')
+	if (c == 'D')
 	{
-		var->xru = j + 4;
-		var->yru = i + 4.5;
-	}
-	if (c == 's')
-	{
-		var->xscp = j + 3;
-		var->yscp = i + 3.5;
+		var->xdavli = j + 8;
+		var->ydavli = i + 8;
 	}
 }
 
@@ -1020,12 +1043,8 @@ void	init_forbidden(t_var *var, int i, int j)
 				forbidden_helper3(var, i * 15, j * 15, '5');
 			if (var->map[i][j] == '6')
 				forbidden_helper4(var, i * 15, j * 15, '6');
-			if (var->map[i][j] == 'r' && var->xru == 0)
-				forbidden_helper5(var, i * 15, j * 15, 'r');
-			if (var->map[i][j] == 's' && var->xscp == 0)
-				forbidden_helper5(var, i * 15, j * 15, 's');
-			if (var->map[i][j] == 'e' && var->xech == 0)
-				forbidden_helper5(var, i * 15, j * 15, 'e');
+			if (var->map[i][j] == 'D' && var->xdavli == 0)
+				forbidden_helper5(var, i * 15, j * 15, 'D');
 			if (var->map[i][j] == 'p')
 				forbidden_helper6(var, i * 15, j * 15, 'p');
 			j++;
@@ -1132,6 +1151,11 @@ int	main(int argc, char **argv)
 	var.iech = 0;
 	var.angleech = 0;
 	var.angledech = 0;
+	var.xdavli = 0;
+	var.ydavli = 0;
+	var.idavli = 0;
+	var.angledavli = 0;
+	var.angleddavli = 0;
 	var.left_angle = 0;
 	var.right_angle = 0;
 	var.ru2 = 0;
@@ -1191,6 +1215,9 @@ int	main(int argc, char **argv)
 	var.imgech2 = mlx_xpm_file_to_image(var.mlx, "./xpms/Screech2.xpm", &var.widthech2, &var.heightech2);
 	if (!var.imgech2)
 		return (0);
+	var.imgdavli = mlx_xpm_file_to_image(var.mlx, "./xpms/davli.xpm", &var.widthdavli, &var.heightdavli);
+	if (!var.imgdavli)
+		return (0);
 	var.addrd = mlx_get_data_addr(var.imgd, &var.bitd, &var.lend, &var.endiand);
 	var.addrp = mlx_get_data_addr(var.imgp, &var.bitp, &var.lenp, &var.endianp);
 	var.imag = mlx_new_image(var.mlx, 150, 150);
@@ -1201,6 +1228,7 @@ int	main(int argc, char **argv)
 	var.addrscp2 = mlx_get_data_addr(var.imgscp2, &var.bitscp2, &var.lenscp2, &var.endianscp2);
 	var.addrech = mlx_get_data_addr(var.imgech, &var.bitech, &var.lenech, &var.endianech);
 	var.addrech2 = mlx_get_data_addr(var.imgech2, &var.bitech2, &var.lenech2, &var.endianech2);
+	var.addrdavli = mlx_get_data_addr(var.imgdavli, &var.bitdavli, &var.lendavli, &var.endiandavli);
 
 	var.imgno = mlx_xpm_file_to_image(var.mlx, var.north, &var.widthno, &var.heightno);
 	var.imgso = mlx_xpm_file_to_image(var.mlx, var.south, &var.widthso, &var.heightso);

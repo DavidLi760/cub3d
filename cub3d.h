@@ -65,6 +65,7 @@ typedef struct s_var
 	void	*imgscp2;
 	void	*imgech;
 	void	*imgech2;
+	void	*imgdavli;
 
 	char	*addr;
 	char	*addr2;
@@ -80,6 +81,7 @@ typedef struct s_var
 	char	*addrscp2;
 	char	*addrech;
 	char	*addrech2;
+	char	*addrdavli;
 
 	int		len;
 	int		len2;
@@ -95,6 +97,7 @@ typedef struct s_var
 	int		lenscp2;
 	int		lenech;
 	int		lenech2;
+	int		lendavli;
 
 	int		bit;
 	int		bit2;
@@ -110,6 +113,7 @@ typedef struct s_var
 	int		bitscp2;
 	int		bitech;
 	int		bitech2;
+	int		bitdavli;
 
 	int		endian;
 	int		endian2;
@@ -125,6 +129,7 @@ typedef struct s_var
 	int		endianscp2;
 	int		endianech;
 	int		endianech2;
+	int		endiandavli;
 
 	int		diff_x;
 	int		diff_y;
@@ -248,6 +253,17 @@ typedef struct s_var
 	int		widthech2;
 	int		heightech;
 	int		heightech2;
+
+	double	xdavli;
+	double	ydavli;
+	double	idavli;
+	double	angledavli;
+	double	angleddavli;
+	double	davlisize;
+	int		widthdavli;
+	int		widthdavli2;
+	int		heightdavli;
+	int		heightdavli2;
 
 	int		mix;
 	int		closet;
