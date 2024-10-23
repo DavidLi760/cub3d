@@ -175,14 +175,15 @@ void    scenario(t_var *var)
             if (var->posy > 2010)
                 var->final = 3;
         }
-        // if (var->final == 3)
-        // {
-        //     var->posx = 411;
-        //     var->posy = 2010;
-        //     var->xuser = 0;
-        //     var->yuser = 0;
-        //     var->xdavli = 
-        // }
+        if (var->final == 3)
+        {
+            var->posx = 411;
+            var->posy = 2010;
+            var->xuser = 0;
+            var->yuser = 0;
+            var->ydavli += 11;
+            var->xdavli += 3;
+        }
     }
     printf("posx : %f\n", var->posx);
     printf("posy : %f\n", var->posy);
