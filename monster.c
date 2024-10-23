@@ -112,9 +112,9 @@ void    screech(t_var *var)
 			var->angledech = (var->angleech - var->left_angle) / (2 * PI - var->left_angle + var->right_angle);
 	}
 	var->echsize = 40000 / (var->iech * 1.5);
-	if (var->angledech > 0.4 && var->angledech < 0.7 && var->highech == 2 && var->pitch > 1200)
+	if (var->angledech > 0.4 && var->angledech < 0.75 && var->highech == 2 && var->pitch > 1200)
 		var->lookech++;
-	else if (var->angledech > 0.4 && var->angledech < 0.7 && var->highech == 1 && var->pitch < -1300)
+	else if (var->angledech > 0.4 && var->angledech < 0.75 && var->highech == 1 && var->pitch < -1200)
 		var->lookech++;
 	if (var->lookech > 5)
 	{

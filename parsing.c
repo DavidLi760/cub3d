@@ -161,6 +161,5 @@ int	check_arg(t_var *var, char **argv)
 		return (free4(var, 0, 0), 0);
 	if (!is_right_element(var, 0))
 		return (free4(var, -1, 0), 0);
-	get_money(var);
 	return (1);
 }

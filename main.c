@@ -1175,6 +1175,7 @@ int	main(int argc, char **argv)
 	var.attackech = 0;
 	var.highech = 0;
 	var.doornumber = 0;
+	var.final = 0;
 	var.distance = DIST;
 	if (argc != 2)
 		return (0);

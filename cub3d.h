@@ -265,6 +265,15 @@ typedef struct s_var
 	int		heightdavli;
 	int		heightdavli2;
 
+	double	xuser;
+	double	yuser;
+	double	iuser;
+	double	angleuser;
+	double	angleduser;
+	double	usersize;
+	int		widthuser;
+	int		heightuser;
+
 	int		mix;
 	int		closet;
 	int		closet2;
@@ -288,6 +297,7 @@ typedef struct s_var
 	double	deathx;
 	double	deathy;
 	int		doornumber;
+	int		final;
 }	t_var;
 
 long long	get_time(void);
@@ -322,7 +332,6 @@ void		rush(t_var *var);
 void		scp173(t_var *var);
 void		screech(t_var *var);
 void		print_monster(t_var *var, char *tab);
-void		get_money(t_var *var);
 char		*ft_itoa(int nb);
 void		scenario(t_var *var);
 

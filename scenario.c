@@ -29,7 +29,7 @@ void    scenario(t_var *var)
         var->doornumber = 4;
         var->distance += 150;
     }
-    if (var->posy > 23 * 15 && var->doortime && var->doornumber == 4)
+    if (var->posy > 22 * 15 && var->posx > 13 * 15 && var->doortime && var->doornumber == 4)
     {
         var->doornumber = 5;
         var->rush = 1;
@@ -68,7 +68,7 @@ void    scenario(t_var *var)
     if (var->doornumber == 7)
     {
         var->numberech++;
-        if (var->numberech == 10 || var->numberech % 1000 == 0)
+        if (var->numberech == 10 || var->numberech % 400 == 0)
             var->screech = 1;
     }
     if (var->posy > 680 && var->posy < 710 && var->doortime && var->doornumber == 7)
@@ -137,6 +137,29 @@ void    scenario(t_var *var)
         var->xscp = 0;
         var->yscp = 0;
         var->scp173 = 0;
+        var->numberech = 0;
+    }
+    if (var->doornumber == 15)
+    {
+        if (var->posy > 1950 && var->final == 0)
+            var->final = 1;
+        if (var->final == 1)
+        {
+            var->posx = 399;
+            var->posy = 1950;
+            var->numberech++;
+            if (var->numberech < 80)
+                mlx_string_put(var->mlx, var->win, 920, 750, 0xFF0000,"WELCOME STRANGER");
+            if (var->numberech > 150 && var->numberech < 300)
+                mlx_string_put(var->mlx, var->win, 850, 750, 0xFF0000,"NOW I WILL ASK YOU ONE FINAL QUESTION");
+            if (var->numberech > 350)
+                var->final = 2;
+        }
+        if (var->final == 2)
+        {
+            mlx_string_put(var->mlx, var->win, 850, 750, 0xFF0000, "WHICH ONE OF US IS THE MOST BEAUTIFUL ?");
+
+        }
     }
     printf("posx : %f\n", var->posx);
     printf("posy : %f\n", var->posy);
