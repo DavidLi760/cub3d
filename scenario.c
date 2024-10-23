@@ -214,11 +214,11 @@ void    scenario(t_var *var)
             var->tempx = fabs(var->xdavli - var->posx);
             var->tempy = fabs(var->ydavli - var->posy);
             if (var->xdavli < var->posx)
-                var->xdavli += (var->tempx / (var->tempx + var->tempy)) * 0.85;
+                var->xdavli += (var->tempx / (var->tempx + var->tempy)) * 0.9;
             if (var->xdavli > var->posx)
-                var->xdavli -= (var->tempx / (var->tempx + var->tempy)) * 0.85;
+                var->xdavli -= (var->tempx / (var->tempx + var->tempy)) * 0.9;
             if (var->ydavli < var->posy)
-                var->ydavli -= (var->tempy / (var->tempx + var->tempy)) * 0.85;
+                var->ydavli -= (var->tempy / (var->tempx + var->tempy)) * 0.9;
             mlx_string_put(var->mlx, var->win, 980, 50, 0xFFFFFF, ft_itoa(var->idavli));
             if (var->posy < 30)
                 var->final = 6;
