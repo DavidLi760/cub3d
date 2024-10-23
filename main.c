@@ -1156,6 +1156,12 @@ int	main(int argc, char **argv)
 	var.idavli = 0;
 	var.angledavli = 0;
 	var.angleddavli = 0;
+	
+	var.xuser = 0;
+	var.yuser = 0;
+	var.iuser = 0;
+	var.angleuser = 0;
+	var.angleduser = 0;
 	var.left_angle = 0;
 	var.right_angle = 0;
 	var.ru2 = 0;
@@ -1219,6 +1225,9 @@ int	main(int argc, char **argv)
 	var.imgdavli = mlx_xpm_file_to_image(var.mlx, "./xpms/davli.xpm", &var.widthdavli, &var.heightdavli);
 	if (!var.imgdavli)
 		return (0);
+	var.imguser = mlx_xpm_file_to_image(var.mlx, "./xpms/user.xpm", &var.widthuser, &var.heightuser);
+	if (!var.imguser)
+		return (0);
 	var.addrd = mlx_get_data_addr(var.imgd, &var.bitd, &var.lend, &var.endiand);
 	var.addrp = mlx_get_data_addr(var.imgp, &var.bitp, &var.lenp, &var.endianp);
 	var.imag = mlx_new_image(var.mlx, 150, 150);
@@ -1230,6 +1239,7 @@ int	main(int argc, char **argv)
 	var.addrech = mlx_get_data_addr(var.imgech, &var.bitech, &var.lenech, &var.endianech);
 	var.addrech2 = mlx_get_data_addr(var.imgech2, &var.bitech2, &var.lenech2, &var.endianech2);
 	var.addrdavli = mlx_get_data_addr(var.imgdavli, &var.bitdavli, &var.lendavli, &var.endiandavli);
+	var.addruser = mlx_get_data_addr(var.imguser, &var.bituser, &var.lenuser, &var.endianuser);
 
 	var.imgno = mlx_xpm_file_to_image(var.mlx, var.north, &var.widthno, &var.heightno);
 	var.imgso = mlx_xpm_file_to_image(var.mlx, var.south, &var.widthso, &var.heightso);

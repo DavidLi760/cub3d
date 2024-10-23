@@ -66,6 +66,7 @@ typedef struct s_var
 	void	*imgech;
 	void	*imgech2;
 	void	*imgdavli;
+	void	*imguser;
 
 	char	*addr;
 	char	*addr2;
@@ -82,6 +83,7 @@ typedef struct s_var
 	char	*addrech;
 	char	*addrech2;
 	char	*addrdavli;
+	char	*addruser;
 
 	int		len;
 	int		len2;
@@ -98,6 +100,7 @@ typedef struct s_var
 	int		lenech;
 	int		lenech2;
 	int		lendavli;
+	int		lenuser;
 
 	int		bit;
 	int		bit2;
@@ -114,6 +117,7 @@ typedef struct s_var
 	int		bitech;
 	int		bitech2;
 	int		bitdavli;
+	int		bituser;
 
 	int		endian;
 	int		endian2;
@@ -130,6 +134,7 @@ typedef struct s_var
 	int		endianech;
 	int		endianech2;
 	int		endiandavli;
+	int		endianuser;
 
 	int		diff_x;
 	int		diff_y;
