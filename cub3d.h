@@ -309,9 +309,11 @@ typedef struct s_var
 	double	tempy;
 	int		doornumber;
 	int		final;
+	char	*itoa;
 }	t_var;
 
 long long	get_time(void);
+int			close_win(t_var *var);
 int			check_arg(t_var *var, char **argv);
 size_t		ft_strlen(char *s);
 char		*get_next_line(int fd);

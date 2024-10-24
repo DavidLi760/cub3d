@@ -521,22 +521,24 @@ void	ray_casting(t_var *var, int i)
 		var->vide = 0;
 		var->ru2 = 0;
 	}
-
-	if (var->iru > var->iscp && var->iru > var->iech)
+	var->spriteorder[0] = '0';
+	var->spriteorder[1] = '0';
+	var->spriteorder[2] = '0';
+	if (var->iru >= var->iscp && var->iru >= var->iech)
 		var->spriteorder[0] = 'r';
-	else if (var->iru > var->iech || var->iru > var->iscp)
+	else if (var->iru >= var->iech || var->iru >= var->iscp)
 		var->spriteorder[1] = 'r';
 	else
 		var->spriteorder[2] = 'r';
-	if (var->iscp > var->iru && var->iscp > var->iech)
+	if (var->iscp >= var->iru && var->iscp >= var->iech)
 		var->spriteorder[0] = 's';
-	else if (var->iscp > var->iech || var->iscp > var->iru)
+	else if (var->iscp >= var->iech || var->iscp >= var->iru)
 		var->spriteorder[1] = 's';
 	else
 		var->spriteorder[2] = 's';
-	if (var->iech > var->iru && var->iech > var->iscp)
+	if (var->iech >= var->iru && var->iech >= var->iscp)
 		var->spriteorder[0] = 'e';
-	else if (var->iech > var->iscp || var->iech > var->iru)
+	else if (var->iech >= var->iscp || var->iech >= var->iru)
 		var->spriteorder[1] = 'e';
 	else
 		var->spriteorder[2] = 'e';
@@ -769,7 +771,7 @@ int	update(t_var *var)
 	}
 	if (var->died && var->idavli < 20)
 	{
-		my_put_image_to_image2(var, 0, 0, 5000);
+		my_put_image_to_image2(var, 0, -500, 2000);
 		my_put_image_to_image8(var, 0, -600, 2000);	
 	}
 	mlx_put_image_to_window(var->mlx, var->win, var->imag2, 0, 0);
@@ -786,7 +788,9 @@ int	update(t_var *var)
 	if (var->closet2 == 1 && var->map[(int)var->closety / 15][(int)var->closetx / 15] == 'p')
 		mlx_string_put(var->mlx, var->win, 940, 750, 0x00FFFFFF, "Press E to hide!");
 	mlx_string_put(var->mlx, var->win, 1500, 50, 0xFFFFFF, "Room :");
-	mlx_string_put(var->mlx, var->win, 1550, 50, 0xFFFFFF, ft_itoa(var->doornumber));
+	var->itoa = ft_itoa(var->doornumber);
+	mlx_string_put(var->mlx, var->win, 1550, 50, 0xFFFFFF, var->itoa);
+	free(var->itoa);
 	scenario(var);
 	if (var->door2 == 1 && var->e_pressed == 1 && (var->map[(int)var->doory / 15][(int)var->doorx / 15] == '2' || var->map[(int)var->doory / 15][(int)var->doorx / 15] == '3'))
 		var->door2 = 2;
@@ -901,7 +905,7 @@ int	update(t_var *var)
 			printf("\n ------------\n");
 			printf("|  You Died  |\n");
 			printf(" ------------\n");
-			exit(0);
+			close_win(var);
 		}
 	}
 	while (get_time() < start + MS)
@@ -1202,7 +1206,11 @@ int	main(int argc, char **argv)
 	var.idavli = 0;
 	var.angledavli = 0;
 	var.angleddavli = 0;
-	
+	var.rusize = 0;
+	var.scpsize = 0;
+	var.echsize = 0;
+	var.davlisize = 0;
+	var.usersize = 0;	
 	var.xuser = 0;
 	var.yuser = 0;
 	var.iuser = 0;
@@ -1305,19 +1313,9 @@ int	main(int argc, char **argv)
 	i = 0;
 	while (var.map[i])
 		printf("%s\n", var.map[i++]);
-	mlx_mouse_hide(var.mlx, var.win);
 	mlx_mouse_move(var.mlx, var.win, 1800, 900);
 	printf("0x%X,", var.floor);
 	printf("0x%X,", var.ceiling);
-	// int	j = 0;
-	// while (i < MAP_SIZE)
-	// {
-	// 	j = 0;
-	// 	while (j < MAP_SIZE)
-	// 		printf("%c", var.forbidden[i][j++]);
-	// 	i++;
-	// }
-	// printf("x : %d, y : %d\n", var.position.x, var.position.y);
 	mlx_hook(var.win, 2, 1L << 0, escape, &var);
 	mlx_hook(var.win, 6, 1L << 6, mouse_move, &var);
 	mlx_hook(var.win, 3, 1L << 1, release, &var);

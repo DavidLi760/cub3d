@@ -79,7 +79,13 @@ int copy_color(t_var *var, char *s1, int j)
         return (-1);
     }
     if (ft_atoi(temp[1]) > 255 || ft_atoi(temp[1]) < 0 || ft_atoi(temp[2]) > 255 || ft_atoi(temp[2]) < 0 || ft_atoi(temp[3]) > 255 || ft_atoi(temp[3]) < 0)
+    {
+        j = 0;
+        while (temp[j])
+            free(temp[j++]);
+        free(temp);
         return (-1);
+    }
     printf("%d,", atoi(temp[1]));
     printf("%d,", atoi(temp[2]));
     printf("%d\n", atoi(temp[3]));

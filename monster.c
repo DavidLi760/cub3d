@@ -17,11 +17,10 @@ void    print_monster(t_var *var, char *tab)
     int i;
 
     i = 0;
-    (void)tab;
 	rush(var);
     scp173(var);
     screech(var);
-    while (i <= 3)
+    while (i < 3)
     {
 		if (tab[i] == 'r' && var->angleru >= 0)
 			my_put_image_to_image(var, var->angledru * 1920 - var->rusize / 1.5, 500 - var->pitch - var->rusize / 2, var->rusize);

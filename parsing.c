@@ -150,7 +150,7 @@ int	check_arg(t_var *var, char **argv)
 	var->file = get_next_line(var->fd);
 	close(var->fd);
 	if (!var->file)
-		return (printf("Error : File don't exist\n"), 0);
+		return (printf("Error : Something's wrong with the file\n"), 0);
 	if (!check_extension(var, argv[1]))
 		return (0);
 	if (!get_split(var, -1, 0))
