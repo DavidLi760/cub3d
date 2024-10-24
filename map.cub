@@ -8,7 +8,7 @@ CONSUMABLE : Medicine, Monster Reborn;
 NO ./xpms/Wall.xpm
 SO ./xpms/Wall.xpm
 
-WE ./xpms/Wall.xpm
+ WE ./xpms/Wall.xpm
 EA ./xpms/Wall.xpm
 
 F 43, 35, 48
