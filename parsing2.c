@@ -90,7 +90,7 @@ int	get_split(t_var *var, int i, int j)
 {
 	var->split = ft_split(var->file, "\n");
 	if (!var->split)
-		return (printf("Error : Empty file\n"), 0);
+		return (printf("Error : Incorrect file\n"), 0);
 	if (!count_line(var, 1))
 		return (printf("Error : No map found\n"), 0);
 	if (!count_line(var, 0))

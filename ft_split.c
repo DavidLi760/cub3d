@@ -74,6 +74,30 @@ char	*make_tab(char *str, char *set, int *j)
 	return (split);
 }
 
+int	is_empty_line(char *str, int j, int i)
+{
+	while (str[j] == ' ' || str[j] == '\n')
+		j++;
+	if (str[j] >= '0' && str[j] <= '9')
+		i = 1;
+	if (i == 1)
+	{
+		while (str[j])
+		{
+			if (str[j] == '\n')
+			{
+				j++;
+				while (str[j] == ' ')
+					j++;
+				if (str[j] == '\n')
+					return (0);
+			}
+			j++;
+		}
+	}
+	return (1);
+}
+
 char	**ft_split(char *str, char *set)
 {
 	int		i;
@@ -89,6 +113,8 @@ char	**ft_split(char *str, char *set)
 	{
 		while (is_charset(str[j], set) && str[j])
 			j++;
+		if (!is_empty_line(str, j, 0))
+			return (0);
 		if (str[j])
 			split[i] = make_tab(str, set, &j);
 	}
