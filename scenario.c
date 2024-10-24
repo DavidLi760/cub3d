@@ -241,7 +241,7 @@ void    scenario(t_var *var)
             var->xdavli = var->posx;
             var->ydavli = 60;
             var->xdavli = 70;
-            if (var->numberech > 51)
+            if (var->numberech > 150)
             {
 			    printf("\n ------------\n");
 			    printf("|  You won ! |\n");

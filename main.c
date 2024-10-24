@@ -782,7 +782,7 @@ int	update(t_var *var)
 	mlx_destroy_image(var->mlx, var->imag2);
 	mlx_put_image_to_window(var->mlx, var->win, var->img, 44, 44);
 	if (var->timeech < 50 && var->screech)
-		mlx_string_put(var->mlx, var->win, 930, 450, 0xFF0000, "Pssst...");
+		mlx_string_put(var->mlx, var->win, 930, 450, 0xFF0000, "Behind you...");
 	if (var->door2 == 1 && (var->map[(int)var->doory / 15][(int)var->doorx / 15] == '2' || var->map[(int)var->doory / 15][(int)var->doorx / 15] == '3' || var->map[(int)var->doory / 15][(int)var->doorx / 15] == '6'))
 		mlx_string_put(var->mlx, var->win, 940, 750, 0x00FFFFFF, "Press E to open!");
 	if (var->closet2 == 1 && var->map[(int)var->closety / 15][(int)var->closetx / 15] == 'p')
@@ -880,10 +880,11 @@ int	update(t_var *var)
 	}
 	var->xech = var->posx - var->xangleech * 25;
 	var->yech = var->posy - var->yangleech * 25;
-	if (fmod(var->posx, 2.0) > 0.5 && var->highech == 0)
+	if (fmod(var->posy, 2.0) > 0.8 && var->highech == 0)
 		var->highech = 1;
-	else if (fmod(var->posx, 2.0) <= 0.5 && var->highech == 0)
+	if (fmod(var->posy, 2.0) <= 0.8 && var->highech == 0)
 		var->highech = 2;
+	printf("%f\n", fmod(var->posy, 2.0));
 	// if (var->iech > 25)
 	// {
 	// 	if (var->xech < var->posx)
