@@ -37,10 +37,3 @@ int	ft_atoi(const char *str)
 	}
 	return (nbr * sign);
 }
-/*
-#include <stdio.h>
-int	main()
-{
-	printf("%d\n", ft_atoi("            -2147483648"));
-}
-*/

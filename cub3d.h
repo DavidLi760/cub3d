@@ -310,6 +310,7 @@ typedef struct s_var
 	int		doornumber;
 	int		final;
 	char	*itoa;
+	int		i2;
 }	t_var;
 
 long long	get_time(void);

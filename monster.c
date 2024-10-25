@@ -29,9 +29,9 @@ void    print_monster(t_var *var, char *tab)
 		else if (tab[i] == 's' && ((var->anglescp >= 0 && (var->angledscp < 0.1 || var->angledscp > 0.8)) || var->iscp <= 15))
 			my_put_image_to_image4(var, var->angledscp * 1920 - (var->scpsize / 2), 500 - var->pitch - var->scpsize / 2, var->scpsize);
 		if (tab[i] == 'e' && var->angleech >= 0 && var->highech == 1 && var->screech)
-			my_put_image_to_image5(var, var->angledech * 1920 - var->echsize / 1.5, -800 - var->pitch - var->echsize / 2, var->echsize);
+			my_put_image_to_image5(var, var->angledech * 1920 - var->echsize / 1.5, -400 - var->pitch - var->echsize / 2, var->echsize);
 		else if (tab[i] == 'e' && var->angleech >= 0 && var->highech == 2 && var->screech)
-			my_put_image_to_image5(var, var->angledech * 1920 - var->echsize / 1.5, 1800 - var->pitch - var->echsize / 2, var->echsize);
+			my_put_image_to_image5(var, var->angledech * 1920 - var->echsize / 1.5, 1400 - var->pitch - var->echsize / 2, var->echsize);
         i++;
     }
 
@@ -111,9 +111,9 @@ void    screech(t_var *var)
 			var->angledech = (var->angleech - var->left_angle) / (2 * PI - var->left_angle + var->right_angle);
 	}
 	var->echsize = 40000 / (var->iech * 1.5);
-	if (var->angledech > 0.4 && var->angledech < 0.75 && var->highech == 2 && var->pitch > 1200)
+	if (var->angledech > 0.4 && var->angledech < 0.75 && var->highech == 2 && var->pitch > 800 && var->pitch < 1200)
 		var->lookech++;
-	else if (var->angledech > 0.4 && var->angledech < 0.75 && var->highech == 1 && var->pitch < -1200)
+	else if (var->angledech > 0.4 && var->angledech < 0.75 && var->highech == 1 && var->pitch < -800 && var->pitch > -1200)
 		var->lookech++;
 	if (var->lookech > 5)
 	{

@@ -1,0 +1,23 @@
+Cree le 28/08/2024
+Ca fait 1 mois, 26 jours
+
+MONSTER : rush(r, u), screech (e, h), SCP173(s, c), davli;
+MEUBLE : Placard (p), Openable door (2-3);
+
+NO ./xpms/Wall.xpm
+SO ./xpms/Wall.xpm
+WE ./xpms/Wall.xpm
+EA ./xpms/Wall.xpm
+
+F 43, 35, 48
+C 84, 51, 38
+
+(1) Wall
+(0) Space
+(W,E,S,N) Player Spawn
+(2) Closed door horizontal
+(3) Closed door vertical
+(6) Reopenable door
+(p) Closet
+(D) Final Boss
+

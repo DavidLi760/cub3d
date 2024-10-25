@@ -63,13 +63,18 @@ int copy_color(t_var *var, char *s1, int j)
     char    **temp;
     int     color;
 
-    (void)var;
+    var->i2 = 0;
     temp = ft_split(s1, " ,");
+    if (!temp)
+    {
+        while (temp[var->i2])
+            free(temp[var->i2++]);
+        free(temp);
+        return (0);
+    }
     j = 0;
     while (temp[j])
         j++;
-    // if (!check_num(temp))
-    //     return (-1);
     if (j < 4)
     {
         j = 0;

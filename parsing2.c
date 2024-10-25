@@ -107,7 +107,10 @@ int	get_split(t_var *var, int i, int j)
 	if (!var->split)
 		return (printf("Error : Incorrect map\n"), 0);
 	if (!count_line(var, 1))
+	{
+		free2(var, 0);
 		return (printf("Error : No map found\n"), 0);
+	}
 	if (!count_line(var, 0))
 		return (printf("Error : No texture found\n"), 0);
 	var->element = malloc(sizeof(char *) * (count_line(var, 0) + 1));

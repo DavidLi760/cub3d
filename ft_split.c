@@ -114,28 +114,16 @@ char	**ft_split(char *str, char *set)
 		while (is_charset(str[j], set) && str[j])
 			j++;
 		if (!is_empty_line(str, j, 0))
-			return (0);
+		{
+			split[i] = 0;
+			while (i >= 0)
+				free(split[i--]);
+			free(split);
+			return (NULL);
+		}
 		if (str[j])
 			split[i] = make_tab(str, set, &j);
 	}
 	split[i] = 0;
 	return (split);
 }
-
-// int	main()
-// {
-// 	char	*str = "         \n    ";
-// 	char	*str1 = "Salut j'espere\nque\nvous allez bien  \n";
-// 	char	*str2 = "    Salut j'espere\nque\nvous allez bien   ";
-// 	char	**split;
-// 	int		i;
-
-// 	i = 0;
-// 	split = ft_split(str1, " \n");
-// 	while (split[i])
-// 		printf("%s\n", split[i++]);
-// 	while (i >= 0)
-// 		free(split[i--]);
-// 	free(split);
-// 	return (0);
-// }

@@ -313,8 +313,6 @@ void	draw_wall_column(t_var *var, int x, int height)
 	start_y = (HEIGHT - height) / 2 - var->pitch;
 	start = start_y;
 	end_y = start_y + height;
-	// if (var->vide == 1)
-	// 	start_y = -1;
 	while (i < 1010)
 	{
 		my_pixel_put2(var, x, i, var->ceiling);
@@ -402,10 +400,9 @@ void	trace_ray(t_var *var, double angle, double *i, int no)
 	|| var->forbidden[(int)(var->posy + sin(angle) * *i + 5)][(int)(var->posx + cos(angle) * *i + 5)] == 's')
 	&& *i < var->distance)
 	{
-		// if (no == 465)
-			if (100 + cos(angle) * *i < 150 && 100 + cos(angle) * *i > 0)
-				if (100 + sin(angle) * *i < 150 && 100 + sin(angle) * *i > 0)
-					my_pixel_put(var, 100 + cos(angle) * *i, 100 + sin(angle) * *i, 0x00FFFFFF);
+		if (100 + cos(angle) * *i < 150 && 100 + cos(angle) * *i > 0)
+			if (100 + sin(angle) * *i < 150 && 100 + sin(angle) * *i > 0)
+				my_pixel_put(var, 100 + cos(angle) * *i, 100 + sin(angle) * *i, 0x00FFFFFF);
 		if (var->forbidden[(int)(var->posy + sin(angle) * ((*i) + 1) + 5)][(int)(var->posx + cos(angle) * ((*i) + 1) + 5)] == '0'
 		|| var->forbidden[(int)(var->posy + sin(angle) * ((*i) + 1) + 5)][(int)(var->posx + cos(angle) * ((*i) + 1) + 5)] == 'r')
 			*i += 1;
@@ -447,12 +444,6 @@ void	trace_ray(t_var *var, double angle, double *i, int no)
 		var->forbidden[(int)(var->posy + sin(angle) * *i + 5 - 0.01)][(int)(var->posx + cos(angle) * *i + 5)] == 'p'
 		|| var->forbidden[(int)(var->posy + sin(angle) * *i + 5)][(int)(var->posx + cos(angle) * *i + 5 + 0.01)] == 'p')
 			var->closet = 1;
-	// if (no == 465)
-	// 	printf("%c\n", var->map[(int)var->doory / 15][(int)var->doorx / 15]);
-	// printf(" %c\n", var->forbidden[(int)(var->posy + sin(angle) * *i + 5 - 0.01)][(int)(var->posx + cos(angle) * *i + 5)]);
-	// printf("%c", var->forbidden[(int)(var->posy + sin(angle) * *i + 5)][(int)(var->posx + cos(angle) * *i + 5 - 0.01)]);
-	// printf(" %c\n", var->forbidden[(int)(var->posy + sin(angle) * *i + 5)][(int)(var->posx + cos(angle) * *i + 5 + 0.01)]);
-	// printf(" %c\n", var->forbidden[(int)(var->posy + sin(angle) * *i + 5 + 0.01)][(int)(var->posx + cos(angle) * *i + 5)]);
 	var->wall_x = var->posx + cos(angle) * *i + 5;
 	var->wall_y = var->posy + sin(angle) * *i + 5;
 	var->plusx = var->posx + cos(angle) * *i + 5;
@@ -470,16 +461,6 @@ void	trace_ray(t_var *var, double angle, double *i, int no)
 		var->closetx = var->plusx;
 		var->closety = var->plusy;
 	}
-	// if (var->door == 1 && var->door2 && var->dist < 30)
-	// {
-	// 	var->doorx = (var->doorx + var->plusx) / 2;
-	// 	var->doory = (var->doory + var->plusy) / 2;
-	// }
-	// printf("%f\n", (fabs(var->posx - var->plusx) + fabs(var->posy - var->plusy)));
-	// printf("door :%f\n", var->door);
-	// printf("door2 :%f\n", var->door2);
-	// printf("x:%f, ", var->wall_x);
-	// printf("y:%f\n", var->wall_y);
 	get_wall_xy(var);
 	get_text_x(var);
 	if (*i >= var->distance && var->forbidden[(int)(var->posy + sin(angle) * *i + 5)][(int)(var->posx + cos(angle) * *i) + 5] == '0')
@@ -880,22 +861,10 @@ int	update(t_var *var)
 	}
 	var->xech = var->posx - var->xangleech * 25;
 	var->yech = var->posy - var->yangleech * 25;
-	if (fmod(var->posy, 2.0) > 0.8 && var->highech == 0)
+	if (fmod(var->posy, 2.0) > 1.0 && var->highech == 0)
 		var->highech = 1;
-	if (fmod(var->posy, 2.0) <= 0.8 && var->highech == 0)
+	if (fmod(var->posy, 2.0) <= 1.0 && var->highech == 0)
 		var->highech = 2;
-	printf("%f\n", fmod(var->posy, 2.0));
-	// if (var->iech > 25)
-	// {
-	// 	if (var->xech < var->posx)
-	// 		var->xech += 1;
-	// 	else if (var->xech > var->posx)
-	// 		var->xech -= 1;
-	// 	if (var->yech < var->posy)
-	// 		var->yech += 1;
-	// 	else if (var->yech > var->posy)
-	// 		var->yech -= 1;
-	// }
 	if (var->health > 200)
 		var->died = 30;
 	if (var->died)
@@ -1137,7 +1106,6 @@ int	init_var(t_var *var, int i, int j)
 int	main(int argc, char **argv)
 {
 	t_var	var;
-	int		i;
 
 	var.delay = 0;
 	var.maximum = sqrt(pow(960, 2) + pow(505, 2));
@@ -1250,6 +1218,8 @@ int	main(int argc, char **argv)
 	if (!var.mlx)
 		return (0);
 	var.win = mlx_new_window(var.mlx, 1920, 1010, "cub3d");
+	if (!var.win)
+		return (0);
 	var.img = mlx_xpm_file_to_image(var.mlx, "./xpms/Red_dot.xpm", &var.width, &var.height);
 	if (!var.img)
 		return (0);
@@ -1287,36 +1257,69 @@ int	main(int argc, char **argv)
 	if (!var.imguser)
 		return (0);
 	var.addrd = mlx_get_data_addr(var.imgd, &var.bitd, &var.lend, &var.endiand);
+	if (!var.addrd)
+		return (0);
 	var.addrp = mlx_get_data_addr(var.imgp, &var.bitp, &var.lenp, &var.endianp);
+	if (!var.addrp)
+		return (0);
 	var.imag = mlx_new_image(var.mlx, 150, 150);
+	if (!var.imag)
+		return (0);
 	var.addr = mlx_get_data_addr(var.imag, &var.bit, &var.len, &var.endian);
+	if (!var.addr)
+		return (0);
 	var.addrru1 = mlx_get_data_addr(var.imgru1, &var.bitru1, &var.lenru1, &var.endianru1);
+	if (!var.addrru1)
+		return (0);
 	var.addrru2 = mlx_get_data_addr(var.imgru2, &var.bitru2, &var.lenru2, &var.endianru2);
+	if (!var.addrru2)
+		return (0);
 	var.addrscp = mlx_get_data_addr(var.imgscp, &var.bitscp, &var.lenscp, &var.endianscp);
+	if (!var.addrscp)
+		return (0);
 	var.addrscp2 = mlx_get_data_addr(var.imgscp2, &var.bitscp2, &var.lenscp2, &var.endianscp2);
+	if (!var.addrscp2)
+		return (0);
 	var.addrech = mlx_get_data_addr(var.imgech, &var.bitech, &var.lenech, &var.endianech);
+	if (!var.addrech)
+		return (0);
 	var.addrech2 = mlx_get_data_addr(var.imgech2, &var.bitech2, &var.lenech2, &var.endianech2);
+	if (!var.addrech2)
+		return (0);
 	var.addrdavli = mlx_get_data_addr(var.imgdavli, &var.bitdavli, &var.lendavli, &var.endiandavli);
+	if (!var.addrdavli)
+		return (0);
 	var.addrdavli2 = mlx_get_data_addr(var.imgdavli2, &var.bitdavli2, &var.lendavli2, &var.endiandavli2);
+	if (!var.addrdavli2)
+		return (0);
 	var.addruser = mlx_get_data_addr(var.imguser, &var.bituser, &var.lenuser, &var.endianuser);
-
+	if (!var.addruser)
+		return (0);
 	var.imgno = mlx_xpm_file_to_image(var.mlx, var.north, &var.widthno, &var.heightno);
+	if (!var.imgno)
+		return (0);
 	var.imgso = mlx_xpm_file_to_image(var.mlx, var.south, &var.widthso, &var.heightso);
+	if (!var.imgso)
+		return (0);
 	var.imgwe = mlx_xpm_file_to_image(var.mlx, var.west, &var.widthwe, &var.heightwe);
+	if (!var.imgwe)
+		return (0);
 	var.imgea = mlx_xpm_file_to_image(var.mlx, var.east, &var.widthea, &var.heightea);
+	if (!var.imgea)
+		return (0);
 	var.addrno = mlx_get_data_addr(var.imgno, &var.bitno, &var.lenno, &var.endianno);
+	if (!var.addrno)
+		return (0);
 	var.addrso = mlx_get_data_addr(var.imgso, &var.bitso, &var.lenso, &var.endianso);
+	if (!var.addrso)
+		return (0);
 	var.addrwe = mlx_get_data_addr(var.imgwe, &var.bitwe, &var.lenwe, &var.endianwe);
+	if (!var.addrwe)
+		return (0);
 	var.addrea = mlx_get_data_addr(var.imgea, &var.bitea, &var.lenea, &var.endianea);
-	i = 0;
-	while (var.element[i])
-		printf("%s\n", var.element[i++]);
-	i = 0;
-	while (var.map[i])
-		printf("%s\n", var.map[i++]);
+	if (!var.addrea)
+		return (0);
 	mlx_mouse_move(var.mlx, var.win, 1800, 900);
-	printf("0x%X,", var.floor);
-	printf("0x%X,", var.ceiling);
 	mlx_hook(var.win, 2, 1L << 0, escape, &var);
 	mlx_hook(var.win, 6, 1L << 6, mouse_move, &var);
 	mlx_hook(var.win, 3, 1L << 1, release, &var);
