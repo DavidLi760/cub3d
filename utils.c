@@ -24,13 +24,17 @@ long long	get_time(void)
 int str_cmp(char *s1, char *s2)
 {
     int i;
+    int j;
 
     i = 0;
-    if (s1[i] != s2[i])
+    j = 0;
+    while (s1[j] == ' ')
+        j++;
+    if (s1[i + j] != s2[i])
         return (0);
-    while (s1[i] == s2[i] && s2[i])
+    while (s1[i + j] == s2[i] && s2[i])
         i++;
-    if (s1[i] != s2[i] && s2[i])
+    if (s1[i + j] != s2[i] && s2[i])
         return (0);
     return (1);
 }

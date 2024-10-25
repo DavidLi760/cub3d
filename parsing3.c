@@ -28,7 +28,7 @@ char    *copy_element(t_var *var, char *s1, int i, int j)
     if (!str)
         return (NULL);
     j = 0;
-    while (s1[i])
+    while (s1[i] && s1[i] != ' ')
         str[j++] = s1[i++];
     str[j] = 0;
     var->fd = open(str, O_RDONLY);

@@ -16,12 +16,23 @@ int	count_line(t_var *var, int no)
 {
 	int	i;
 	int	j;
+	int	k;
 
 	i = 0;
 	j = 0;
-	while (var->split[i] && !(var->split[i][0] >= '0'
-		&& var->split[i][0] <= '9') && var->split[i][0] != ' ')
+	k = 0;
+	while (var->split[i][k] == ' ')
+		k++;
+	while (var->split[i] && !(var->split[i][k] >= '0'
+		&& var->split[i][k] <= '9'))
+	{
+		k = 0;
 		i++;
+		if (!var->split[i])
+			break ;
+		while (var->split[i][k] == ' ')
+			k++;
+	}
 	while (var->split[i + j])
 		j++;
 	if (no == 0)
@@ -32,10 +43,14 @@ int	count_line(t_var *var, int no)
 char	*get_element(int i, t_var *var)
 {
 	int		j;
+	int		k;
 	char	*element;
 
 	j = 0;
-	while (var->split[i][j])
+	k = 0;
+	while (var->split[i][k] == ' ')
+		k++;
+	while (var->split[i][j + k])
 		j++;
 	element = malloc(sizeof(char) * j + 1);
 	if (!element)

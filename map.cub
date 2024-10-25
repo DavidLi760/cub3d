@@ -5,9 +5,8 @@ MONSTER : rush(r, u), screech (e, h), SCP173(s, c), davli;
 MEUBLE : Placard (p), Openable door (2-3);
 CONSUMABLE : Medicine, Monster Reborn;
 
-NO ./xpms/Wall.xpm
+NO ./xpms/Screech2.xpm
 SO ./xpms/Wall.xpm
-
 WE ./xpms/Wall.xpm
 EA ./xpms/Wall.xpm
 
@@ -28,6 +27,7 @@ C 84, 51, 38
 (e,h) screech
 
     111
+    1S1
     101
   11161111
   100000p111111111111111
@@ -153,7 +153,7 @@ C 84, 51, 38
                        1000001
                        1000001
                        1000001
-                       100S001
+                       1000001
                     1111112111111
                     1000000000001
                     1000000000001
