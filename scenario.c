@@ -217,6 +217,8 @@ void    scenario(t_var *var)
                 var->xdavli += (var->tempx / (var->tempx + var->tempy)) * 0.9;
             if (var->xdavli > var->posx)
                 var->xdavli -= (var->tempx / (var->tempx + var->tempy)) * 0.9;
+            if (var->ydavli < var->posy)
+                var->ydavli += (var->tempy / (var->tempx + var->tempy)) * 0.9;
             if (var->ydavli > var->posy)
                 var->ydavli -= (var->tempy / (var->tempx + var->tempy)) * 0.9;
             var->itoa = ft_itoa(var->idavli);
