@@ -10,6 +10,8 @@ SRCS		=	main.c\
 				init_monster.c\
 				hooks.c\
 				update.c\
+				update2.c\
+				update3.c\
 				forbidden.c\
 				forbidden2.c\
 				parsing.c\

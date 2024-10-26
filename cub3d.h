@@ -380,5 +380,14 @@ int			update(t_var *var);
 void		ray_casting(t_var *var, int i);
 void		trace_ray(t_var *var, double angle, double *i, int no);
 void		minimap(t_var *var, int i, int j);
+void		update_view(t_var *var);
+void		update_pos(t_var *var);
+void		death_update(t_var *var);
+void		death_animation(t_var *var);
+void		init_screech(t_var *var);
+void		screamer_text(t_var *var);
+void		door_closet(t_var *var);
+void		closet2(t_var *var);
+
 
 #endif
