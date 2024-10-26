@@ -6,7 +6,7 @@
 /*   By: davli <davli@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/10 18:19:29 by davli             #+#    #+#             */
-/*   Updated: 2024/10/10 18:19:30 by davli            ###   ########.fr       */
+/*   Updated: 2024/10/26 17:17:36 by davli            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,5 +113,24 @@ void	walking_d(t_var *var)
 			var->posy += var->directx * (0.5 + (var->shift_pressed \
 			&& var->energy < 190) * 0.5 - 0.25 * var->w_pressed);
 		}
+	}
+}
+
+void	walking_update(t_var *var)
+{
+	if (var->final == 2)
+	{
+		if (var->w_pressed == 1)
+		{
+			var->posy += 0.77027027027;
+			var->posx += 0.2297297297;
+		}
+	}
+	else
+	{
+		walking_w(var);
+		walking_s(var);
+		walking_a(var);
+		walking_d(var);
 	}
 }

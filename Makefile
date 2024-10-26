@@ -7,6 +7,9 @@ SRCS		=	main.c\
 				init.c\
 				init_img.c\
 				init_utils.c\
+				init_monster.c\
+				hooks.c\
+				update.c\
 				forbidden.c\
 				forbidden2.c\
 				parsing.c\

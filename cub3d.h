@@ -317,6 +317,12 @@ typedef struct s_var
 
 long long	get_time(void);
 int			close_win(t_var *var);
+void		move(int keycode, t_var *var);
+int			mouse_move(int x, int y, t_var *var);
+int			press_key(int keycode, t_var *var);
+int			release(int keycode, t_var *var);
+
+
 int			check_arg(t_var *var, char **argv);
 size_t		ft_strlen(char *s);
 char		*get_next_line(int fd);
@@ -341,6 +347,9 @@ void		walking_w(t_var *var);
 void		walking_s(t_var *var);
 void		walking_a(t_var *var);
 void		walking_d(t_var *var);
+void		walking_update(t_var *var);
+void		init_monster(t_var *var);
+void		init_monster2(t_var *var);
 
 void		my_put_image_to_image(t_var *var, int x, int y, int size);
 void		my_put_image_to_image2(t_var *var, int x, int y, int size);
@@ -367,5 +376,9 @@ void		init_forbidden(t_var *var, int i, int j);
 void		forbidden_helper5(t_var *var, int i, int j, char c);
 void		forbidden_helper6(t_var *var, int i, int j, char c);
 void		set_pos(t_var *var);
+int			update(t_var *var);
+void		ray_casting(t_var *var, int i);
+void		trace_ray(t_var *var, double angle, double *i, int no);
+void		minimap(t_var *var, int i, int j);
 
 #endif
