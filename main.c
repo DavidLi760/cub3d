@@ -413,7 +413,8 @@ void	ray_casting(t_var *var, int i)
 	sprite_order(var);
     if (var->angledavli >= 0)
 		print_boss(var);
-	print_boss2(var);
+	if (var->angleuser >= 0)
+		print_boss2(var);
 	while (x < 1920)
 	{
 		if (var->closet2 > 3)
