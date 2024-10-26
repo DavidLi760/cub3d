@@ -391,5 +391,6 @@ void		closet2(t_var *var);
 void		sprite_order(t_var *var);
 void    	print_boss(t_var *var);
 void		print_boss2(t_var *var);
+void    	closet_animation(t_var *var, int x, int i);
 
 #endif

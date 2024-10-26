@@ -379,9 +379,7 @@ void	ray_casting(t_var *var, int i)
 	double		distance;
 	int			wall_height;
 	int			pixel;
-	int			x;
-
-	x = 0;
+	
 	distance = 0;
 	pixel = 0;
 	var->left_angle = var->angle - PI / 3 / 2;
@@ -415,22 +413,7 @@ void	ray_casting(t_var *var, int i)
 		print_boss(var);
 	if (var->angleuser >= 0)
 		print_boss2(var);
-	while (x < 1920)
-	{
-		if (var->closet2 > 3)
-		{
-			i = 0;
-			if (x < var->closet2 * 30 || x > 1920 - var->closet2 * 30)
-			{
-				while (i < 1010)
-				{
-					my_pixel_put2(var, x, i, 0x351713);
-					my_pixel_put2(var, x + 1, i++, 0x351713);
-				}
-			}
-		}
-		x += 2;
-	}
+	closet_animation(var, 0, 0);
 	draw_cross(var, 504, 1920);
 	draw_health_bar(var, 950, 50);
 	draw_energy_bar(var, 970, 50);
