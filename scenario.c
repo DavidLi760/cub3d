@@ -252,6 +252,4 @@ void    scenario(t_var *var)
             }
         }
     }
-    printf("x :%f\n", var->posx);
-    printf("y :%f\n", var->posy);
 }
