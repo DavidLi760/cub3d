@@ -311,6 +311,8 @@ typedef struct s_var
 	int		final;
 	char	*itoa;
 	int		i2;
+	int		k;
+	int		l;
 }	t_var;
 
 long long	get_time(void);
@@ -351,5 +353,15 @@ void		screech(t_var *var);
 void		print_monster(t_var *var, char *tab);
 char		*ft_itoa(int nb);
 void		scenario(t_var *var);
+int			init_all(t_var *var, int no);
+int			init_img1(t_var *var);
+int			init_img2(t_var *var);
+int			init_img3(t_var *var);
+int			init_img4(t_var *var);
+int			init_var(t_var *var, int i, int j);
+void		init_forbidden(t_var *var, int i, int j);
+void		forbidden_helper5(t_var *var, int i, int j, char c);
+void		forbidden_helper6(t_var *var, int i, int j, char c);
+void		set_pos(t_var *var);
 
 #endif

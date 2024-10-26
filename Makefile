@@ -4,6 +4,11 @@ CFLAGS		= -Wall -Wextra -Werror -g
 LFLAGS		= -lX11 -lmlx -lXext -lm -lz -Lmlx
 MLX			= mlx/libmlx.a
 SRCS		=	main.c\
+				init.c\
+				init_img.c\
+				init_utils.c\
+				forbidden.c\
+				forbidden2.c\
 				parsing.c\
 				parsing2.c\
 				parsing3.c\
