@@ -24,6 +24,13 @@ void    scenario(t_var *var)
         var->doornumber = 3;
         var->distance -= 150;
     }
+    if (var->doornumber == 3)
+    {
+        if (var->posy < 200 && var->distance < 150)
+            var->distance += 150;
+        if (var->posy > 200 && var->distance > 150)
+            var->distance -= 150;
+    }
     if (var->posy > 235 && var->posy < 260 && var->posx > 110 && var->doortime && var->doornumber == 3)
     {
         var->doornumber = 4;
@@ -70,8 +77,12 @@ void    scenario(t_var *var)
     if (var->doornumber == 7)
     {
         var->numberech++;
-        if (var->numberech == 200 || var->numberech % 300 == 0)
+        if (var->numberech == 200 || var->numberech % 600 == 0)
             var->screech = 1;
+        if (var->posy < 550 && var->posx < 275 && var->distance < 150)
+            var->distance += 150;
+        if (var->posx > 275 && var->distance > 150)
+            var->distance -= 150;
     }
     if (var->posy > 680 && var->posx < 185 && var->doortime && var->doornumber == 7)
     {

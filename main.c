@@ -379,12 +379,10 @@ void	ray_casting(t_var *var, int i)
 	double		distance;
 	int			wall_height;
 	int			pixel;
-	
+
 	distance = 0;
 	pixel = 0;
 	var->left_angle = var->angle - PI / 3 / 2;
-	if (var->left_angle < 0)
-		var->left_angle += 2 * PI;
 	while (i < 960)
 	{
 		var->ray_angle = var->left_angle + i * (PI / 3 / 960);
