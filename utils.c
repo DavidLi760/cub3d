@@ -28,7 +28,7 @@ int str_cmp(char *s1, char *s2)
 
     i = 0;
     j = 0;
-    while (s1[j] == ' ')
+    while (s1[j] == ' ' && s1[j])
         j++;
     if (s1[i + j] != s2[i])
         return (0);

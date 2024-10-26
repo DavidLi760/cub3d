@@ -56,8 +56,8 @@ char	*get_element(int i, t_var *var)
 	if (!element)
 		return (free3(var, i), NULL);
 	j = -1;
-	while (var->split[i][++j])
-		element[j] = var->split[i][j];
+	while (var->split[i][++j + k])
+		element[j] = var->split[i][j + k];
 	element[j] = 0;
 	return (element);
 }

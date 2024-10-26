@@ -22,7 +22,7 @@ char    *copy_element(t_var *var, char *s1, int i, int j)
         i++;
     while (s1[i] == ' ' && s1[i])
         i++;
-    while (s1[i + j])
+    while (s1[i + j] && s1[i + j] != ' ')
         j++;
     str = malloc(sizeof(char) * j + 1);
     if (!str)

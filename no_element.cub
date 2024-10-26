@@ -5,8 +5,8 @@ MONSTER : rush(r, u), screech (e, h), SCP173(s, c), davli;
 MEUBLE : Placard (p), Openable door (2-3);
 
 NO ./xpms/Wall.xpm
-  SO ./xpms/Wall.xpm
-WE ./xpms/Wall.xpm  
+SO ./xpms/Wall.xpm
+WE ./xpms/Wall.xpm
 EA ./xpms/Wall.xpm
 
 F 43, 35, 48
