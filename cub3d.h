@@ -313,6 +313,10 @@ typedef struct s_var
 	int		i2;
 	int		k;
 	int		l;
+	double	dst;
+	int		pixel;
+	int		i3;
+	int		wall_height;
 }	t_var;
 
 long long	get_time(void);
@@ -392,5 +396,7 @@ void		sprite_order(t_var *var);
 void    	print_boss(t_var *var);
 void		print_boss2(t_var *var);
 void    	closet_animation(t_var *var, int x, int i);
+void	    ray_manager(t_var *var);
+void		draw_wall_column(t_var *var, int x, int height);
 
 #endif

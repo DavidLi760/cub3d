@@ -31,3 +31,14 @@ void    closet_animation(t_var *var, int x, int i)
 		x += 2;
 	}
 }
+
+void    ray_manager(t_var *var)
+{
+		var->pixel += 2;
+		var->no = 0;
+		var->so = 0;
+		var->we = 0;
+		var->ea = 0;
+		var->vide = 0;
+		var->ru2 = 0;
+}

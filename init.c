@@ -38,6 +38,7 @@ void	init1(t_var *var)
 	var->m_pressed = 0;
 	var->up_pressed = 0;
 	var->down_pressed = 0;
+    var->dst = 0;
 }
 
 void	init2(t_var *var)
@@ -124,6 +125,7 @@ void	init4(t_var *var)
 	var->doornumber = 0;
 	var->final = 0;
 	var->distance = DIST;
+    var->pixel = 0;
 }
 
 int	init_all(t_var *var, int no)

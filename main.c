@@ -376,34 +376,17 @@ void	trace_ray(t_var *var, double angle, double *i, int no)
 
 void	ray_casting(t_var *var, int i)
 {
-	double		distance;
-	int			wall_height;
-	int			pixel;
-
-	distance = 0;
-	pixel = 0;
 	var->left_angle = var->angle - PI / 3 / 2;
+	var->pixel = 0;
 	while (i < 960)
 	{
 		var->ray_angle = var->left_angle + i * (PI / 3 / 960);
-		if (var->ray_angle > 2 * PI)
-			var->ray_angle -= (2 * PI);
-		var->ru = 0;
-		if (var->ray_angle > var->angleru - var->iru * (PI / 3 / 960) && var->ray_angle < var->angleru + var->iru * (PI / 3 / 960))
-			var->ru = (var->ray_angle - (var->angleru - var->iru * (PI / 3 / 960))) / var->angledru;
-		distance = 0;
-		trace_ray(var, var->ray_angle, &distance, i);
-		wall_height = 1500 / (distance * cos(var->ray_angle - var->angle) / 15);
-		draw_wall_column(var, pixel, wall_height);
+		var->dst = 0;
+	    trace_ray(var, var->ray_angle, &var->dst, i);
+		var->wall_height = 1500 / (var->dst * cos(var->ray_angle - var->angle) / 15);
+		draw_wall_column(var, var->pixel, var->wall_height);
+		ray_manager(var);
 		i++;
-
-		pixel += 2;
-		var->no = 0;
-		var->so = 0;
-		var->we = 0;
-		var->ea = 0;
-		var->vide = 0;
-		var->ru2 = 0;
 	}
 	var->right_angle = var->ray_angle;
 	sprite_order(var);
