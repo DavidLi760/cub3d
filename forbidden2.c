@@ -21,17 +21,21 @@ void	forbidden_helper5(t_var *var, int i, int j, char c)
 	}
 }
 
-void	forbidden_helper6(t_var *var, int i, int j, char c)
+void    get_c(t_var *var, int i, int j, char *c)
 {
-	if (var->map[i / 15][j / 15 + 1] == '1')
-		c = 'e';
+    if (var->map[i / 15][j / 15 + 1] == '1')
+		*c = 'e';
 	else if (var->map[i / 15][j / 15 - 1] == '1')
-		c = 'w';
+		*c = 'w';
 	else if (var->map[i / 15 + 1][j / 15] == '1')
-		c = 's';
+		*c = 's';
 	else if (var->map[i / 15 - 1][j / 15] == '1')
-		c = 'n';
-	if (c == 'w')
+		*c = 'n';
+}
+
+void    helper6_utils1(t_var *var, int i, int j, char c)
+{
+    if (c == 'w')
 	{
 		var->k = 2;
 		while (++var->k < 14)
@@ -41,7 +45,7 @@ void	forbidden_helper6(t_var *var, int i, int j, char c)
 				var->forbidden[i + var->k][j + var->l] = 'p';
 		}
 	}
-	else if (c == 'e')
+	if (c == 'e')
 	{
 		var->k = 2;
 		while (++var->k < 14)
@@ -51,7 +55,11 @@ void	forbidden_helper6(t_var *var, int i, int j, char c)
 				var->forbidden[i + var->k][j + var->l] = 'p';
 		}
 	}
-	else if (c == 'n')
+}
+
+void    helper6_utils2(t_var *var, int i, int j, char c)
+{
+	if (c == 'n')
 	{
 		var->k = 0;
 		while (++var->k < 3)
@@ -61,7 +69,7 @@ void	forbidden_helper6(t_var *var, int i, int j, char c)
 				var->forbidden[i + var->k][j + var->l] = 'p';
 		}
 	}
-	else if (c == 's')
+	if (c == 's')
 	{
 		var->k = 12;
 		while (++var->k < 15)
@@ -71,4 +79,11 @@ void	forbidden_helper6(t_var *var, int i, int j, char c)
 				var->forbidden[i + var->k][j + var->l] = 'p';
 		}
 	}
+}
+
+void	forbidden_helper6(t_var *var, int i, int j, char c)
+{
+    get_c(var, i, j, &c);
+    helper6_utils1(var, i, j, c);
+    helper6_utils2(var, i, j, c);
 }

@@ -338,6 +338,10 @@ int			str_cmp(char *s1, char *s2);
 int			is_right_element(t_var *var, int i);
 int			ft_atoi(const char *str);
 void		walking_w(t_var *var);
+void		walking_s(t_var *var);
+void		walking_a(t_var *var);
+void		walking_d(t_var *var);
+
 void		my_put_image_to_image(t_var *var, int x, int y, int size);
 void		my_put_image_to_image2(t_var *var, int x, int y, int size);
 void		my_put_image_to_image3(t_var *var, int x, int y, int size);

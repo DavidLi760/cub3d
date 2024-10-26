@@ -91,9 +91,6 @@ int copy_color(t_var *var, char *s1, int j)
         free(temp);
         return (-1);
     }
-    printf("%d,", atoi(temp[1]));
-    printf("%d,", atoi(temp[2]));
-    printf("%d\n", atoi(temp[3]));
     color = ft_atoi(temp[1]) << 16 | ft_atoi(temp[2]) << 8 | ft_atoi(temp[3]);
     j = 0;
     while (temp[j])

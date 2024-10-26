@@ -15,7 +15,6 @@
 void	init1(t_var *var)
 {
 	var->maximum = sqrt(pow(960, 2) + pow(505, 2));
-	var->delay = 0;
 	var->height = 5;
 	var->width = 5;
 	var->floor = -1;

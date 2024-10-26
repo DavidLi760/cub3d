@@ -69,7 +69,7 @@ int	mouse_move(int x, int y, t_var *var)
 	return (0);
 }
 
-int	escape(int keycode, t_var *var)
+int	press_key(int keycode, t_var *var)
 {
 	if (keycode == 65307)
 		close_win(var);
@@ -586,6 +586,34 @@ void	ray_casting(t_var *var, int i)
 	draw_energy_bar(var, 970, 50);
 }
 
+void	update_view(t_var *var)
+{
+	if ((var->pitch2 <= -1 || var->up_pressed == 1) && var->pitch >= -1500)
+		var->pitch += -50;
+	if (var->left_pressed == 1)
+	{
+		var->angle += -0.15;
+	}
+	if ((var->pitch2 >= 1 || var->down_pressed == 1) && var->pitch <= 1500)
+	{
+		var->pitch += 50;
+	}
+	if (var->right_pressed == 1)
+	{
+		var->angle += 0.15;
+	}
+	if (var->angle > 2 * PI)
+		var->angle = 0;
+	else if (var->angle < 0)
+		var->angle = 2 * PI;
+	if (var->pitch >= 1500)
+		var->pitch = 1500;
+	if (var->pitch <= -1500)
+		var->pitch = -1500;
+	var->directx = cos(var->angle);
+	var->directy = sin(var->angle);
+}
+
 int	update(t_var *var)
 {
 	long long	start;
@@ -603,70 +631,12 @@ int	update(t_var *var)
 	}
 	else
 	{
-		if (var->w_pressed == 1)
-			walking_w(var);
-		if (var->s_pressed == 1)
-		{
-			if (var->forbidden[(int)(var->posy - var->directy) + 5][(int)var->posx + 5] != '0' && var->forbidden[(int)var->posy + 5][(int)(var->posx - var->directx) + 5] == '0')
-				var->posx -= var->directx * (0.5 + (var->shift_pressed && var->energy < 190) * 0.5 - 0.25 * var->w_pressed);
-			else if (var->forbidden[(int)var->posy + 5][(int)(var->posx - var->directx) + 5] != '0' && var->forbidden[(int)(var->posy - var->directy) + 5][(int)var->posx + 5] == '0')
-				var->posy -= var->directy * (0.5 + (var->shift_pressed && var->energy < 190) * 0.5 - 0.25 * var->w_pressed);
-			else if (var->forbidden[(int)(var->posy - var->directy) + 5][(int)(var->posx - var->directx) + 5] == '0')
-			{
-				var->posx -= var->directx * (0.5 + (var->shift_pressed && var->energy < 190) * 0.5 - 0.25 * var->w_pressed);
-				var->posy -= var->directy * (0.5 + (var->shift_pressed && var->energy < 190) * 0.5 - 0.25 * var->w_pressed);
-			}
-		}
-		if (var->a_pressed == 1)
-		{
-			if (var->forbidden[(int)(var->posy - var->directx) + 5][(int)var->posx + 5] != '0' && var->forbidden[(int)var->posy + 5][(int)(var->posx + var->directy) + 5] == '0')
-				var->posx += var->directy * (0.5 + (var->shift_pressed && var->energy < 190) * 0.5 - 0.25 * var->w_pressed);
-			else if (var->forbidden[(int)var->posy + 5][(int)(var->posx + var->directy) + 5] != '0' && var->forbidden[(int)(var->posy - var->directx) + 5][(int)var->posx + 5] == '0')
-				var->posy -= var->directx * (0.5 + (var->shift_pressed && var->energy < 190) * 0.5 - 0.25 * var->w_pressed);
-			else if (var->forbidden[(int)(var->posy - var->directx) + 5][(int)(var->posx + var->directy) + 5] == '0')
-			{
-				var->posx += var->directy * (0.5 + (var->shift_pressed && var->energy < 190) * 0.5 - 0.25 * var->w_pressed);
-				var->posy -= var->directx * (0.5 + (var->shift_pressed && var->energy < 190) * 0.5 - 0.25 * var->w_pressed);
-			}
-		}
-		if (var->d_pressed == 1)
-		{
-			if (var->forbidden[(int)(var->posy + var->directx) + 5][(int)var->posx + 5] != '0' && var->forbidden[(int)var->posy + 5][(int)(var->posx - var->directy) + 5] == '0')
-				var->posx -= var->directy * (0.5 + (var->shift_pressed && var->energy < 190) * 0.5 - 0.25 * var->w_pressed);
-			else if (var->forbidden[(int)var->posy + 5][(int)(var->posx - var->directy) + 5] != '0' && var->forbidden[(int)(var->posy + var->directx) + 5][(int)var->posx + 5] == '0')
-				var->posy += var->directx * (0.5 + (var->shift_pressed && var->energy < 190) * 0.5 - 0.25 * var->w_pressed);
-			else if (var->forbidden[(int)(var->posy + var->directx) + 5][(int)(var->posx - var->directy) + 5] == '0')
-			{
-				var->posx -= var->directy * (0.5 + (var->shift_pressed && var->energy < 190) * 0.5 - 0.25 * var->w_pressed);
-				var->posy += var->directx * (0.5 + (var->shift_pressed && var->energy < 190) * 0.5 - 0.25 * var->w_pressed);
-			}
-		}
+		walking_w(var);
+		walking_s(var);
+		walking_a(var);
+		walking_d(var);
 	}
-	if ((var->pitch2 <= -1 || var->up_pressed == 1) && var->pitch >= -1500)
-		var->pitch += -50;
-	if (var->left_pressed == 1)
-	{
-		var->angle += -0.15;
-	}
-	if ((var->pitch2 >= 1 || var->down_pressed == 1) && var->pitch <= 1500)
-	{
-		var->pitch += 50;
-	}
-	if (var->right_pressed == 1)
-	{
-		var->angle += 0.15;
-	}
-	var->delay = 0;
-	if (var->angle > 2 * PI)
-		var->angle = 0;
-	else if (var->angle < 0)
-		var->angle = 2 * PI;
-	if (var->pitch >= 1500)
-		var->pitch = 1500;
-	if (var->pitch <= -1500)
-		var->pitch = -1500;
-	var->directx = cos(var->angle);
-	var->directy = sin(var->angle);
+	update_view(var);
 	if (var->posx >= var->position2.x + 1)
 		var->position2.x += 1;
 	if (var->posx <= var->position2.x - 1)
@@ -903,7 +873,7 @@ int	main(int argc, char **argv)
 	if (!init_all(&var, 1))
 		return (0);
 	mlx_mouse_move(var.mlx, var.win, 1800, 900);
-	mlx_hook(var.win, 2, 1L << 0, escape, &var);
+	mlx_hook(var.win, 2, 1L << 0, press_key, &var);
 	mlx_hook(var.win, 6, 1L << 6, mouse_move, &var);
 	mlx_hook(var.win, 3, 1L << 1, release, &var);
 	mlx_hook(var.win, 17, 0, close_win, &var);
