@@ -97,7 +97,8 @@ int	update(t_var *var)
 	if (var->m_pressed== 0)
 		mlx_mouse_move(var->mlx, var->win, 1800, 900);
 	init_forbidden(var, 0, 0);
-	if (var->died && var->iru < 60)
+	
+    if (var->died && var->iru < 60)
 	{
 		if (var->died > 20)
 			my_put_image_to_image2(var, 0, -500, 2000);
@@ -109,6 +110,7 @@ int	update(t_var *var)
 		my_put_image_to_image2(var, 0, -500, 2000);
 		my_put_image_to_image8(var, 0, -600, 2000);	
 	}
+
 	mlx_put_image_to_window(var->mlx, var->win, var->imag2, 0, 0);
 	if (var->distance > 100)
 		mlx_put_image_to_window(var->mlx, var->win, var->imag, -55, -55);
@@ -116,6 +118,7 @@ int	update(t_var *var)
 		mlx_put_image_to_window(var->mlx, var->win, var->imgech2, 0, 0);
 	mlx_destroy_image(var->mlx, var->imag2);
 	mlx_put_image_to_window(var->mlx, var->win, var->img, 44, 44);
+
 	if (var->timeech < 50 && var->screech)
 		mlx_string_put(var->mlx, var->win, 930, 450, 0xFF0000, "Behind you...");
 	if (var->door2 == 1 && (var->map[(int)var->doory / 15][(int)var->doorx / 15] == '2' || var->map[(int)var->doory / 15][(int)var->doorx / 15] == '3' || var->map[(int)var->doory / 15][(int)var->doorx / 15] == '6'))
