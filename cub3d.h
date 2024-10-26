@@ -388,6 +388,8 @@ void		init_screech(t_var *var);
 void		screamer_text(t_var *var);
 void		door_closet(t_var *var);
 void		closet2(t_var *var);
-
+void		sprite_order(t_var *var);
+void    	print_boss(t_var *var);
+void		print_boss2(t_var *var);
 
 #endif

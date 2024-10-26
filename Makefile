@@ -12,6 +12,7 @@ SRCS		=	main.c\
 				update.c\
 				update2.c\
 				update3.c\
+				ray_casting.c\
 				forbidden.c\
 				forbidden2.c\
 				parsing.c\
