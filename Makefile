@@ -14,6 +14,8 @@ SRCS		=	main.c\
 				update3.c\
 				sprite_order.c\
 				ray_cast.c\
+				draw_render.c\
+				drawing_utils.c\
 				forbidden.c\
 				forbidden2.c\
 				parsing.c\

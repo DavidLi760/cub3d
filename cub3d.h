@@ -398,5 +398,8 @@ void		print_boss2(t_var *var);
 void    	closet_animation(t_var *var, int x, int i);
 void	    ray_manager(t_var *var);
 void		draw_wall_column(t_var *var, int x, int height);
+void		draw_cross(t_var *var, int i, int j);
+void		draw_health_bar(t_var *var, int i, int j);
+void		draw_energy_bar(t_var *var, int i, int j);
 
 #endif
