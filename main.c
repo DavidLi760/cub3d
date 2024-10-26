@@ -1073,6 +1073,14 @@ void	init_forbidden(t_var *var, int i, int j)
 	}
 }
 
+void	set_pos(t_var *var)
+{
+	var->position.x = var->position2.x / 15;
+	var->position.y = var->position2.y / 15;
+	var->posx = var->position2.x;
+	var->posy = var->position2.y;
+}
+
 int	init_var(t_var *var, int i, int j)
 {
 	var->forbidden = malloc(sizeof(char *) * (MAP_SIZE + 1));
@@ -1098,8 +1106,264 @@ int	init_var(t_var *var, int i, int j)
 	while (++i < 1920)
 		var->i[i] = 0;
 	init_forbidden(var, 0, 0);
-	var->position.x = var->position2.x / 15;
-	var->position.y = var->position2.y / 15;
+	set_pos(var);
+	return (1);
+}
+
+void	init1(t_var *var)
+{
+	var->maximum = sqrt(pow(960, 2) + pow(505, 2));
+	var->delay = 0;
+	var->height = 5;
+	var->width = 5;
+	var->floor = -1;
+	var->ceiling = -1;
+	var->wall_x = 0;
+	var->wall_y = 0;
+	var->door = 0;
+	var->door2 = 0;
+	var->door3 = 0;
+	var->doorx = 0;
+	var->doory = 0;
+	var->sprite = 0;
+	var->doortime = 0;
+	var->doortime2 = 0;
+	var->doorsense = 0;
+	var->e_pressed = 0;
+	var->w_pressed = 0;
+	var->s_pressed = 0;
+	var->a_pressed = 0;
+	var->d_pressed = 0;
+	var->m_pressed = 0;
+	var->up_pressed = 0;
+	var->down_pressed = 0;
+}
+
+void	init2(t_var *var)
+{
+	var->left_pressed = 0;
+	var->right_pressed = 0;
+	var->shift_pressed = 0;
+	var->vide = 0;
+	var->health = 0;
+	var->energy = 0;
+	var->directx = 0;
+	var->directy = 0;
+	var->plusx = 0;
+	var->plusy = 0;
+	var->pitch = 0;
+	var->pitch2 = 0;
+	var->angle = 0;
+	var->text_x = 0;
+	var->text_y = 0;
+	var->north = 0;
+	var->south = 0;
+	var->east = 0;
+	var->west = 0;
+	var->no = 0;
+	var->so = 0;
+	var->we = 0;
+	var->ea = 0;
+	var->xru = 0;
+	var->yru = 0;
+}
+
+void	init3(t_var *var)
+{
+	var->iru = 0;
+	var->angleru = 0;
+	var->angledru = 0;
+	var->xscp = 0;
+	var->yscp = 0;
+	var->iscp = 0;
+	var->anglescp = 0;
+	var->angledscp = 0;
+	var->xech = 0;
+	var->yech = 0;
+	var->iech = 0;
+	var->angleech = 0;
+	var->angledech = 0;
+	var->xdavli = 0;
+	var->ydavli = 0;
+	var->idavli = 0;
+	var->angledavli = 0;
+	var->angleddavli = 0;
+	var->rusize = 0;
+	var->scpsize = 0;
+	var->echsize = 0;
+	var->davlisize = 0;
+	var->usersize = 0;	
+	var->xuser = 0;
+	var->yuser = 0;
+}
+
+void	init4(t_var *var)
+{
+	var->iuser = 0;
+	var->angleuser = 0;
+	var->angleduser = 0;
+	var->left_angle = 0;
+	var->right_angle = 0;
+	var->ru2 = 0;
+	var->screech = 0;
+	var->scp173 = 0;
+	var->lookech = 0;
+	var->rusens = 0;
+	var->closet = 0;
+	var->closet2 = 0;
+	var->closet3 = 0;
+	var->closetx = 0;
+	var->closety = 0;
+	var->closet2x = 0;
+	var->closet2y = 0;
+	var->died = 0;
+	var->timeech = 0;
+	var->attackech = 0;
+	var->highech = 0;
+	var->doornumber = 0;
+	var->final = 0;
+	var->distance = DIST;
+}
+
+int	init_img1(t_var *var)
+{
+	var->img = mlx_xpm_file_to_image(var->mlx, "./xpms/Red_dot.xpm", &var->width, &var->height);
+	if (!var->img)
+		return (0);
+	var->imgd = mlx_xpm_file_to_image(var->mlx, "./xpms/Door.xpm", &var->width1, &var->height1);
+	if (!var->imgd)
+		return (0);
+	var->imgp = mlx_xpm_file_to_image(var->mlx, "./xpms/Closet.xpm", &var->width1, &var->height1);
+	if (!var->imgp)
+		return (0);
+	var->imgru1 = mlx_xpm_file_to_image(var->mlx, "./xpms/Rush1.xpm", &var->widthru1, &var->heightru1);
+	if (!var->imgru1)
+		return (0);
+	var->imgru2 = mlx_xpm_file_to_image(var->mlx, "./xpms/Rush2.xpm", &var->widthru2, &var->heightru2);
+	if (!var->imgru2)
+		return (0);
+	var->imgscp = mlx_xpm_file_to_image(var->mlx, "./xpms/SCP173.xpm", &var->widthscp, &var->heightscp);
+	if (!var->imgscp)
+		return (0);
+	var->imgscp2 = mlx_xpm_file_to_image(var->mlx, "./xpms/SCP173_2.xpm", &var->widthscp2, &var->heightscp2);
+	if (!var->imgscp2)
+		return (0);
+	var->imgech = mlx_xpm_file_to_image(var->mlx, "./xpms/Screech1.xpm", &var->widthech, &var->heightech);
+	if (!var->imgech)
+		return (0);
+	return (1);
+}
+
+int	init_img2(t_var *var)
+{
+	var->imgech2 = mlx_xpm_file_to_image(var->mlx, "./xpms/Screech2.xpm", &var->widthech2, &var->heightech2);
+	if (!var->imgech2)
+		return (0);
+	var->imgdavli = mlx_xpm_file_to_image(var->mlx, "./xpms/davli.xpm", &var->widthdavli, &var->heightdavli);
+	if (!var->imgdavli)
+		return (0);
+	var->imgdavli2 = mlx_xpm_file_to_image(var->mlx, "./xpms/davli2.xpm", &var->widthdavli2, &var->heightdavli2);
+	if (!var->imgdavli2)
+		return (0);
+	var->imguser = mlx_xpm_file_to_image(var->mlx, "./xpms/fflamion.xpm", &var->widthuser, &var->heightuser);
+	if (!var->imguser)
+		return (0);
+	var->addrd = mlx_get_data_addr(var->imgd, &var->bitd, &var->lend, &var->endiand);
+	if (!var->addrd)
+		return (0);
+	var->addrp = mlx_get_data_addr(var->imgp, &var->bitp, &var->lenp, &var->endianp);
+	if (!var->addrp)
+		return (0);
+	var->imag = mlx_new_image(var->mlx, 150, 150);
+	if (!var->imag)
+		return (0);
+	var->addr = mlx_get_data_addr(var->imag, &var->bit, &var->len, &var->endian);
+	if (!var->addr)
+		return (0);
+	return (1);
+}
+
+int	init_img3(t_var *var)
+{
+	var->addrru1 = mlx_get_data_addr(var->imgru1, &var->bitru1, &var->lenru1, &var->endianru1);
+	if (!var->addrru1)
+		return (0);
+	var->addrru2 = mlx_get_data_addr(var->imgru2, &var->bitru2, &var->lenru2, &var->endianru2);
+	if (!var->addrru2)
+		return (0);
+	var->addrscp = mlx_get_data_addr(var->imgscp, &var->bitscp, &var->lenscp, &var->endianscp);
+	if (!var->addrscp)
+		return (0);
+	var->addrscp2 = mlx_get_data_addr(var->imgscp2, &var->bitscp2, &var->lenscp2, &var->endianscp2);
+	if (!var->addrscp2)
+		return (0);
+	var->addrech = mlx_get_data_addr(var->imgech, &var->bitech, &var->lenech, &var->endianech);
+	if (!var->addrech)
+		return (0);
+	var->addrech2 = mlx_get_data_addr(var->imgech2, &var->bitech2, &var->lenech2, &var->endianech2);
+	if (!var->addrech2)
+		return (0);
+	var->addrdavli = mlx_get_data_addr(var->imgdavli, &var->bitdavli, &var->lendavli, &var->endiandavli);
+	if (!var->addrdavli)
+		return (0);
+	var->addrdavli2 = mlx_get_data_addr(var->imgdavli2, &var->bitdavli2, &var->lendavli2, &var->endiandavli2);
+	if (!var->addrdavli2)
+		return (0);
+	return (1);
+}
+
+int	init_img4(t_var *var)
+{
+	var->addruser = mlx_get_data_addr(var->imguser, &var->bituser, &var->lenuser, &var->endianuser);
+	if (!var->addruser)
+		return (0);
+	var->imgno = mlx_xpm_file_to_image(var->mlx, var->north, &var->widthno, &var->heightno);
+	if (!var->imgno)
+		return (0);
+	var->imgso = mlx_xpm_file_to_image(var->mlx, var->south, &var->widthso, &var->heightso);
+	if (!var->imgso)
+		return (0);
+	var->imgwe = mlx_xpm_file_to_image(var->mlx, var->west, &var->widthwe, &var->heightwe);
+	if (!var->imgwe)
+		return (0);
+	var->imgea = mlx_xpm_file_to_image(var->mlx, var->east, &var->widthea, &var->heightea);
+	if (!var->imgea)
+		return (0);
+	var->addrno = mlx_get_data_addr(var->imgno, &var->bitno, &var->lenno, &var->endianno);
+	if (!var->addrno)
+		return (0);
+	var->addrso = mlx_get_data_addr(var->imgso, &var->bitso, &var->lenso, &var->endianso);
+	if (!var->addrso)
+		return (0);
+	var->addrwe = mlx_get_data_addr(var->imgwe, &var->bitwe, &var->lenwe, &var->endianwe);
+	if (!var->addrwe)
+		return (0);
+	return (1);
+}
+
+int	init_all(t_var *var, int no)
+{
+	if (no == 0)
+	{
+		init1(var);
+		init2(var);
+		init3(var);
+		init4(var);
+	}
+	if (no == 1)
+	{
+		if (!init_img1(var))
+			return (0);
+		if (!init_img2(var))
+			return (0);
+		if (!init_img3(var))
+			return (0);
+		if (!init_img4(var))
+			return (0);
+		var->addrea = mlx_get_data_addr(var->imgea, &var->bitea, &var->lenea, &var->endianea);
+		if (!var->addrea)
+			return (0);
+	}
 	return (1);
 }
 
@@ -1107,217 +1371,20 @@ int	main(int argc, char **argv)
 {
 	t_var	var;
 
-	var.delay = 0;
-	var.maximum = sqrt(pow(960, 2) + pow(505, 2));
-	var.height = 5;
-	var.width = 5;
-	var.floor = -1;
-	var.ceiling = -1;
-	var.wall_x = 0;
-	var.wall_y = 0;
-	var.door = 0;
-	var.door2 = 0;
-	var.door3 = 0;
-	var.doorx = 0;
-	var.doory = 0;
-	var.sprite = 0;
-	var.doortime = 0;
-	var.doortime2 = 0;
-	var.doorsense = 0;
-	var.e_pressed = 0;
-	var.w_pressed = 0;
-	var.s_pressed = 0;
-	var.a_pressed = 0;
-	var.d_pressed = 0;
-	var.m_pressed = 0;
-	var.up_pressed = 0;
-	var.down_pressed = 0;
-	var.left_pressed = 0;
-	var.right_pressed = 0;
-	var.shift_pressed = 0;
-	var.vide = 0;
-	var.health = 0;
-	var.energy = 0;
-	var.directx = 0;
-	var.directy = 0;
-	var.plusx = 0;
-	var.plusy = 0;
-	var.pitch = 0;
-	var.pitch2 = 0;
-	var.angle = 0;
-	var.text_x = 0;
-	var.text_y = 0;
-	var.north = 0;
-	var.south = 0;
-	var.east = 0;
-	var.west = 0;
-	var.no = 0;
-	var.so = 0;
-	var.we = 0;
-	var.ea = 0;
-	var.xru = 0;
-	var.yru = 0;
-	var.iru = 0;
-	var.angleru = 0;
-	var.angledru = 0;
-	var.xscp = 0;
-	var.yscp = 0;
-	var.iscp = 0;
-	var.anglescp = 0;
-	var.angledscp = 0;
-	var.xech = 0;
-	var.yech = 0;
-	var.iech = 0;
-	var.angleech = 0;
-	var.angledech = 0;
-	var.xdavli = 0;
-	var.ydavli = 0;
-	var.idavli = 0;
-	var.angledavli = 0;
-	var.angleddavli = 0;
-	var.rusize = 0;
-	var.scpsize = 0;
-	var.echsize = 0;
-	var.davlisize = 0;
-	var.usersize = 0;	
-	var.xuser = 0;
-	var.yuser = 0;
-	var.iuser = 0;
-	var.angleuser = 0;
-	var.angleduser = 0;
-	var.left_angle = 0;
-	var.right_angle = 0;
-	var.ru2 = 0;
-	var.screech = 0;
-	var.scp173 = 0;
-	var.lookech = 0;
-	var.rusens = 0;
-	var.closet = 0;
-	var.closet2 = 0;
-	var.closet3 = 0;
-	var.closetx = 0;
-	var.closety = 0;
-	var.closet2x = 0;
-	var.closet2y = 0;
-	var.died = 0;
-	var.timeech = 0;
-	var.attackech = 0;
-	var.highech = 0;
-	var.doornumber = 0;
-	var.final = 0;
-	var.distance = DIST;
 	if (argc != 2)
 		return (0);
+	init_all(&var, 0);
 	if (!check_arg(&var, argv))
 		return (0);
 	if (!init_var(&var, -1, 0))
 		return (0);
-	var.posx = var.position2.x;
-	var.posy = var.position2.y;
 	var.mlx = mlx_init();
 	if (!var.mlx)
 		return (0);
 	var.win = mlx_new_window(var.mlx, 1920, 1010, "cub3d");
 	if (!var.win)
 		return (0);
-	var.img = mlx_xpm_file_to_image(var.mlx, "./xpms/Red_dot.xpm", &var.width, &var.height);
-	if (!var.img)
-		return (0);
-	var.imgd = mlx_xpm_file_to_image(var.mlx, "./xpms/Door.xpm", &var.width1, &var.height1);
-	if (!var.imgd)
-		return (0);
-	var.imgp = mlx_xpm_file_to_image(var.mlx, "./xpms/Closet.xpm", &var.width1, &var.height1);
-	if (!var.imgp)
-		return (0);
-	var.imgru1 = mlx_xpm_file_to_image(var.mlx, "./xpms/Rush1.xpm", &var.widthru1, &var.heightru1);
-	if (!var.imgru1)
-		return (0);
-	var.imgru2 = mlx_xpm_file_to_image(var.mlx, "./xpms/Rush2.xpm", &var.widthru2, &var.heightru2);
-	if (!var.imgru2)
-		return (0);
-	var.imgscp = mlx_xpm_file_to_image(var.mlx, "./xpms/SCP173.xpm", &var.widthscp, &var.heightscp);
-	if (!var.imgscp)
-		return (0);
-	var.imgscp2 = mlx_xpm_file_to_image(var.mlx, "./xpms/SCP173_2.xpm", &var.widthscp2, &var.heightscp2);
-	if (!var.imgscp2)
-		return (0);
-	var.imgech = mlx_xpm_file_to_image(var.mlx, "./xpms/Screech1.xpm", &var.widthech, &var.heightech);
-	if (!var.imgech)
-		return (0);
-	var.imgech2 = mlx_xpm_file_to_image(var.mlx, "./xpms/Screech2.xpm", &var.widthech2, &var.heightech2);
-	if (!var.imgech2)
-		return (0);
-	var.imgdavli = mlx_xpm_file_to_image(var.mlx, "./xpms/davli.xpm", &var.widthdavli, &var.heightdavli);
-	if (!var.imgdavli)
-		return (0);
-	var.imgdavli2 = mlx_xpm_file_to_image(var.mlx, "./xpms/davli2.xpm", &var.widthdavli2, &var.heightdavli2);
-	if (!var.imgdavli2)
-		return (0);
-	var.imguser = mlx_xpm_file_to_image(var.mlx, "./xpms/fflamion.xpm", &var.widthuser, &var.heightuser);
-	if (!var.imguser)
-		return (0);
-	var.addrd = mlx_get_data_addr(var.imgd, &var.bitd, &var.lend, &var.endiand);
-	if (!var.addrd)
-		return (0);
-	var.addrp = mlx_get_data_addr(var.imgp, &var.bitp, &var.lenp, &var.endianp);
-	if (!var.addrp)
-		return (0);
-	var.imag = mlx_new_image(var.mlx, 150, 150);
-	if (!var.imag)
-		return (0);
-	var.addr = mlx_get_data_addr(var.imag, &var.bit, &var.len, &var.endian);
-	if (!var.addr)
-		return (0);
-	var.addrru1 = mlx_get_data_addr(var.imgru1, &var.bitru1, &var.lenru1, &var.endianru1);
-	if (!var.addrru1)
-		return (0);
-	var.addrru2 = mlx_get_data_addr(var.imgru2, &var.bitru2, &var.lenru2, &var.endianru2);
-	if (!var.addrru2)
-		return (0);
-	var.addrscp = mlx_get_data_addr(var.imgscp, &var.bitscp, &var.lenscp, &var.endianscp);
-	if (!var.addrscp)
-		return (0);
-	var.addrscp2 = mlx_get_data_addr(var.imgscp2, &var.bitscp2, &var.lenscp2, &var.endianscp2);
-	if (!var.addrscp2)
-		return (0);
-	var.addrech = mlx_get_data_addr(var.imgech, &var.bitech, &var.lenech, &var.endianech);
-	if (!var.addrech)
-		return (0);
-	var.addrech2 = mlx_get_data_addr(var.imgech2, &var.bitech2, &var.lenech2, &var.endianech2);
-	if (!var.addrech2)
-		return (0);
-	var.addrdavli = mlx_get_data_addr(var.imgdavli, &var.bitdavli, &var.lendavli, &var.endiandavli);
-	if (!var.addrdavli)
-		return (0);
-	var.addrdavli2 = mlx_get_data_addr(var.imgdavli2, &var.bitdavli2, &var.lendavli2, &var.endiandavli2);
-	if (!var.addrdavli2)
-		return (0);
-	var.addruser = mlx_get_data_addr(var.imguser, &var.bituser, &var.lenuser, &var.endianuser);
-	if (!var.addruser)
-		return (0);
-	var.imgno = mlx_xpm_file_to_image(var.mlx, var.north, &var.widthno, &var.heightno);
-	if (!var.imgno)
-		return (0);
-	var.imgso = mlx_xpm_file_to_image(var.mlx, var.south, &var.widthso, &var.heightso);
-	if (!var.imgso)
-		return (0);
-	var.imgwe = mlx_xpm_file_to_image(var.mlx, var.west, &var.widthwe, &var.heightwe);
-	if (!var.imgwe)
-		return (0);
-	var.imgea = mlx_xpm_file_to_image(var.mlx, var.east, &var.widthea, &var.heightea);
-	if (!var.imgea)
-		return (0);
-	var.addrno = mlx_get_data_addr(var.imgno, &var.bitno, &var.lenno, &var.endianno);
-	if (!var.addrno)
-		return (0);
-	var.addrso = mlx_get_data_addr(var.imgso, &var.bitso, &var.lenso, &var.endianso);
-	if (!var.addrso)
-		return (0);
-	var.addrwe = mlx_get_data_addr(var.imgwe, &var.bitwe, &var.lenwe, &var.endianwe);
-	if (!var.addrwe)
-		return (0);
-	var.addrea = mlx_get_data_addr(var.imgea, &var.bitea, &var.lenea, &var.endianea);
-	if (!var.addrea)
+	if (!init_all(&var, 1))
 		return (0);
 	mlx_mouse_move(var.mlx, var.win, 1800, 900);
 	mlx_hook(var.win, 2, 1L << 0, escape, &var);

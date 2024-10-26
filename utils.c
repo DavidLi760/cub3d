@@ -205,7 +205,7 @@ void my_put_image_to_image4(t_var *var, int x, int y, int size)
             {
                 color = my_pixel_from_texture(var, src_x, src_y, 'c');
                 if (x + j < 1920 && y + i < 1010 && x + j > 0 && y + i > 0 && color != 0xFFFFFF)
-                    if (var->i[(x + j)] > var->iscp)
+                    if (var->i[(x + j)] > var->iscp || var->iscp < 15)
                         my_pixel_put2(var, x + j, y + i, color);
             }
             j++;
