@@ -18,6 +18,7 @@ SRCS		=	main.c\
 				drawing_utils.c\
 				forbidden.c\
 				forbidden2.c\
+				minimap.c\
 				parsing.c\
 				parsing2.c\
 				parsing3.c\
