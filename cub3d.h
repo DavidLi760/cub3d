@@ -317,6 +317,16 @@ typedef struct s_var
 	int		pixel;
 	int		i3;
 	int		wall_height;
+	int		tmpstart;
+	int		r;
+	int		g;
+	int		b;
+	int		r1;
+	int		g1;
+	int		b1;
+	int		r2;
+	int		g2;
+	int		b2;
 }	t_var;
 
 long long	get_time(void);

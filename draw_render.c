@@ -6,7 +6,7 @@
 /*   By: davli <davli@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/26 20:21:58 by davli             #+#    #+#             */
-/*   Updated: 2024/10/26 20:22:04 by davli            ###   ########.fr       */
+/*   Updated: 2024/10/27 18:52:18 by davli            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,39 +33,66 @@ int	mix_color(t_var *var, int now)
 
 	t = fmin(var->dist / var->distance, 1.0);
 	color = now;
-	int r1 = color >> 16 & 0xFF;
-	int	g1 = color >> 8 & 0xFF;
-	int	b1 = (color & 0xFF);
-	int	r2 = 0x000000 >> 16 & 0xFF;
-	int	g2 = 0x000000 >> 8 & 0xFF;
-	int	b2 = 0x000000 & 0xFF;
-	int	r = (int)((1 - (t)) * r1 + t * r2);
-	int	g = (int)((1 - (t)) * g1 + t * g2);
-	int	b = (int)((1 - (t)) * b1 + t * b2);
-
-	color = (r << 16) | (g << 8) | b;
+	var->r1 = color >> 16 & 0xFF;
+	var->g1 = color >> 8 & 0xFF;
+	var->b1 = (color & 0xFF);
+	var->r2 = 0x000000 >> 16 & 0xFF;
+	var->g2 = 0x000000 >> 8 & 0xFF;
+	var->b2 = 0x000000 & 0xFF;
+	var->r = (int)((1 - (t)) * var->r1 + t * var->r2);
+	var->g = (int)((1 - (t)) * var->g1 + t * var->g2);
+	var->b = (int)((1 - (t)) * var->b1 + t * var->b2);
+	color = (var->r << 16) | (var->g << 8) | var->b;
 	return (color);
+}
+
+void	draw_things(t_var *var, int *start_y, int x)
+{
+	int	color;
+
+	get_text_y(var, *start_y - var->tmpstart, var->wall_height);
+	if (var->no)
+		color = my_pixel_from_texture(var, var->text_x, var->text_y, 'n');
+	else if (var->so)
+		color = my_pixel_from_texture(var, var->text_x, var->text_y, 'S');
+	else if (var->we)
+		color = my_pixel_from_texture(var, var->text_x, var->text_y, 'w');
+	else if (var->ea)
+		color = my_pixel_from_texture(var, var->text_x, var->text_y, 'e');
+	if (var->dist < 0)
+		var->dist *= -1;
+	if (var->door == 1)
+		color = my_pixel_from_texture(var, var->text_x, var->text_y, 'd');
+	if (var->closet == 1)
+		color = my_pixel_from_texture(var, var->text_x, var->text_y, 'p');
+	color = mix_color(var, color);
+	my_pixel_put2(var, x, *start_y, color);
+	my_pixel_put2(var, x + 1, *start_y, color);
+	*start_y += 1;
+}
+
+void	draw_norm(t_var *var, int x, int *start_y, int *i)
+{
+	while (*i < 1010)
+	{
+		my_pixel_put2(var, x, *i, var->ceiling);
+		my_pixel_put2(var, x + 1, (*i)++, var->ceiling);
+	}
+	if (*start_y < 0)
+		*start_y = 0;
 }
 
 void	draw_wall_column(t_var *var, int x, int height)
 {
 	int	i;
-	int start_y;
-	int	start;
-	int end_y;
-	int	color;
+	int	start_y;
+	int	end_y;
 
 	i = 0;
 	start_y = (HEIGHT - height) / 2 - var->pitch;
-	start = start_y;
+	var->tmpstart = start_y;
 	end_y = start_y + height;
-	while (i < 1010)
-	{
-		my_pixel_put2(var, x, i, var->ceiling);
-		my_pixel_put2(var, x + 1, i++, var->ceiling);
-	}
-	if (start_y < 0)
-		start_y = 0;
+	draw_norm(var, x, &start_y, &i);
 	while (var->vide == 1 && start_y < end_y && start_y < 1010)
 	{
 		my_pixel_put2(var, x, start_y, 0x000000);
@@ -73,25 +100,7 @@ void	draw_wall_column(t_var *var, int x, int height)
 	}
 	while (!var->vide && start_y < end_y && start_y < 1010)
 	{
-		get_text_y(var, start_y - start, height);
-		if (var->no)
-			color = my_pixel_from_texture(var, var->text_x, var->text_y, 'n');
-		else if (var->so)
-			color = my_pixel_from_texture(var, var->text_x, var->text_y, 'S');
-		else if (var->we)
-			color = my_pixel_from_texture(var, var->text_x, var->text_y, 'w');
-		else if (var->ea)
-			color = my_pixel_from_texture(var, var->text_x, var->text_y, 'e');
-		if (var->dist < 0)
-			var->dist *= -1;
-		if (var->door == 1)
-			color = my_pixel_from_texture(var, var->text_x, var->text_y, 'd');
-		if (var->closet == 1)
-			color = my_pixel_from_texture(var, var->text_x, var->text_y, 'p');
-		color = mix_color(var, color);
-		my_pixel_put2(var, x, start_y, color);
-		my_pixel_put2(var, x + 1, start_y, color);
-		start_y++;
+		draw_things(var, &start_y, x);
 	}
 	while (start_y < 1010)
 	{
