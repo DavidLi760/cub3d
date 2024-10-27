@@ -6,7 +6,7 @@
 /*   By: davli <davli@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/26 16:20:48 by davli             #+#    #+#             */
-/*   Updated: 2024/10/26 16:20:54 by davli            ###   ########.fr       */
+/*   Updated: 2024/10/27 11:32:17 by davli            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,9 @@ void	forbidden_helper5(t_var *var, int i, int j, char c)
 	}
 }
 
-void    get_c(t_var *var, int i, int j, char *c)
+void	get_c(t_var *var, int i, int j, char *c)
 {
-    if (var->map[i / 15][j / 15 + 1] == '1')
+	if (var->map[i / 15][j / 15 + 1] == '1')
 		*c = 'e';
 	else if (var->map[i / 15][j / 15 - 1] == '1')
 		*c = 'w';
@@ -33,9 +33,9 @@ void    get_c(t_var *var, int i, int j, char *c)
 		*c = 'n';
 }
 
-void    helper6_utils1(t_var *var, int i, int j, char c)
+void	helper6_utils1(t_var *var, int i, int j, char c)
 {
-    if (c == 'w')
+	if (c == 'w')
 	{
 		var->k = 2;
 		while (++var->k < 14)
@@ -57,7 +57,7 @@ void    helper6_utils1(t_var *var, int i, int j, char c)
 	}
 }
 
-void    helper6_utils2(t_var *var, int i, int j, char c)
+void	helper6_utils2(t_var *var, int i, int j, char c)
 {
 	if (c == 'n')
 	{
@@ -83,7 +83,7 @@ void    helper6_utils2(t_var *var, int i, int j, char c)
 
 void	forbidden_helper6(t_var *var, int i, int j, char c)
 {
-    get_c(var, i, j, &c);
-    helper6_utils1(var, i, j, c);
-    helper6_utils2(var, i, j, c);
+	get_c(var, i, j, &c);
+	helper6_utils1(var, i, j, c);
+	helper6_utils2(var, i, j, c);
 }

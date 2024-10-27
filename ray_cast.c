@@ -6,13 +6,13 @@
 /*   By: davli <davli@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/26 19:26:17 by davli             #+#    #+#             */
-/*   Updated: 2024/10/26 19:26:22 by davli            ###   ########.fr       */
+/*   Updated: 2024/10/27 11:33:34 by davli            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
-void    closet_animation(t_var *var, int x, int i)
+void	closet_animation(t_var *var, int x, int i)
 {
 	while (x < 1920)
 	{
@@ -32,7 +32,7 @@ void    closet_animation(t_var *var, int x, int i)
 	}
 }
 
-void    ray_manager(t_var *var)
+void	ray_manager(t_var *var)
 {
 		var->pixel += 2;
 		var->no = 0;
