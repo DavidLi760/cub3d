@@ -385,6 +385,8 @@ int			init_img1(t_var *var);
 int			init_img2(t_var *var);
 int			init_img3(t_var *var);
 int			init_img4(t_var *var);
+int			init_img5(t_var *var);
+int			init_img6(t_var *var);
 int			init_var(t_var *var, int i, int j);
 void		init_forbidden(t_var *var, int i, int j);
 void		forbidden_helper5(t_var *var, int i, int j, char c);

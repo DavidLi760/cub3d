@@ -6,7 +6,7 @@
 /*   By: davli <davli@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/26 16:07:51 by davli             #+#    #+#             */
-/*   Updated: 2024/10/26 16:08:06 by davli            ###   ########.fr       */
+/*   Updated: 2024/10/28 17:09:45 by davli            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void	init1(t_var *var)
 	var->m_pressed = 0;
 	var->up_pressed = 0;
 	var->down_pressed = 0;
-    var->dst = 0;
+	var->dst = 0;
 }
 
 void	init2(t_var *var)
@@ -94,7 +94,7 @@ void	init3(t_var *var)
 	var->scpsize = 0;
 	var->echsize = 0;
 	var->davlisize = 0;
-	var->usersize = 0;	
+	var->usersize = 0;
 	var->xuser = 0;
 	var->yuser = 0;
 }
@@ -125,7 +125,7 @@ void	init4(t_var *var)
 	var->doornumber = 0;
 	var->final = 0;
 	var->distance = DIST;
-    var->pixel = 0;
+	var->pixel = 0;
 }
 
 int	init_all(t_var *var, int no)
@@ -147,7 +147,10 @@ int	init_all(t_var *var, int no)
 			return (0);
 		if (!init_img4(var))
 			return (0);
-		var->addrea = mlx_get_data_addr(var->imgea, &var->bitea, &var->lenea, &var->endianea);
+		if (!init_img5(var) || !init_img6(var))
+			return (0);
+		var->addrea = mlx_get_data_addr(var->imgea, \
+		&var->bitea, &var->lenea, &var->endianea);
 		if (!var->addrea)
 			return (0);
 	}

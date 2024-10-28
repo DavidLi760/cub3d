@@ -52,8 +52,14 @@ void	get_text_x(t_var *var)
 
 void	trace_ray(t_var *var, double angle, double *i, int no)
 {
-	if (var->forbidden[(int)(var->posy + sin(angle) * 0 + 5)][(int)(var->posx + cos(angle) * 0 + 5)] == '1')
+	if (var->forbidden[(int)(var->posy + sin(angle) * 0 + 5)][(int)(var->posx + cos(angle) * 0 + 5)] == '1' || var->forbidden[(int)(var->posy + sin(angle) * 0 + 5)][(int)(var->posx + cos(angle) * 0 + 5)] == '2')
+	{
+		*i = 0;
 		return ;
+	}
+	printf("x:%f\n", var->posx);
+	printf("y:%f\n", var->posy);
+	printf("%d\n", var->forbidden[(int)(var->posy + sin(angle) * 0 + 5)][(int)(var->posx + cos(angle) * 0 + 5)]);
 	while ((var->forbidden[(int)(var->posy + sin(angle) * *i + 5)][(int)(var->posx + cos(angle) * *i + 5)] == '0'
 	|| var->forbidden[(int)(var->posy + sin(angle) * *i + 5)][(int)(var->posx + cos(angle) * *i + 5)] == 's')
 	&& *i < var->distance)
