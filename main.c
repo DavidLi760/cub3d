@@ -48,15 +48,15 @@ void	get_text_x(t_var *var)
 		var->text_x += var->doortime * 28 - 84;
 	if (var->text_x < 0)
 		var->text_x = 0;
+	if (var->door && var->text_x > 400)
+		var->text_x = 400;
 }
 
 void	trace_ray(t_var *var, double angle, double *i, int no)
 {
-	if (var->forbidden[(int)(var->posy + sin(angle) * 0 + 5)][(int)(var->posx + cos(angle) * 0 + 5)] == '1' || var->forbidden[(int)(var->posy + sin(angle) * 0 + 5)][(int)(var->posx + cos(angle) * 0 + 5)] == '2')
-	{
-		*i = 0;
+	if (var->forbidden[(int)(var->posy + sin(angle) * 0 + 5)][(int)(var->posx + cos(angle) * 0 + 5)] == '1')
+
 		return ;
-	}
 	printf("x:%f\n", var->posx);
 	printf("y:%f\n", var->posy);
 	printf("%d\n", var->forbidden[(int)(var->posy + sin(angle) * 0 + 5)][(int)(var->posx + cos(angle) * 0 + 5)]);
