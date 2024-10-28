@@ -6,7 +6,7 @@
 /*   By: davli <davli@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/27 18:55:33 by davli             #+#    #+#             */
-/*   Updated: 2024/10/27 19:04:14 by davli            ###   ########.fr       */
+/*   Updated: 2024/10/28 16:48:23 by davli            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,16 +14,16 @@
 
 void	obstacle_helper(t_var *var, int i, int j)
 {
-    if (var->map[i][j] == '1')
+	if (var->map[i][j] == '1')
 		draw_wall(var, var->diff_x + 95, var->diff_y \
-        + 95, 0x000000FF);
+		+ 95, 0x000000FF);
 	else if (var->map[i][j] == '2')
 		draw_door(var, var->diff_x + 95, var->diff_y + 95, 1);
 	else if (var->map[i][j] == '3')
 		draw_door(var, var->diff_x + 95, var->diff_y + 95, 0);
 	else
 		draw_wall(var, var->diff_x + 95, var->diff_y \
-        + 95, 0x00000000);
+		+ 95, 0x00000000);
 }
 
 void	draw_obstacle(t_var *var, int i, int j)
@@ -40,12 +40,10 @@ void	draw_obstacle(t_var *var, int i, int j)
 			else
 			{
 				if (i < var->max && j < var->maxj)
-				{
-                    obstacle_helper(var, x, i);
-				}
+					obstacle_helper(var, i, j);
 				else
 					draw_wall(var, var->diff_x + 95, var->diff_y \
-                    + 95, 0x00000000);	
+						+ 95, 0x00000000);
 			}
 			j++;
 		}
