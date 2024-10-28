@@ -12,18 +12,6 @@
 
 #include "cub3d.h"
 
-int	is_charset(char c, char *set)
-{
-	int	i;
-
-	i = 0;
-	while (c != set[i] && set[i])
-		i++;
-	if (!set[i])
-		return (0);
-	return (1);
-}
-
 int	count_words(char *str, char *set)
 {
 	int	i;
@@ -98,17 +86,13 @@ int	is_empty_line(char *str, int j, int i)
 	return (1);
 }
 
-char	**ft_split(char *str, char *set)
+char	**ft_split(char *str, char *set, int i, int j)
 {
-	int		i;
-	int		j;
 	char	**split;
 
 	if (count_words(str, set) < 1)
 		return (0);
 	split = malloc(sizeof(char *) * (count_words(str, set) + 1));
-	i = -1;
-	j = 0;
 	while (++i < count_words(str, set))
 	{
 		while (is_charset(str[j], set) && str[j])

@@ -19,15 +19,18 @@ SRCS		=	main.c\
 				forbidden.c\
 				forbidden2.c\
 				minimap.c\
+				draw_ray.c\
 				parsing.c\
 				parsing2.c\
 				parsing3.c\
+				parsing4.c\
 				get_next_line.c\
 				ft_split.c\
 				ft_atoi.c\
 				utils.c\
 				walking.c\
 				monster.c\
+				monster2.c\
 				ft_itoa.c\
 				scenario.c\
 				free.c

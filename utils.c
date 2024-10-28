@@ -400,3 +400,15 @@ void    draw_wall(t_var *var, int j, int i, int color)
         }
     }
 }
+
+int	is_charset(char c, char *set)
+{
+	int	i;
+
+	i = 0;
+	while (c != set[i] && set[i])
+		i++;
+	if (!set[i])
+		return (0);
+	return (1);
+}

@@ -35,19 +35,23 @@ int	check_corner(t_var *var, int i, int j, int max)
 		i++;
 	max = i - 1;
 	while (var->map[0][++j])
-		if (var->map[0][j] == '0' || var->map[0][j] == '2' || var->map[0][j] == '3')
+		if (var->map[0][j] == '0' || var->map[0][j] == '2'
+		|| var->map[0][j] == '3')
 			return (printf("Error : Wall not closed\n"), 0);
 	j = -1;
 	while (var->map[max][++j])
-		if (var->map[max][j] == '0' || var->map[max][j] == '2' || var->map[max][j] == '3')
+		if (var->map[max][j] == '0' || var->map[max][j] == '2'
+		|| var->map[max][j] == '3')
 			return (printf("Error : Wall not closed\n"), 0);
 	i = -1;
 	while (++i <= max)
-		if (var->map[i][0] == '0' || var->map[i][0] == '2' || var->map[i][0] == '3')
+		if (var->map[i][0] == '0'
+		|| var->map[i][0] == '2' || var->map[i][0] == '3')
 			return (printf("Error : Wall not closed\n"), 0);
 	i = -1;
 	while (++i <= max)
-		if (var->map[i][j - 1] == '0' || var->map[i][j - 1] == '2' || var->map[i][j - 1] == '3')
+		if (var->map[i][j - 1] == '0'
+		|| var->map[i][j - 1] == '2' || var->map[i][j - 1] == '3')
 			return (printf("Error : Wall not closed\n"), 0);
 	return (1);
 }
@@ -101,46 +105,6 @@ int	is_right_char(t_var *var, int i, int j)
 		}
 		i++;
 	}
-	return (1);
-}
-
-void	register_angle(t_var *var, char c)
-{
-	if (c == 'E')
-		var->angle = 0;
-	if (c == 'W')
-		var->angle = PI;
-	if (c == 'N')
-		var->angle = 3 * PI / 2;
-	if (c == 'S')
-		var->angle = PI / 2;
-}
-
-int	is_player_valid(t_var *var, int i, int j)
-{
-	var->player = 0;
-	while (var->map[i])
-	{
-		j = 0;
-		while (var->map[i][j])
-		{
-			if (var->map[i][j] == 'E' || var->map[i][j] == 'W'
-				|| var->map[i][j] == 'N' || var->map[i][j] == 'S')
-			{
-				var->player++;
-				var->position.x = j;
-				var->position.y = i;
-				var->position2.x = j * 15;
-				var->position2.y = i * 15;
-				register_angle(var, var->map[i][j]);
-			}
-			j++;
-		}
-		i++;
-	}
-	var->max = i;
-	if (var->player != 1)
-		return (printf("Error : Less or more than 1 player\n"), 0);
 	return (1);
 }
 

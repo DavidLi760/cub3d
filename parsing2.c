@@ -103,7 +103,7 @@ char	*get_map(int i, t_var *var, int max)
 
 int	get_split(t_var *var, int i, int j)
 {
-	var->split = ft_split(var->file, "\n");
+	var->split = ft_split(var->file, "\n", -1, 0);
 	if (!var->split)
 		return (printf("Error : Incorrect map\n"), 0);
 	if (!count_line(var, 1))

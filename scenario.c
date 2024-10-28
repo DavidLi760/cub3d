@@ -58,6 +58,8 @@ void    scenario(t_var *var)
     }
     if (var->posy > 485 && var->posx < 270 && var->doortime && var->doornumber == 5)
     {
+        if (var->distance < 150)
+            var->distance += 150;
         var->doornumber = 6;
         var->rush = 0;
         var->xru = 0;

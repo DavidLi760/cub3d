@@ -340,7 +340,7 @@ int			release(int keycode, t_var *var);
 int			check_arg(t_var *var, char **argv);
 size_t		ft_strlen(char *s);
 char		*get_next_line(int fd);
-char		**ft_split(char *str, char *set);
+char		**ft_split(char *str, char *set, int i, int j);
 int			get_split(t_var *var, int i, int j);
 void		free_list(t_var *var);
 void		free2(t_var *var, int no);
@@ -413,5 +413,14 @@ void		draw_wall_column(t_var *var, int x, int height);
 void		draw_cross(t_var *var, int i, int j);
 void		draw_health_bar(t_var *var, int i, int j);
 void		draw_energy_bar(t_var *var, int i, int j);
+void		door_text(t_var *var);
+void		get_text_x(t_var *var);
+void		get_wall_xy(t_var *var);
+int			is_charset(char c, char *set);
+void		scp_mechanics(t_var *var);
+void		screech_mechanics(t_var *var);
+void		screech2(t_var *var);
+void		register_angle(t_var *var, char c);
+int			is_player_valid(t_var *var, int i, int j);
 
 #endif
