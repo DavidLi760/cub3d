@@ -422,5 +422,18 @@ void		screech_mechanics(t_var *var);
 void		screech2(t_var *var);
 void		register_angle(t_var *var, char c);
 int			is_player_valid(t_var *var, int i, int j);
+void		scenario1(t_var *var);
+void		scenario2(t_var *var);
+void		scenario3(t_var *var);
+void		scenario4(t_var *var);
+void		scenario5(t_var *var);
+void		scenario6(t_var *var);
+void		scenario7(t_var *var);
+void		scenario8(t_var *var);
+void		scenario9(t_var *var);
+void		scenario10(t_var *var);
+void		scenario11(t_var *var);
+void		scenario12(t_var *var);
+void		scenario13(t_var *var);
 
 #endif

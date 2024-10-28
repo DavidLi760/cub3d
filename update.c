@@ -6,7 +6,7 @@
 /*   By: davli <davli@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/26 17:19:29 by davli             #+#    #+#             */
-/*   Updated: 2024/10/26 18:58:09 by davli            ###   ########.fr       */
+/*   Updated: 2024/10/28 19:52:13 by davli            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,7 +120,7 @@ int	update(t_var *var)
 	death_update(var);
 	ray_casting(var, 0);
 	norm_update(var);
-    death(var);
+	death(var);
 	while (get_time() < start + MS)
 		usleep(5);
 	return (0);
