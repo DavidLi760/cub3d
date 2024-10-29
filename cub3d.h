@@ -297,7 +297,7 @@ typedef struct s_var
 	double	inter;
 	double	*i;
 	int		distance;
-	char	spriteorder[3];
+	char	spriteorder[4];
 	int		screech;
 	int		scp173;
 	int		rush;

@@ -81,7 +81,7 @@ int	is_empty_line(char *str, int j, int i)
 					return (0);
 			}
 			if (!str[j])
-				return (0);
+				return (1);
 			j++;
 		}
 	}

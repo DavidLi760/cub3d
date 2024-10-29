@@ -1,5 +1,5 @@
 NAME		= Cub3D
-CC			= gcc
+CC			= cc
 CFLAGS		= -Wall -Wextra -Werror -g
 LFLAGS		= -lX11 -lmlx -lXext -lm -lz -Lmlx
 MLX			= mlx/libmlx.a
