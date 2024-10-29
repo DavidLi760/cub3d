@@ -6,7 +6,7 @@
 /*   By: davli <davli@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/28 17:06:18 by davli             #+#    #+#             */
-/*   Updated: 2024/09/12 14:01:35 by davli            ###   ########.fr       */
+/*   Updated: 2024/10/29 17:33:38 by davli            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -340,8 +340,6 @@ void		move(int keycode, t_var *var);
 int			mouse_move(int x, int y, t_var *var);
 int			press_key(int keycode, t_var *var);
 int			release(int keycode, t_var *var);
-
-
 int			check_arg(t_var *var, char **argv);
 size_t		ft_strlen(char *s);
 char		*get_next_line(int fd);
@@ -410,10 +408,10 @@ void		screamer_text(t_var *var);
 void		door_closet(t_var *var);
 void		closet2(t_var *var);
 void		sprite_order(t_var *var);
-void    	print_boss(t_var *var);
+void		print_boss(t_var *var);
 void		print_boss2(t_var *var);
-void    	closet_animation(t_var *var, int x, int i);
-void	    ray_manager(t_var *var);
+void		closet_animation(t_var *var, int x, int i);
+void		ray_manager(t_var *var);
 void		draw_wall_column(t_var *var, int x, int height);
 void		draw_cross(t_var *var, int i, int j);
 void		draw_health_bar(t_var *var, int i, int j);
