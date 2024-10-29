@@ -77,9 +77,11 @@ int	is_empty_line(char *str, int j, int i)
 				j++;
 				while (str[j] == ' ')
 					j++;
-				if (str[j] == '\n')
+				if (str[j] == '\n' )
 					return (0);
 			}
+			if (!str[j])
+				return (0);
 			j++;
 		}
 	}

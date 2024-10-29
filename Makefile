@@ -28,6 +28,9 @@ SRCS		=	main.c\
 				ft_split.c\
 				ft_atoi.c\
 				utils.c\
+				utils2.c\
+				utils3.c\
+				utils4.c\
 				walking.c\
 				monster.c\
 				monster2.c\

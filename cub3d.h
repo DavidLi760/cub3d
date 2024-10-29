@@ -327,6 +327,11 @@ typedef struct s_var
 	int		r2;
 	int		g2;
 	int		b2;
+	int		tempi;
+	int		tempj;
+	double	scale_factor;
+	int		srcx;
+	int		srcy;
 }	t_var;
 
 long long	get_time(void);
